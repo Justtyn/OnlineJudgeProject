@@ -1,6 +1,6 @@
 <script setup>
-import {ref, reactive, onMounted} from 'vue'
-import {ElMessage} from 'element-plus'
+import { ref, reactive, onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
 import request from "@/utils/request.js";
 
 
@@ -70,13 +70,13 @@ const problemForm = reactive({
 
 // 表单规则
 const rules = {
-  name: [{required: true, message: '请输入问题名称', trigger: 'blur'}],
-  setter: [{required: true, message: '请输入出题人', trigger: 'blur'}],
-  desc: [{required: true, message: '请输入题目描述', trigger: 'blur'}],
-  descInput: [{required: true, message: '请输入输入描述', trigger: 'blur'}],
-  descOutput: [{required: true, message: '请输入输出描述', trigger: 'blur'}],
-  sampleInput: [{required: true, message: '请输入输入样例', trigger: 'blur'}],
-  sampleOutput: [{required: true, message: '请输入输出样例', trigger: 'blur'}]
+  name: [{ required: true, message: '请输入问题名称', trigger: 'blur' }],
+  setter: [{ required: true, message: '请输入出题人', trigger: 'blur' }],
+  desc: [{ required: true, message: '请输入题目描述', trigger: 'blur' }],
+  descInput: [{ required: true, message: '请输入输入描述', trigger: 'blur' }],
+  descOutput: [{ required: true, message: '请输入输出描述', trigger: 'blur' }],
+  sampleInput: [{ required: true, message: '请输入输入样例', trigger: 'blur' }],
+  sampleOutput: [{ required: true, message: '请输入输出样例', trigger: 'blur' }]
 }
 
 // 表单引用
@@ -168,7 +168,7 @@ const handleQuery = () => {
     ElMessage.warning('请只选择一个查询条件');
     return;
   }
-  
+
   currentPage.value = 1;
   loadData();
 }
@@ -204,7 +204,7 @@ const currentProblem = ref(null)
 
 // 打开编辑对话框
 const handleEdit = (row) => {
-  currentProblem.value = {...row}
+  currentProblem.value = { ...row }
 
   // 将API返回的字段映射到表单字段
   problemForm.name = row.name || '';
@@ -238,10 +238,10 @@ const handleCancel = () => {
 // 保存操作
 const handleSave = async () => {
   const formRef = addDialogVisible.value ? addFormRef.value : editFormRef.value
-  
+
   try {
     await formRef.validate()
-    
+
     const submitData = {
       ...problemForm,
       createTime: problemForm.createTime || new Date().toISOString().split('T')[0],
@@ -300,7 +300,7 @@ onMounted(() => {
           <span class="title">问题列表</span>
           <el-button type="primary" @click="handleAdd">
             <el-icon>
-              <Plus/>
+              <Plus />
             </el-icon>
             添加题目
           </el-button>
@@ -309,25 +309,13 @@ onMounted(() => {
 
       <el-form :model="queryForm" inline>
         <el-form-item>
-          <el-input
-              v-model="queryForm.id"
-              placeholder="按题号查询"
-              clearable
-          />
+          <el-input v-model="queryForm.id" placeholder="按题号查询" clearable />
         </el-form-item>
         <el-form-item>
-          <el-input
-              v-model="queryForm.name"
-              placeholder="按问题名称查询"
-              clearable
-          />
+          <el-input v-model="queryForm.name" placeholder="按问题名称查询" clearable />
         </el-form-item>
         <el-form-item>
-          <el-input
-              v-model="queryForm.setter"
-              placeholder="按出题人查询"
-              clearable
-          />
+          <el-input v-model="queryForm.setter" placeholder="按出题人查询" clearable />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleQuery">查询</el-button>
@@ -338,16 +326,18 @@ onMounted(() => {
 
     <!-- 表格区域 -->
     <el-card class="table-card">
-      <el-table
-          :data="tableData"
-          style="width: 100%"
-          border
-          stripe
-          highlight-current-row
-      >
-        <el-table-column prop="id" label="题号" width="100" align="center"/>
-        <el-table-column prop="name" label="问题" min-width="120" show-overflow-tooltip/>
-        <el-table-column prop="setter" label="出题人" width="100" align="center"/>
+      <el-table :data="tableData" style="width: 100%" border stripe highlight-current-row>
+        <el-table-column prop="id" label="题号" width="100" align="center" />
+        <!-- <el-table-column prop="name" label="问题" min-width="120" show-overflow-tooltip /> -->
+        <el-table-column label="问题" min-width="120" show-overflow-tooltip>
+          <template #default="scope">
+            <a @click="$router.push(`/problem/${scope.row.id}`)" class="problem-link">
+              {{ scope.row.name }}
+            </a>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="setter" label="出题人" width="100" align="center" />
         <el-table-column prop="createTime" label="出题时间" width="150" align="center">
           <template #default="scope">
             {{ formatDateTime(scope.row.createTime) }}
@@ -377,53 +367,38 @@ onMounted(() => {
 
       <!-- 分页 -->
       <div class="pagination">
-        <el-pagination
-            v-model:current-page="currentPage"
-            v-model:page-size="pageSize"
-            :total="total"
-            :page-sizes="[10, 20, 30, 50]"
-            layout="total, sizes, prev, pager, next, jumper"
-            @current-change="handleCurrentChange"
-            @size-change="handleSizeChange"
-        />
+        <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :total="total"
+          :page-sizes="[10, 20, 30, 50]" layout="total, sizes, prev, pager, next, jumper"
+          @current-change="handleCurrentChange" @size-change="handleSizeChange" />
       </div>
     </el-card>
 
     <!-- 添加题目对话框 -->
-    <el-dialog
-        v-model="addDialogVisible"
-        title="添加题目"
-        width="50%"
-    >
-      <el-form
-          ref="addFormRef"
-          :model="problemForm"
-          :rules="rules"
-          label-width="100px"
-      >
+    <el-dialog v-model="addDialogVisible" title="添加题目" width="50%">
+      <el-form ref="addFormRef" :model="problemForm" :rules="rules" label-width="100px">
         <el-form-item label="问题名称" prop="name">
-          <el-input v-model="problemForm.name" placeholder="请输入问题名称"/>
+          <el-input v-model="problemForm.name" placeholder="请输入问题名称" />
         </el-form-item>
         <el-form-item label="出题人" prop="setter">
-          <el-input v-model="problemForm.setter" placeholder="请输入出题人"/>
+          <el-input v-model="problemForm.setter" placeholder="请输入出题人" />
         </el-form-item>
         <el-form-item label="题目描述" prop="desc">
-          <el-input v-model="problemForm.desc" type="textarea" rows="4" placeholder="请输入题目描述"/>
+          <el-input v-model="problemForm.desc" type="textarea" rows="4" placeholder="请输入题目描述" />
         </el-form-item>
         <el-form-item label="输入描述" prop="descInput">
-          <el-input v-model="problemForm.descInput" type="textarea" rows="2" placeholder="请输入输入描述"/>
+          <el-input v-model="problemForm.descInput" type="textarea" rows="2" placeholder="请输入输入描述" />
         </el-form-item>
         <el-form-item label="输出描述" prop="descOutput">
-          <el-input v-model="problemForm.descOutput" type="textarea" rows="2" placeholder="请输入输出描述"/>
+          <el-input v-model="problemForm.descOutput" type="textarea" rows="2" placeholder="请输入输出描述" />
         </el-form-item>
         <el-form-item label="输入样例" prop="sampleInput">
-          <el-input v-model="problemForm.sampleInput" type="textarea" rows="2" placeholder="请输入输入样例"/>
+          <el-input v-model="problemForm.sampleInput" type="textarea" rows="2" placeholder="请输入输入样例" />
         </el-form-item>
         <el-form-item label="输出样例" prop="sampleOutput">
-          <el-input v-model="problemForm.sampleOutput" type="textarea" rows="2" placeholder="请输入输出样例"/>
+          <el-input v-model="problemForm.sampleOutput" type="textarea" rows="2" placeholder="请输入输出样例" />
         </el-form-item>
         <el-form-item label="提示说明" prop="hint">
-          <el-input v-model="problemForm.hint" type="textarea" rows="2" placeholder="请输入提示说明"/>
+          <el-input v-model="problemForm.hint" type="textarea" rows="2" placeholder="请输入提示说明" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -435,40 +410,31 @@ onMounted(() => {
     </el-dialog>
 
     <!-- 编辑题目对话框 -->
-    <el-dialog
-        v-model="editDialogVisible"
-        title="编辑题目"
-        width="50%"
-    >
-      <el-form
-          ref="editFormRef"
-          :model="problemForm"
-          :rules="rules"
-          label-width="100px"
-      >
+    <el-dialog v-model="editDialogVisible" title="编辑题目" width="50%">
+      <el-form ref="editFormRef" :model="problemForm" :rules="rules" label-width="100px">
         <el-form-item label="问题名称" prop="name">
-          <el-input v-model="problemForm.name" placeholder="请输入问题名称"/>
+          <el-input v-model="problemForm.name" placeholder="请输入问题名称" />
         </el-form-item>
         <el-form-item label="出题人" prop="setter">
-          <el-input v-model="problemForm.setter" placeholder="请输入出题人"/>
+          <el-input v-model="problemForm.setter" placeholder="请输入出题人" />
         </el-form-item>
         <el-form-item label="题目描述" prop="desc">
-          <el-input v-model="problemForm.desc" type="textarea" rows="4" placeholder="请输入题目描述"/>
+          <el-input v-model="problemForm.desc" type="textarea" rows="4" placeholder="请输入题目描述" />
         </el-form-item>
         <el-form-item label="输入描述" prop="descInput">
-          <el-input v-model="problemForm.descInput" type="textarea" rows="2" placeholder="请输入输入描述"/>
+          <el-input v-model="problemForm.descInput" type="textarea" rows="2" placeholder="请输入输入描述" />
         </el-form-item>
         <el-form-item label="输出描述" prop="descOutput">
-          <el-input v-model="problemForm.descOutput" type="textarea" rows="2" placeholder="请输入输出描述"/>
+          <el-input v-model="problemForm.descOutput" type="textarea" rows="2" placeholder="请输入输出描述" />
         </el-form-item>
         <el-form-item label="输入样例" prop="sampleInput">
-          <el-input v-model="problemForm.sampleInput" type="textarea" rows="2" placeholder="请输入输入样例"/>
+          <el-input v-model="problemForm.sampleInput" type="textarea" rows="2" placeholder="请输入输入样例" />
         </el-form-item>
         <el-form-item label="输出样例" prop="sampleOutput">
-          <el-input v-model="problemForm.sampleOutput" type="textarea" rows="2" placeholder="请输入输出样例"/>
+          <el-input v-model="problemForm.sampleOutput" type="textarea" rows="2" placeholder="请输入输出样例" />
         </el-form-item>
         <el-form-item label="提示说明" prop="hint">
-          <el-input v-model="problemForm.hint" type="textarea" rows="2" placeholder="请输入提示说明"/>
+          <el-input v-model="problemForm.hint" type="textarea" rows="2" placeholder="请输入提示说明" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -520,4 +486,14 @@ onMounted(() => {
 :deep(.el-card__body) {
   padding: 20px;
 }
+
+.problem-link {
+  color: #1890ff;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.problem-link:hover {
+  color: #40a9ff;
+}
+
 </style>

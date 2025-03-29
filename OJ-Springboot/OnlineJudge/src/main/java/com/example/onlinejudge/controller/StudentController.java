@@ -4,6 +4,7 @@ import com.example.onlinejudge.common.Result;
 import com.example.onlinejudge.entity.Student;
 import com.example.onlinejudge.service.StudentService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -48,4 +49,17 @@ public class StudentController {
         List<Student> students = studentService.getAllStudents();
         return Result.success(students);
     }
+
+    @PostMapping("/uploadAvatar")
+    public Result uploadAvatar(@RequestParam("file") MultipartFile file,
+                               @RequestParam("id") Integer id) {
+        try {
+            String avatarUrl = studentService.uploadAvatar(file, id);
+            return Result.success(avatarUrl);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("头像上传失败：" + e.getMessage());
+        }
+    }
+
 }

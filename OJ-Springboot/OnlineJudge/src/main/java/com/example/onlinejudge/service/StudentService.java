@@ -11,9 +11,12 @@ import com.example.onlinejudge.mapper.StudentMapper;
 import com.example.onlinejudge.utils.JwtUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.beans.Transient;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -128,4 +131,36 @@ public class StudentService {
         
         return studentMapper.deleteById(id) > 0;
     }
+
+    @Transactional
+    public String uploadAvatar(MultipartFile file, Integer id) throws IOException {
+        // 检查学生是否存在
+        Student student = studentMapper.selectById(id);
+        if (student == null) {
+            throw new CustomException("学生不存在");
+        }
+        // 使用绝对路径作为上传目录（例如：当前工作目录下的 uploads 文件夹）
+        String uploadDir = System.getProperty("user.dir") + "/uploads/";
+        File dir = new File(uploadDir);
+        if (!dir.exists()) {
+            dir.mkdirs(); // 创建上传目录
+        }
+        // 生成唯一文件名
+        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        File dest = new File(dir, fileName);
+        // 将上传的文件保存到目标路径
+        file.transferTo(dest);
+        // 生成头像 URL，假设服务器能通过 http://localhost:9090/uploads/ 访问上传的文件
+        String avatarUrl = "http://localhost:9090/uploads/" + fileName;
+        // 更新学生头像信息
+        student.setAvatar(avatarUrl);
+        int updated = studentMapper.update(student);
+        if (updated > 0) {
+            return avatarUrl;
+        } else {
+            throw new CustomException("更新头像失败");
+        }
+    }
+
+
 }
