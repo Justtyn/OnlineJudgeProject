@@ -11,7 +11,8 @@ const router = createRouter({
             children: [
                 { path: 'homePage', name: 'HomePage', component: () => import('@/views/page/HomePage.vue') },
                 { path: 'problemListPage', name: 'ProblemListPage', component: () => import('@/views/page/ProblemListPage.vue') },
-                { path: '/problem/:id', name: 'ProblemDetail', component: () => import('@/views/page/ProblemDetailPage.vue') },
+                { path: 'problem/:id', name: 'ProblemDetail', component: () => import('@/views/page/ProblemDetailPage.vue') },
+                { path: 'profilePage', name: 'ProfilePage', component: () => import('@/views/page/ProfilePage.vue') },
             ]
         },
         {

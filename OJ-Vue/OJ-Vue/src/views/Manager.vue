@@ -118,7 +118,7 @@ const logout = () => {
 const handleCommand = (command: string) => {
   switch (command) {
     case 'userCenter':
-      router.push('/userCenter')
+      router.push('/profilePage')
       break
     case 'favorites':
       router.push('/favorites')

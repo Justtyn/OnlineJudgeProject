@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.beans.Transient;
+import java.util.List;
 
 @Service
 public class StudentService {
@@ -71,7 +72,60 @@ public class StudentService {
         student.setPassword(SecureUtil.md5(student.getPassword() + PASS_SALT));
         student.setRole(RoleEnum.STUDENT.name());
 
-
         studentMapper.insert(student);
+    }
+    
+    /**
+     * 根据ID查询学生
+     */
+    public Student getStudentById(Integer id) {
+        Student student = studentMapper.selectById(id);
+        if (student == null) {
+            throw new CustomException("学生不存在");
+        }
+        return student;
+    }
+    
+    /**
+     * 获取所有学生
+     */
+    public List<Student> getAllStudents() {
+        return studentMapper.selectAll();
+    }
+    
+    /**
+     * 更新学生信息
+     */
+    @Transactional
+    public boolean update(Student student) {
+        // 检查学生是否存在
+        Student dbStudent = studentMapper.selectById(student.getId());
+        if (dbStudent == null) {
+            throw new CustomException("学生不存在");
+        }
+        
+        // 如果更新了用户名，检查新用户名是否已存在
+        if (!dbStudent.getUsername().equals(student.getUsername())) {
+            Student existStudent = studentMapper.selectByUsername(student.getUsername());
+            if (existStudent != null) {
+                throw new CustomException("用户名已存在");
+            }
+        }
+        
+        return studentMapper.update(student) > 0;
+    }
+    
+    /**
+     * 删除学生
+     */
+    @Transactional
+    public boolean delete(Integer id) {
+        // 检查学生是否存在
+        Student student = studentMapper.selectById(id);
+        if (student == null) {
+            throw new CustomException("学生不存在");
+        }
+        
+        return studentMapper.deleteById(id) > 0;
     }
 }
