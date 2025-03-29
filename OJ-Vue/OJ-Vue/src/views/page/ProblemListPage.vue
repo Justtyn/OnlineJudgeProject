@@ -345,20 +345,20 @@ onMounted(() => {
           stripe
           highlight-current-row
       >
-        <el-table-column prop="id" label="题号" width="70" align="center"/>
+        <el-table-column prop="id" label="题号" width="100" align="center"/>
         <el-table-column prop="name" label="问题" min-width="120" show-overflow-tooltip/>
         <el-table-column prop="setter" label="出题人" width="100" align="center"/>
-        <el-table-column prop="createTime" label="出题时间" width="110" align="center">
+        <el-table-column prop="createTime" label="出题时间" width="150" align="center">
           <template #default="scope">
             {{ formatDateTime(scope.row.createTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="acCount" label="AC" width="70" align="center">
+        <el-table-column prop="acCount" label="AC" width="100" align="center">
           <template #default="scope">
             {{ scope.row.acCount || 0 }}
           </template>
         </el-table-column>
-        <el-table-column prop="submitCount" label="Submit" width="70" align="center">
+        <el-table-column prop="submitCount" label="Submit" width="100" align="center">
           <template #default="scope">
             {{ scope.row.submitCount || 0 }}
           </template>
@@ -485,7 +485,7 @@ onMounted(() => {
 .problem-container {
   padding: 20px;
   background-color: #f5f7fa;
-  min-height: 100vh;
+  height: 80vh;
 }
 
 .search-card {

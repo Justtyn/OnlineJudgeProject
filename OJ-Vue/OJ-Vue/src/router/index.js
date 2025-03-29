@@ -1,7 +1,7 @@
-import {createRouter, createWebHistory} from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL),
+    history: createWebHashHistory(import.meta.env.BASE_URL),
     routes: [
         {
             path: '/',
@@ -9,8 +9,9 @@ const router = createRouter({
             component: () => import('../views/Manager.vue'),
             redirect: '/homePage',
             children: [
-                {path: 'homePage', name: 'HomePage', component: () => import('@/views/page/HomePage.vue')},
-                {path: 'problemListPage', name: 'ProblemListPage', component: () => import('@/views/page/ProblemListPage.vue')},
+                { path: 'homePage', name: 'HomePage', component: () => import('@/views/page/HomePage.vue') },
+                { path: 'problemListPage', name: 'ProblemListPage', component: () => import('@/views/page/ProblemListPage.vue') },
+                { path: '/problem/:id', name: 'ProblemDetail', component: () => import('@/views/page/ProblemDetailPage.vue') },
             ]
         },
         {
@@ -31,18 +32,18 @@ export default router
 router.beforeEach((to, from, next) => {
     const userStr = localStorage.getItem('student-user');
     const user = userStr ? JSON.parse(userStr) : null;
-    const token = user && user.token;
+    const token = user ? user.token : null;
 
-    // 如果目标路由不是登录页和注册页，且token不存在，则重定向到登录页
+    // 如果目标路由不是登录页和注册页，且 token 不存在，则重定向到登录页
     if (to.name !== 'Login' && to.name !== 'Register' && !token) {
         console.log('用户未登录，重定向到登录页');
         localStorage.removeItem('student-user');
-        return next({name: 'Login'});
+        return next({ name: 'Login' });
     }
 
     // 如果用户已登录且尝试访问登录页，则重定向到主页
     if ((to.name === 'Login' || to.name === 'Register') && token) {
-        return next({path: '/homePage'});
+        return next({ path: '/' });
     }
 
     next();
@@ -62,4 +63,3 @@ function isTokenExpired(token) {
         return true;
     }
 }
-

@@ -36,13 +36,20 @@ const login = async () => {
     if (!valid) return
     
     const res = await request.post('/login', data.form)
-    if (res.code === '200') {
-      localStorage.setItem('student-user', JSON.stringify(res.data))
-      ElMessage.success('登录成功')
-      await router.push({ path: '/homePage' })
-      console.log('路由跳转完成')
+    console.log(res)
+    if (res.data.code === '200') {  // code 在外层，不是在 data 中
+      // 直接存储返回的 data 对象，它已经包含了所有用户信息和 token
+      localStorage.setItem('student-user', JSON.stringify(res.data.data))
+      ElMessage.success(res.data.msg || '登录成功')
+      try {
+        await router.push('/')  // 先跳转到根路由，让它自动重定向到 homePage
+        console.log('路由跳转完成')
+      } catch (err) {
+        console.error('路由跳转失败:', err)
+        ElMessage.error('页面跳转失败，请刷新重试')
+      }
     } else {
-      ElMessage.error(res.msg || '登录失败')
+      ElMessage.error(res.data.msg || '登录失败')
     }
   } catch (error) {
     console.error('登录出错:', error)
