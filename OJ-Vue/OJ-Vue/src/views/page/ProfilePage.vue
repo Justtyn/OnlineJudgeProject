@@ -127,20 +127,24 @@ import { ElMessage } from 'element-plus';
 import request from '@/utils/request.js';
 import router from '@/router/index.js';
 
-// 从 localStorage 中获取登录信息（包含 token 与学生 id）
-const localUser = localStorage.getItem('student-user')
+// 从 localStorage 中获取登录信息
+const localUser = localStorage.getItem('student-user') 
   ? JSON.parse(localStorage.getItem('student-user'))
-  : null;
+  : localStorage.getItem('admin-user')
+    ? JSON.parse(localStorage.getItem('admin-user'))
+    : null;
+
 const token = localUser ? localUser.token : '';
 const studentId = localUser ? localUser.id : null;
+const role = localUser ? localUser.role : null;
 
-if (!studentId) {
+if (!localUser) {
   ElMessage.error('未登录或用户信息不存在');
   router.push('/login');
 }
 
 // 默认头像和背景图（请替换为实际地址）
-const defaultAvatar = 'https://example.com/default-avatar.png';
+const defaultAvatar = 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG';
 const defaultBackground = 'http://localhost:9090/uploads/ocean-8032698_1920.jpg';
 const defaultBackgrounds = [
   'http://localhost:9090/uploads/ocean-8032698_1920.jpg',
@@ -179,9 +183,23 @@ const formatDateTime = (dateTimeStr) => {
   }
 };
 
-
 // 获取学生信息
 const fetchStudentInfo = async () => {
+  // 如果是管理员，直接使用本地存储的信息
+  if (role === 'ADMIN') {
+    studentInfo.id = localUser.id;
+    studentInfo.username = localUser.username || '';
+    studentInfo.name = localUser.name || '';
+    studentInfo.sex = localUser.sex || '';
+    studentInfo.birth = localUser.birth || '';
+    studentInfo.phone = localUser.phone || '';
+    studentInfo.email = localUser.email || '';
+    studentInfo.avatar = localUser.avatar || '';
+    studentInfo.background = localUser.background || defaultBackground;
+    return;
+  }
+
+  // 如果是学生，从API获取信息
   try {
     const res = await request.get(`/api/student/${studentId}`, {
       headers: { Authorization: 'Bearer ' + token }
@@ -196,7 +214,6 @@ const fetchStudentInfo = async () => {
       studentInfo.phone = data.phone || '';
       studentInfo.email = data.email || '';
       studentInfo.avatar = data.avatar || '';
-      // 若后台未返回背景图，则使用默认背景
       studentInfo.background = data.background || defaultBackground;
     } else {
       ElMessage.error(res.data.msg || '获取用户信息失败');
@@ -212,7 +229,7 @@ onMounted(() => {
 });
 
 // Tabs
-const activeTab = ref('info'); // 默认选中“信息”标签
+const activeTab = ref('info'); // 默认选中"信息"标签
 
 // 修改信息弹窗
 const editDialogVisible = ref(false);
@@ -267,7 +284,6 @@ const submitEdit = async () => {
   }
 };
 
-
 // 切换背景并持久化到后端
 const selectBackground = async (img: string) => {
   try {
@@ -307,7 +323,6 @@ const handleAvatarUploadSuccess = (res: any) => {
   }
 };
 
-
 /**
  * 避免出现 [Vue warn]: Invalid prop: custom validator check failed for prop "size".
  * 我们不直接使用 size="100" ，改用 size="large" 并在 CSS 中自定义宽高
@@ -332,8 +347,6 @@ const avatarSize = ref('large');
   background-repeat: no-repeat;
   background-position: center;
 }
-
-
 
 /* 头像+用户名 */
 .avatar-section {

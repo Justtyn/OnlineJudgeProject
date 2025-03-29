@@ -1,23 +1,35 @@
+# 服务器端口配置
 server:
+  # 设置服务器监听的端口为 9090
   port: 9090
 
 spring:
   mvc:
+    # 配置路径匹配策略，这里使用的是 Ant 风格的路径匹配器
     pathmatch:
       matching-strategy: ant_path_matcher
+    # 配置静态资源的路径模式，这里表示所有的路径都可以访问静态资源
     static-path-pattern: /**
   web:
     resources:
+      # 配置静态资源的位置，这里是指 `classpath:/static/` 目录下的文件
       static-locations: classpath:/static/
   datasource:
+    # 配置数据库连接的 URL，指向本地 MySQL 数据库的 `OnlineJudge` 数据库，字符编码为 utf-8，不使用 SSL，时区为 GMT+8
     url: jdbc:mysql://localhost:3306/OnlineJudge?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
+    # 配置数据库用户名
     username: root
+    # 配置数据库密码
     password: jzh030528
+    # 配置 MySQL 驱动的类名
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-# ??mybatis???xml??
+# MyBatis 配置
 mybatis:
+  # 配置 MyBatis 的全局设置
   configuration:
+    # 设置映射时将数据库中的下划线命名自动转化为驼峰命名
     map-underscore-to-camel-case: true
+    # 配置 MyBatis 日志的实现类，这里使用的是标准输出日志
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath:mapper/*.xml

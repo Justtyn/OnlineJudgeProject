@@ -111,7 +111,7 @@ const login = async () => {
       </el-form>
       <!-- 注册提示文字 -->
       <div class="register-text">
-        还没有账号？请<a href="/register">注册</a>
+        还没有账号？请<router-link to="/register" class="register-link">注册</router-link>
       </div>
     </div>
   </div>
@@ -185,5 +185,13 @@ html, body {
   text-align: right;
   font-size: 15px;
   color: black;
+}
+
+.register-link {
+  color: #1890ff;
+  text-decoration: none;
+}
+.register-link:hover {
+  text-decoration: underline;
 }
 </style>
