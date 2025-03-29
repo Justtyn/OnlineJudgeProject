@@ -4,12 +4,16 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import * as monaco from 'monaco-editor'
 
+// 获取路由对象，用于获取页面的路由参数
 const route = useRoute()
 const router = useRouter()
 
+// 用于存储当前选择的编程语言和主题
 const selectedLanguage = ref('python')
-const selectedTheme = ref('vs-light') // 默认主题是 vs-light
-const code = ref('')
+const selectedTheme = ref('vs-light') // 默认使用 'vs-light' 主题
+const code = ref('') // 存储编辑器中的代码
+
+// 支持的编程语言和主题选项
 const languages = [
   { value: 'java', label: 'java' },
   { value: 'c', label: 'c' },
@@ -22,42 +26,44 @@ const themes = [
   { value: 'vs-dark', label: 'Dark' }
 ]
 
+// Monaco 编辑器的配置项
 const editorOptions = {
-  selectOnLineNumbers: true,
-  lineNumbers: 'on',
-  scrollBeyondLastLine: false,
-  wordWrap: 'on',
-  minimap: { enabled: false },
-  fontSize: 14,
-  lineHeight: 1.5
+  selectOnLineNumbers: true, // 选择行号
+  lineNumbers: 'on', // 显示行号
+  scrollBeyondLastLine: false, // 不让滚动条超出最后一行
+  wordWrap: 'on', // 自动换行
+  minimap: { enabled: false }, // 禁用右侧小地图
+  fontSize: 14, // 字体大小
+  lineHeight: 1.5 // 行高
 }
 
-// 处理代码提交
+// 提交代码的函数，验证代码是否为空
 const submitCode = () => {
   if (!code.value.trim()) {
-    ElMessage.error('代码不能为空')
+    ElMessage.error('代码不能为空') // 如果没有输入代码，显示错误消息
     return
   }
-  // 提交代码的逻辑（如API请求等）
-  ElMessage.success('代码提交成功')
+  // 这里可以加入提交代码的逻辑（如API请求等）
+  ElMessage.success('代码提交成功') // 提交成功后显示成功消息
 }
 
 // 获取路由参数中的题目信息
 const problemId = route.params.problemId
-const problemName = decodeURIComponent(route.params.problemName)
+const problemName = decodeURIComponent(route.params.problemName) // 解码题目名称
 
 // Monaco 编辑器实例
 let editor = null
-const editorContainer = ref(null)
+const editorContainer = ref(null) // 引用编辑器容器
 
-// 处理编辑器改变事件
+// 处理编辑器内容变化
 const handleEditorChange = () => {
-  code.value = editor.getValue()
+  code.value = editor.getValue() // 将编辑器内容同步到 `code` 变量
 }
 
 // 初始化 Monaco 编辑器
 onMounted(() => {
   nextTick(() => {
+    // 创建 Monaco 编辑器实例
     editor = monaco.editor.create(editorContainer.value, {
       value: code.value,
       language: selectedLanguage.value,
@@ -65,7 +71,7 @@ onMounted(() => {
       ...editorOptions
     })
 
-    // 监听编辑器内容变化
+    // 监听编辑器内容的变化
     editor.onDidChangeModelContent(handleEditorChange)
   })
 })
@@ -73,24 +79,24 @@ onMounted(() => {
 // 清理编辑器实例
 watch(editorContainer, (newVal, oldVal) => {
   if (editor && oldVal) {
-    editor.dispose()
+    editor.dispose() // 组件销毁时清理编辑器实例
   }
 })
 
+// 监听语言的变化
 watch(selectedLanguage, (newLang) => {
   if (editor) {
     const model = editor.getModel();
-    monaco.editor.setModelLanguage(model, newLang);
+    monaco.editor.setModelLanguage(model, newLang); // 动态切换语言
   }
 })
 
-// 监听主题变化
+// 监听主题的变化
 watch(selectedTheme, (newTheme) => {
   if (editor) {
     monaco.editor.setTheme(newTheme) // 动态切换主题
   }
 });
-
 </script>
 
 <template>
@@ -98,6 +104,7 @@ watch(selectedTheme, (newTheme) => {
     <h2>{{ problemName }} - 提交代码</h2>
     
     <div class="settings">
+      <!-- 选择语言下拉框 -->
       <el-select v-model="selectedLanguage" placeholder="选择语言" class="select">
         <el-option 
           v-for="lang in languages" 
@@ -107,6 +114,7 @@ watch(selectedTheme, (newTheme) => {
         </el-option>
       </el-select>
 
+      <!-- 选择主题下拉框 -->
       <el-select v-model="selectedTheme" placeholder="选择主题" class="select">
         <el-option 
           v-for="theme in themes" 
@@ -117,8 +125,10 @@ watch(selectedTheme, (newTheme) => {
       </el-select>
     </div>
     
+    <!-- Monaco 编辑器容器 -->
     <div class="code-editor-container" ref="editorContainer"></div>
     
+    <!-- 提交按钮 -->
     <el-button type="primary" @click="submitCode">提交</el-button>
   </div>
 </template>
