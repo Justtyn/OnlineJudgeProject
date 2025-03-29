@@ -1,10 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import request from "@/utils/request.js"
 
 const route = useRoute()
+const router = useRouter()
+
 const problem = ref({
   id: '',
   name: '',
@@ -49,6 +51,19 @@ const loadProblemDetail = async () => {
   }
 }
 
+// 跳转到提交代码页面
+const goToSubmitPage = () => {
+  console.log(problem.value);
+  
+  router.push({
+    name: 'SubmitPage',
+    params: {
+      problemId: problem.value.id,
+      problemName: problem.value.name
+    }
+  })
+}
+
 onMounted(() => {
   loadProblemDetail()
 })
@@ -65,6 +80,7 @@ onMounted(() => {
             <el-tag size="small" type="success">通过: {{ problem.acCount }}</el-tag>
             <el-tag size="small" type="info">提交: {{ problem.submitCount }}</el-tag>
             <el-tag size="small" type="warning">创建时间: {{ formatDateTime(problem.createTime) }}</el-tag>
+            <el-button size="small" type="primary" @click="goToSubmitPage">提交代码</el-button>
           </div>
         </div>
       </template>

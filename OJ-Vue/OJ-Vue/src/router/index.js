@@ -13,6 +13,7 @@ const router = createRouter({
                 { path: 'problemListPage', name: 'ProblemListPage', component: () => import('@/views/page/ProblemListPage.vue') },
                 { path: 'problem/:id', name: 'ProblemDetail', component: () => import('@/views/page/ProblemDetailPage.vue') },
                 { path: 'profilePage', name: 'ProfilePage', component: () => import('@/views/page/ProfilePage.vue') },
+                { path: 'submitPage/:problemId/:problemName', name: 'SubmitPage', component: () => import('@/views/page/SubmitPage.vue') },
             ]
         },
         {
