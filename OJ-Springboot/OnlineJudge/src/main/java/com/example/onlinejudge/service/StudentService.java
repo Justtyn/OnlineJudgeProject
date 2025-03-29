@@ -117,7 +117,21 @@ public class StudentService {
         
         return studentMapper.update(student) > 0;
     }
-    
+
+    @Transactional
+    public boolean updateBackground(Integer id, String background) {
+
+        // 检查学生是否存在
+        Student dbStudent = studentMapper.selectById(id);
+        if (dbStudent == null) {
+            throw new CustomException("学生不存在");
+        }
+
+        int rows = studentMapper.updateBackground(id, background);
+        return rows > 0;
+    }
+
+
     /**
      * 删除学生
      */

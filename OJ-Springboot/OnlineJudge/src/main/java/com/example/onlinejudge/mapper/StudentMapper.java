@@ -24,7 +24,11 @@ public interface StudentMapper {
             "birth=#{birth}, phone=#{phone}, email=#{email}, avatar=#{avatar} " +
             "where id=#{id}")
     int update(Student student);
-    
+
+    @Update("update student set background = #{background} where id = #{id}")
+    int updateBackground(@Param("id") Integer id, @Param("background") String background);
+
+
     @Delete("delete from student where id = #{id}")
     int deleteById(Integer id);
 }
