@@ -76,7 +76,9 @@ const goToSubmitPage = () => {
     name: 'SubmitPage',
     params: {
       problemId: problem.value.id,
-      problemName: problem.value.name
+      problemName: encodeURIComponent(problem.value.name),
+      sampleInput: encodeURIComponent(problem.value.sampleInput),
+      sampleOutput: encodeURIComponent(problem.value.sampleOutput)
     }
   })
 }

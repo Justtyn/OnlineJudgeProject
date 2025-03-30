@@ -168,4 +168,34 @@ public class ProblemService {
         
         problemMapper.deleteById(id);
     }
+
+    /**
+     * 增加问题的提交次数
+     * @param id 问题ID
+     * @throws CustomException 当问题不存在时抛出异常
+     */
+    @Transactional
+    public void incrementSubmitCount(Integer id) {
+        // 确认问题是否存在
+        Problem problem = problemMapper.selectById(id);
+        if (problem == null) {
+            throw new CustomException("问题不存在");
+        }
+        problemMapper.incrementSubmitCount(id);
+    }
+
+    /**
+     * 增加问题的通过次数
+     * @param id 问题ID
+     * @throws CustomException 当问题不存在时抛出异常
+     */
+    @Transactional
+    public void incrementAcCount(Integer id) {
+        // 确认问题是否存在
+        Problem problem = problemMapper.selectById(id);
+        if (problem == null) {
+            throw new CustomException("问题不存在");
+        }
+        problemMapper.incrementAcCount(id);
+    }
 } 

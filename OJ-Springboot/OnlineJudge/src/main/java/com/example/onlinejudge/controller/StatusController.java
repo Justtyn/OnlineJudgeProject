@@ -34,6 +34,7 @@ public class StatusController {
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
         QueryWrapper<Status> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("creat_time");  // 按创建时间倒序排序
         Page<Status> statusPage = new Page<>(pageNum, pageSize);
         Page<Status> page = statusService.page(statusPage, queryWrapper);
         return Result.success(page);
@@ -53,6 +54,7 @@ public class StatusController {
                                  @RequestParam(defaultValue = "10") Integer pageSize) {
         QueryWrapper<Status> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", userId);
+        queryWrapper.orderByDesc("creat_time");  // 按创建时间倒序排序
         Page<Status> page = statusService.page(new Page<>(pageNum, pageSize), queryWrapper);
         return Result.success(page);
     }
@@ -64,6 +66,7 @@ public class StatusController {
                                     @RequestParam(defaultValue = "10") Integer pageSize) {
         QueryWrapper<Status> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("problem_id", problemId);
+        queryWrapper.orderByDesc("creat_time");  // 按创建时间倒序排序
         Page<Status> page = statusService.page(new Page<>(pageNum, pageSize), queryWrapper);
         return Result.success(page);
     }

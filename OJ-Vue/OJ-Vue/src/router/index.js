@@ -37,7 +37,7 @@ const router = createRouter({
                     component: () => import('@/views/page/ProfilePage.vue')  // 懒加载组件 ProfilePage.vue
                 },
                 { 
-                    path: 'submitPage/:problemId/:problemName',  // 动态路由参数 problemId 和 problemName
+                    path: 'submitPage/:problemId/:problemName/:sampleInput/:sampleOutput',  // 添加样例输入和输出参数
                     name: 'SubmitPage',  // 子路由名称
                     component: () => import('@/views/page/SubmitPage.vue')  // 懒加载组件 SubmitPage.vue
                 },

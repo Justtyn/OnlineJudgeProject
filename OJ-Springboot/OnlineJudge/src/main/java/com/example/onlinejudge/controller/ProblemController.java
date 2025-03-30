@@ -108,4 +108,26 @@ public class ProblemController {
         problemService.deleteById(id);
         return Result.success("删除成功");
     }
+    
+    /**
+     * 增加问题提交次数
+     * @param id 问题的唯一标识符
+     * @return 返回更新成功的结果
+     */
+    @PutMapping("/{id}/submit")
+    public Result incrementSubmitCount(@PathVariable Integer id) {
+        problemService.incrementSubmitCount(id);
+        return Result.success("提交次数更新成功");
+    }
+    
+    /**
+     * 增加问题通过次数
+     * @param id 问题的唯一标识符
+     * @return 返回更新成功的结果
+     */
+    @PutMapping("/{id}/ac")
+    public Result incrementAcCount(@PathVariable Integer id) {
+        problemService.incrementAcCount(id);
+        return Result.success("通过次数更新成功");
+    }
 } 

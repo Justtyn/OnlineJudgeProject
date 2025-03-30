@@ -109,4 +109,18 @@ public interface ProblemMapper {
      */
     @Delete("DELETE FROM oj_problem WHERE id = #{id}")
     void deleteById(Integer id);
+
+    /**
+     * 原子性地增加提交次数
+     * @param id 题目ID
+     */
+    @Update("UPDATE oj_problem SET submit_count = submit_count + 1 WHERE id = #{id}")
+    void incrementSubmitCount(Integer id);
+
+    /**
+     * 原子性地增加通过次数
+     * @param id 题目ID
+     */
+    @Update("UPDATE oj_problem SET ac_count = ac_count + 1 WHERE id = #{id}")
+    void incrementAcCount(Integer id);
 } 
