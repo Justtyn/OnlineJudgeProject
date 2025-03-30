@@ -54,7 +54,7 @@ public class StudentController {
     @PutMapping("/update") // 处理PUT请求，路径为/api/student/update
     public Result update(@RequestBody Student student) {
         boolean updated = studentService.update(student);
-        return updated ? Result.success() : Result.error("更新失败");
+        return updated ? Result.success() : Result.error("500", "更新失败");
     }
 
     /**
@@ -66,7 +66,7 @@ public class StudentController {
     @DeleteMapping("/delete/{id}") // 处理DELETE请求，路径为/api/student/delete/{id}
     public Result delete(@PathVariable("id") Integer id) {
         boolean deleted = studentService.delete(id);
-        return deleted ? Result.success() : Result.error("删除失败");
+        return deleted ? Result.success() : Result.error("500", "删除失败");
     }
 
     /**
@@ -95,7 +95,7 @@ public class StudentController {
             return Result.success(avatarUrl);
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.error("头像上传失败：" + e.getMessage());
+            return Result.error("500", "头像上传失败：" + e.getMessage());
         }
     }
 
@@ -111,17 +111,17 @@ public class StudentController {
         String backgroundImage = (String) map.get("background");
         // 参数校验
         if (id == null || backgroundImage == null) {
-            return Result.error("参数错误");
+            return Result.error("400", "参数错误");
         }
         // 检查学生是否存在
         Student student = studentService.getStudentById(id);
         if (student == null) {
-            return Result.error("学生不存在");
+            return Result.error("404", "学生不存在");
         }
         // 设置新的背景图片
         student.setBackground(backgroundImage);
         // 更新背景图片
         boolean updated = studentService.updateBackground((Integer) map.get("id"), (String) map.get("background"));
-        return updated ? Result.success() : Result.error("背景更新失败");
+        return updated ? Result.success() : Result.error("500", "背景更新失败");
     }
 }

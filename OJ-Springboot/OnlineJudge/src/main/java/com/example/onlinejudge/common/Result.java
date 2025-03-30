@@ -1,10 +1,13 @@
 package com.example.onlinejudge.common;
 
+import lombok.Data;
+
 /**
  * 统一响应结果类
  * 用于封装 API 接口的返回结果，包含状态码、消息和数据
  */
-public class Result {
+@Data
+public class Result<T> {
     /**
      * 状态码，表示请求处理的结果
      * 例如：200 表示成功，500 表示错误
@@ -19,13 +22,13 @@ public class Result {
     /**
      * 数据，请求返回的实际数据内容
      */
-    private Object data;
+    private T data;
 
     /**
      * 带数据的构造方法
      * @param data 响应数据
      */
-    private Result(Object data) {
+    private Result(T data) {
         this.data = data;
     }
 
@@ -39,10 +42,10 @@ public class Result {
      * 创建成功响应（无数据）
      * @return 包含成功状态码和消息的 Result 对象
      */
-    public static Result success() {
-        Result result = new Result();
+    public static <T> Result<T> success() {
+        Result<T> result = new Result<>();
         result.setCode("200");
-        result.setMsg("请求成功");
+        result.setMsg("success");
         return result;
     }
 
@@ -51,8 +54,10 @@ public class Result {
      * @param data 需要返回的数据
      * @return 包含成功状态码、消息和数据的 Result 对象
      */
-    public static Result success(Object data) {
-        Result result = success();
+    public static <T> Result<T> success(T data) {
+        Result<T> result = new Result<>();
+        result.setCode("200");
+        result.setMsg("success");
         result.setData(data);
         return result;
     }
@@ -61,8 +66,8 @@ public class Result {
      * 创建错误响应（使用默认错误消息）
      * @return 包含错误状态码和默认错误消息的 Result 对象
      */
-    public static Result error() {
-        Result result = new Result();
+    public static <T> Result<T> error() {
+        Result<T> result = new Result<>();
         result.setCode("500");
         result.setMsg("请求失败");
         return result;
@@ -73,9 +78,9 @@ public class Result {
      * @param msg 自定义错误消息
      * @return 包含错误状态码和自定义错误消息的 Result 对象
      */
-    public static Result error(String msg) {
-        Result result = new Result();
-        result.setCode("500");
+    public static <T> Result<T> error(String code, String msg) {
+        Result<T> result = new Result<>();
+        result.setCode(code);
         result.setMsg(msg);
         return result;
     }
@@ -116,7 +121,7 @@ public class Result {
      * 获取数据
      * @return 响应数据
      */
-    public Object getData() {
+    public T getData() {
         return data;
     }
 
@@ -124,7 +129,7 @@ public class Result {
      * 设置数据
      * @param data 响应数据
      */
-    public void setData(Object data) {
+    public void setData(T data) {
         this.data = data;
     }
 }

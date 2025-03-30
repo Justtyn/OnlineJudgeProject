@@ -48,7 +48,7 @@ public class WebController {
             dbAccount = studentService.login(account);
         } else {
             // 如果角色错误，则返回错误信息
-            return Result.error("角色错误");
+            return Result.error("400", "角色错误");
         }
         
         // 登录成功后返回用户信息
@@ -64,7 +64,7 @@ public class WebController {
     public Result register(@RequestBody Account account) {
         // 检查账号或密码是否为空
         if (ObjectUtil.isEmpty(account.getUsername()) || ObjectUtil.isEmpty(account.getPassword())) {
-            return Result.error("账号或密码必填");  // 返回错误，提示账号或密码不能为空
+            return Result.error("400", "账号或密码必填");  // 返回错误，提示账号或密码不能为空
         }
         
         // 判断角色，根据角色分别进行注册操作
@@ -79,6 +79,6 @@ public class WebController {
         }
         
         // 如果角色不符合要求，返回注册错误
-        return Result.error("注册错误");
+        return Result.error("400", "注册错误");
     }
 }
