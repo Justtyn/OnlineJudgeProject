@@ -33,7 +33,9 @@ public class StatusController {
     @GetMapping("/page")
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
-        Page<Status> page = statusService.page(new Page<>(pageNum, pageSize));
+        QueryWrapper<Status> queryWrapper = new QueryWrapper<>();
+        Page<Status> statusPage = new Page<>(pageNum, pageSize);
+        Page<Status> page = statusService.page(statusPage, queryWrapper);
         return Result.success(page);
     }
 

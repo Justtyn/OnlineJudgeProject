@@ -41,6 +41,11 @@ const router = createRouter({
                     name: 'SubmitPage',  // 子路由名称
                     component: () => import('@/views/page/SubmitPage.vue')  // 懒加载组件 SubmitPage.vue
                 },
+                {
+                    path: 'statusListPage',  // 状态页面路径
+                    name: 'StatusListPage',  // 状态页面路由名称
+                    component: () => import('@/views/page/StatusListPage.vue')  // 懒加载组件 StatusListPage.vue
+                },
             ]
         },
         {

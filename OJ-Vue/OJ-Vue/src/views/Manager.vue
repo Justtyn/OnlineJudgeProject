@@ -16,7 +16,7 @@
             <nav class="nav-links">
               <router-link to="/homePage" class="nav-link">首页</router-link>
               <router-link to="/problemListPage" class="nav-link">题库</router-link>
-              <router-link to="/status" class="nav-link">状态</router-link>
+              <router-link to="/statusListPage" class="nav-link">状态</router-link>
               <router-link to="/ranking" class="nav-link">排名</router-link>
               <router-link to="/contest" class="nav-link">竞赛</router-link>
               <router-link to="/homework" class="nav-link">作业</router-link>
