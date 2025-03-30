@@ -5,4 +5,6 @@ import lombok.Data;
 @Data
 public class Student extends Admin {
     String background;
+    int ac;
+    int submit;
 }

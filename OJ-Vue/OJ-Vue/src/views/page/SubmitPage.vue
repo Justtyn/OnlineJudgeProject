@@ -42,6 +42,22 @@ const getCurrentUser = () => {
   }
 }
 
+// 从本地存储获取用户信息和token
+const getAuthInfo = () => {
+  const userStr = localStorage.getItem('student-user')
+  if (!userStr) return null
+  try {
+    const userInfo = JSON.parse(userStr)
+    return {
+      token: userInfo.token,
+      user: userInfo
+    }
+  } catch (error) {
+    console.error('解析用户信息失败:', error)
+    return null
+  }
+}
+
 // 用于存储当前选择的编程语言和主题
 const selectedLanguage = ref('cpp')  // 默认使用 C++
 const selectedTheme = ref('vs-light') // 默认使用 'vs-light' 主题
@@ -92,6 +108,13 @@ const submitStatus = async (judgeResult) => {
   const user = getCurrentUser()
   if (!user) return
 
+  // 获取认证信息
+  const authInfo = getAuthInfo()
+  if (!authInfo) {
+    ElMessage.error('获取认证信息失败')
+    return
+  }
+
   try {
     const statusData = {
       problemId: Number(problemId),
@@ -107,18 +130,34 @@ const submitStatus = async (judgeResult) => {
     // 先记录提交状态
     await request.post('/status', statusData)
 
-    // 增加提交次数
+    // 增加问题的提交次数
     try {
       await request.put(`/problem/${problemId}/submit`)
     } catch (error) {
-      console.error('更新提交次数失败:', error)
-      ElMessage.error('更新提交次数失败')
+      console.error('更新问题提交次数失败:', error)
+      ElMessage.error('更新问题提交次数失败')
+    }
+
+    // 增加用户的提交次数
+    try {
+      await request.put(`/api/student/incrementSubmit/${user.id}`, null, {
+        headers: { Authorization: 'Bearer ' + authInfo.token }
+      })
+    } catch (error) {
+      console.error('更新用户提交次数失败:', error)
+      ElMessage.error('更新用户提交次数失败')
     }
 
     // 如果是通过的提交，增加通过次数
     if (judgeResult.status.description === 'Accepted') {
       try {
+        // 增加问题的通过次数
         await request.put(`/problem/${problemId}/ac`)
+        
+        // 增加用户的通过次数
+        await request.put(`/api/student/incrementAc/${user.id}`, null, {
+          headers: { Authorization: 'Bearer ' + authInfo.token }
+        })
       } catch (error) {
         console.error('更新通过次数失败:', error)
         ElMessage.error('更新通过次数失败')

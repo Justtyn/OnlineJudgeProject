@@ -57,18 +57,26 @@ const register = () => {
     if (valid) {
       // 发送 POST 请求到注册接口
       request.post('/register', userRegisterData.form).then(res => {
-        if (res.code === '200') {
-          // 注册成功，将用户信息存储到本地存储
-          localStorage.setItem('student-user', JSON.stringify(res.data))
-          // 显示成功消息
+        console.log('注册响应：', res)  // 添加响应日志
+        if (res.data.code === '200') {  // 修改这里，访问 res.data
           ElMessage.success('注册成功')
-          console.log(res.data)
-          // 跳转到登录页
-          router.push('/login')
+          console.log('准备跳转到登录页')  // 添加跳转日志
+          // 添加一个小延时，确保消息显示完成
+          setTimeout(() => {
+            router.replace({
+              path: '/login'
+            }).then(() => {
+              console.log('跳转成功')  // 添加跳转成功日志
+            }).catch(err => {
+              console.error('跳转失败：', err)  // 添加跳转失败日志
+            })
+          }, 1000)
         } else {
-          // 注册失败，显示错误消息
-          ElMessage.error(res.msg)
+          ElMessage.error(res.data.msg)  // 修改这里，访问 res.data
         }
+      }).catch(err => {
+        console.error('注册请求失败：', err)  // 添加请求失败日志
+        ElMessage.error('注册失败，请稍后重试')
       })
     }
   })

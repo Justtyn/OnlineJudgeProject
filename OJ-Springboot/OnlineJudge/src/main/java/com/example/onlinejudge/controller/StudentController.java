@@ -124,4 +124,38 @@ public class StudentController {
         boolean updated = studentService.updateBackground((Integer) map.get("id"), (String) map.get("background"));
         return updated ? Result.success() : Result.error("500", "背景更新失败");
     }
+
+    /**
+     * 增加学生的AC题目数
+     * 
+     * @param id 学生ID
+     * @return 操作结果
+     */
+    @PutMapping("/incrementAc/{id}")
+    public Result incrementAc(@PathVariable("id") Integer id) {
+        // 检查学生是否存在
+        Student student = studentService.getStudentById(id);
+        if (student == null) {
+            return Result.error("404", "学生不存在");
+        }
+        boolean updated = studentService.incrementAc(id);
+        return updated ? Result.success() : Result.error("500", "AC数更新失败");
+    }
+
+    /**
+     * 增加学生的提交次数
+     * 
+     * @param id 学生ID
+     * @return 操作结果
+     */
+    @PutMapping("/incrementSubmit/{id}")
+    public Result incrementSubmit(@PathVariable("id") Integer id) {
+        // 检查学生是否存在
+        Student student = studentService.getStudentById(id);
+        if (student == null) {
+            return Result.error("404", "学生不存在");
+        }
+        boolean updated = studentService.incrementSubmit(id);
+        return updated ? Result.success() : Result.error("500", "提交次数更新失败");
+    }
 }

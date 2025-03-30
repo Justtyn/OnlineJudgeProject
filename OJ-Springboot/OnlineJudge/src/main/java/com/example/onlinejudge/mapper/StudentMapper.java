@@ -49,7 +49,8 @@ public interface StudentMapper {
      * @return 返回受影响的行数，通常成功更新时返回1
      */
     @Update("update student set username=#{username}, name=#{name}, sex=#{sex}, " +
-            "birth=#{birth}, phone=#{phone}, email=#{email}, avatar=#{avatar} " +
+            "birth=#{birth}, phone=#{phone}, email=#{email}, avatar=#{avatar}, " +
+            "ac=#{ac}, submit=#{submit} " +
             "where id=#{id}")
     int update(Student student);
 
