@@ -24,8 +24,8 @@ public interface StudentMapper {
      * 插入新的学生记录
      * @param student 要插入的学生对象，包含完整的学生信息
      */
-    @Insert("insert into student (username,password,name,sex,birth,phone,email,avatar,role) " +
-            "value (#{username},#{password},#{name},#{sex},#{birth},#{phone},#{email},#{avatar},#{role})")
+    @Insert("insert into student (username,password,name,sex,birth,phone,email,avatar,role,ac,submit) " +
+            "value (#{username},#{password},#{name},#{sex},#{birth},#{phone},#{email},#{avatar},#{role},0,0)")
     void insert(Student student);
     
     /**
