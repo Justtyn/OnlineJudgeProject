@@ -31,4 +31,5 @@ public interface StudentService {
     boolean updateBackground(Integer id, String background);
     boolean incrementAc(Integer id);
     boolean incrementSubmit(Integer id);
+    List<Student> getStudentsOrderByAc();
 }

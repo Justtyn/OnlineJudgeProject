@@ -164,4 +164,9 @@ public class StudentServiceImpl implements StudentService {
         student.setSubmit(student.getSubmit() + 1);
         return studentMapper.update(student) > 0;
     }
-} 
+    
+    @Override
+    public List<Student> getStudentsOrderByAc() {
+        return studentMapper.selectAllOrderByAc();
+    }
+}

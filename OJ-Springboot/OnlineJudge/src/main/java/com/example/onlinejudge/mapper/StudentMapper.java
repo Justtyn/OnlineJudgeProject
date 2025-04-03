@@ -70,4 +70,11 @@ public interface StudentMapper {
      */
     @Delete("delete from student where id = #{id}")
     int deleteById(Integer id);
+    
+    /**
+     * 根据AC数排序查询所有学生
+     * @return 返回按AC数量降序排列的学生列表
+     */
+    @Select("select * from student order by ac desc")
+    List<Student> selectAllOrderByAc();
 }

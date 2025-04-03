@@ -158,4 +158,16 @@ public class StudentController {
         boolean updated = studentService.incrementSubmit(id);
         return updated ? Result.success() : Result.error("500", "提交次数更新失败");
     }
+
+    /**
+     * 根据AC排名返回所有学生信息
+     * 
+     * @return 返回按AC数量降序排列的学生列表
+     */
+    @GetMapping("/rankByAc")
+    public Result getRankByAc() {
+        List<Student> students = studentService.getStudentsOrderByAc();
+        return Result.success(students);
+    }
 }
+
