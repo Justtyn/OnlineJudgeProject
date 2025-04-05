@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.onlinejudge.mapper.StudentMapper">
+    
+    <!-- 统计学生总数 -->
+    <select id="countAll" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM student
+    </select>
+
+    <!-- 分页查询按AC数量降序排列的学生列表 -->
+    <select id="selectOrderByAcWithPage" resultType="com.example.onlinejudge.entity.Student">
+        SELECT *
+        FROM student
+        ORDER BY ac DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+    
+</mapper> 

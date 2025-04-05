@@ -77,4 +77,40 @@ public interface StudentMapper {
      */
     @Select("select * from student order by ac desc")
     List<Student> selectAllOrderByAc();
+
+    /**
+     * 统计学生总数
+     */
+    @Select("SELECT COUNT(*) FROM student")
+    Integer countAll();
+
+    /**
+     * 分页查询按AC数量降序排列的学生列表
+     */
+    @Select("SELECT * FROM student ORDER BY ac DESC LIMIT #{offset}, #{limit}")
+    List<Student> selectOrderByAcWithPage(@Param("offset") Integer offset, @Param("limit") Integer limit);
+
+    /**
+     * 根据用户名模糊查询学生信息
+     * @param username 用户名关键字
+     * @return 返回匹配的学生对象列表
+     */
+    @Select("SELECT * FROM student WHERE username LIKE CONCAT('%', #{username}, '%')")
+    List<Student> selectByUsernameLike(@Param("username") String username);
+
+    /**
+     * 根据姓名模糊查询学生信息
+     * @param name 姓名关键字
+     * @return 返回匹配的学生对象列表
+     */
+    @Select("SELECT * FROM student WHERE name LIKE CONCAT('%', #{name}, '%')")
+    List<Student> selectByNameLike(@Param("name") String name);
+
+    /**
+     * 根据创建时间的年份查询学生信息
+     * @param year 年份，如"2023"
+     * @return 返回匹配的学生对象列表
+     */
+    @Select("SELECT * FROM student WHERE YEAR(create_time) = #{year}")
+    List<Student> selectByCreateTimeYear(@Param("year") Integer year);
 }

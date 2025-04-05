@@ -18,6 +18,7 @@ import java.beans.Transient;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public interface StudentService {
     void add(Student student);
@@ -32,4 +33,37 @@ public interface StudentService {
     boolean incrementAc(Integer id);
     boolean incrementSubmit(Integer id);
     List<Student> getStudentsOrderByAc();
+
+    /**
+     * 分页获取按AC数量降序排列的学生列表
+     * 
+     * @param pageNum 当前页码
+     * @param pageSize 每页显示数量
+     * @return 包含分页信息和学生列表的Map
+     */
+    Map<String, Object> getStudentsOrderByAc(Integer pageNum, Integer pageSize);
+
+    /**
+     * 根据用户名模糊查询学生信息
+     * 
+     * @param username 用户名关键字
+     * @return 匹配的学生列表
+     */
+    List<Student> getStudentsByUsernameLike(String username);
+
+    /**
+     * 根据姓名模糊查询学生信息
+     * 
+     * @param name 姓名关键字
+     * @return 匹配的学生列表
+     */
+    List<Student> getStudentsByNameLike(String name);
+
+    /**
+     * 根据创建时间的年份查询学生信息
+     * 
+     * @param year 年份，如2023
+     * @return 匹配的学生列表
+     */
+    List<Student> getStudentsByCreateTimeYear(Integer year);
 }

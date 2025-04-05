@@ -160,14 +160,71 @@ public class StudentController {
     }
 
     /**
-     * 根据AC排名返回所有学生信息
+     * 根据AC排名返回所有学生信息（分页）
      * 
-     * @return 返回按AC数量降序排列的学生列表
+     * @param pageNum 当前页码
+     * @param pageSize 每页显示数量
+     * @return 返回分页后的、按AC数量降序排列的学生列表
      */
     @GetMapping("/rankByAc")
-    public Result getRankByAc() {
-        List<Student> students = studentService.getStudentsOrderByAc();
-        return Result.success(students);
+    public Result getRankByAc(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
+        // 参数校验
+        if (pageNum < 1 || pageSize < 1) {
+            return Result.error("400", "页码和每页显示数量必须大于0");
+        }
+        
+        Map<String, Object> pageResult = studentService.getStudentsOrderByAc(pageNum, pageSize);
+        return Result.success(pageResult);
+    }
+
+    /**
+     * 根据用户名模糊查询学生信息
+     * 
+     * @param username 用户名关键字
+     * @return 包含匹配学生列表的操作结果
+     */
+    @GetMapping("/searchByUsername")
+    public Result searchByUsername(@RequestParam String username) {
+        try {
+            List<Student> students = studentService.getStudentsByUsernameLike(username);
+            return Result.success(students);
+        } catch (Exception e) {
+            return Result.error("500", e.getMessage());
+        }
+    }
+
+    /**
+     * 根据姓名模糊查询学生信息
+     * 
+     * @param name 姓名关键字
+     * @return 包含匹配学生列表的操作结果
+     */
+    @GetMapping("/searchByName")
+    public Result searchByName(@RequestParam String name) {
+        try {
+            List<Student> students = studentService.getStudentsByNameLike(name);
+            return Result.success(students);
+        } catch (Exception e) {
+            return Result.error("500", e.getMessage());
+        }
+    }
+
+    /**
+     * 根据创建时间的年份查询学生信息
+     * 
+     * @param year 年份，如2023
+     * @return 包含匹配学生列表的操作结果
+     */
+    @GetMapping("/searchByYear")
+    public Result searchByYear(@RequestParam Integer year) {
+        try {
+            List<Student> students = studentService.getStudentsByCreateTimeYear(year);
+            return Result.success(students);
+        } catch (Exception e) {
+            return Result.error("500", e.getMessage());
+        }
     }
 }
 

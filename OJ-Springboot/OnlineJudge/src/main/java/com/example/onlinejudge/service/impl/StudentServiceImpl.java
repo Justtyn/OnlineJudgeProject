@@ -16,7 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -168,5 +170,51 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<Student> getStudentsOrderByAc() {
         return studentMapper.selectAllOrderByAc();
+    }
+
+    @Override
+    public Map<String, Object> getStudentsOrderByAc(Integer pageNum, Integer pageSize) {
+        // 计算偏移量
+        int offset = (pageNum - 1) * pageSize;
+        
+        // 获取总记录数
+        Integer total = studentMapper.countAll();
+        
+        // 获取分页数据
+        List<Student> students = studentMapper.selectOrderByAcWithPage(offset, pageSize);
+        
+        // 封装结果
+        Map<String, Object> result = new HashMap<>();
+        result.put("total", total);
+        result.put("pages", (total + pageSize - 1) / pageSize);
+        result.put("current", pageNum);
+        result.put("size", pageSize);
+        result.put("records", students);
+        
+        return result;
+    }
+
+    @Override
+    public List<Student> getStudentsByUsernameLike(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            throw new CustomException("用户名关键字不能为空");
+        }
+        return studentMapper.selectByUsernameLike(username);
+    }
+
+    @Override
+    public List<Student> getStudentsByNameLike(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new CustomException("姓名关键字不能为空");
+        }
+        return studentMapper.selectByNameLike(name);
+    }
+
+    @Override
+    public List<Student> getStudentsByCreateTimeYear(Integer year) {
+        if (year == null || year < 1900 || year > 2100) {
+            throw new CustomException("年份参数无效");
+        }
+        return studentMapper.selectByCreateTimeYear(year);
     }
 }
