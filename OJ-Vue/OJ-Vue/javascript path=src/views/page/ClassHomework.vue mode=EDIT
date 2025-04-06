@@ -1,0 +1,32 @@
+// 格式化日期时间
+const formatDateTime = (dateTimeStr) => {
+  if (!dateTimeStr) return '-'
+  try {
+    // 处理ISO格式的时间字符串
+    if (dateTimeStr.includes('T')) {
+      return dateTimeStr.replace('T', ' ').split('.')[0]
+    }
+
+    // 处理时间戳
+    if (!isNaN(dateTimeStr)) {
+      const date = new Date(Number(dateTimeStr))
+      if (isNaN(date.getTime())) return '-'
+
+      return date.toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }).replace(',', '')
+    }
+
+    // 其他格式直接返回，因为已经是正确的格式 "YYYY-MM-DD HH:mm:ss"
+    return dateTimeStr
+  } catch (e) {
+    console.error('时间格式化错误:', e)
+    return '-'
+  }
+} 

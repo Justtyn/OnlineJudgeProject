@@ -64,7 +64,30 @@ const router = createRouter({
                     component: () =>
                         import ('@/views/page/RankPage.vue') // 懒加载组件 AnnouncementPage.vue
                 },
-
+                {
+                    path: 'userClass', // 用户班级页面路径
+                    name: 'UserClass', // 用户班级页面路由名称
+                    component: () =>
+                        import ('@/views/page/UserClass.vue') // 懒加载组件 UserClass.vue
+                },
+                {
+                    path: 'class/:id',
+                    name: 'ClassDetail',
+                    component: () =>
+                        import ('@/views/page/ClassHomework.vue')
+                },
+                {
+                    path: 'class/:id/homework',
+                    name: 'ClassHomework',
+                    component: () =>
+                        import ('@/views/page/ClassHomework.vue')
+                },
+                {
+                    path: 'homework/:id',
+                    name: 'HomeworkProblem',
+                    component: () =>
+                        import ('@/views/page/HomeworkProblem.vue')
+                },
             ]
         },
         {

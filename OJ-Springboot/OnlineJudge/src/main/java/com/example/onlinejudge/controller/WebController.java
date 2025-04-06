@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.example.onlinejudge.common.Result;
 import com.example.onlinejudge.common.RoleEnum;
 import com.example.onlinejudge.entity.Account;
+import com.example.onlinejudge.entity.Admin;
 import com.example.onlinejudge.service.AdminService;
 import com.example.onlinejudge.service.StudentService;
 import org.springframework.web.bind.annotation.*;
@@ -80,5 +81,16 @@ public class WebController {
         
         // 如果角色不符合要求，返回注册错误
         return Result.error("400", "注册错误");
+    }
+
+    /**
+     * 根据ID查询管理员信息
+     * @param id 管理员ID
+     * @return 返回管理员信息
+     */
+    @GetMapping("/admin/{id}")
+    public Result getAdminById(@PathVariable Integer id) {
+        Admin admin = adminService.getById(id);
+        return Result.success(admin);
     }
 }

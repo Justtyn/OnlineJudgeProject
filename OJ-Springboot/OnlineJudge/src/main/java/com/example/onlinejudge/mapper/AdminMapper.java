@@ -39,4 +39,13 @@ public interface AdminMapper {
     @Insert("insert into admin (username,password,name,sex,birth,phone,email,avatar,role) " +
             "value (#{username},#{password},#{name},#{sex},#{birth},#{phone},#{email},#{avatar},#{role})")
     void insert(Admin admin);
+
+    /**
+     * 根据ID查询管理员信息
+     * 
+     * @param id 管理员ID
+     * @return 返回查询到的管理员对象，如果不存在则返回null
+     */
+    @Select("select * from admin where id = #{id}")
+    Admin selectById(Integer id);
 }

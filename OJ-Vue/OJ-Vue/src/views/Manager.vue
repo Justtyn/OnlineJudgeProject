@@ -41,6 +41,7 @@
                 <template #dropdown>
                   <el-dropdown-menu>
                     <el-dropdown-item command="userCenter">用户中心</el-dropdown-item>
+                    <el-dropdown-item command="userClass">我的班级</el-dropdown-item>
                     <el-dropdown-item command="favorites">我的收藏</el-dropdown-item>
                     <el-dropdown-item command="solutions">我的题解</el-dropdown-item>
                     <el-dropdown-item divided command="logout">退出登录</el-dropdown-item>
@@ -122,6 +123,9 @@ const handleCommand = (command: string) => {
       break
     case 'favorites':
       router.push('/favorites')
+      break
+    case 'userClass':
+      router.push('/userClass')
       break
     case 'solutions':
       router.push('/solutions')

@@ -23,4 +23,5 @@ public class Student extends Admin {
     
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime lastVisitTime;
+    private int classId;
 }

@@ -102,4 +102,24 @@ public class AdminService {
         // 将管理员信息插入数据库
         adminMapper.insert(admin);
     }
+
+    /**
+     * 根据ID查询管理员信息
+     *
+     * @param id 管理员ID
+     * @return 管理员信息
+     * @throws CustomException 当管理员不存在时抛出异常
+     */
+    public Admin getById(Integer id) {
+        if (id == null) {
+            throw new CustomException("管理员ID不能为空");
+        }
+        Admin admin = adminMapper.selectById(id);
+        if (admin == null) {
+            throw new CustomException("管理员不存在");
+        }
+        // 出于安全考虑，不返回密码
+        admin.setPassword(null);
+        return admin;
+    }
 }
