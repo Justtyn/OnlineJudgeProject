@@ -9,6 +9,25 @@ import request from "@/utils/request.js"
 const route = useRoute()
 const router = useRouter()
 
+// 从本地存储获取班级ID和问题ID
+const getClassProblemInfo = () => {
+  const infoStr = localStorage.getItem('classProbSubInfo')
+  if (!infoStr) {
+    console.warn('未找到班级和问题信息')
+    return { classId: null, problemId: null }
+  }
+  try {
+    return JSON.parse(infoStr)
+  } catch (error) {
+    console.error('解析班级和问题信息失败:', error)
+    return { classId: null, problemId: null }
+  }
+}
+
+// 获取班级和问题信息
+const classProbInfo = getClassProblemInfo()
+const classId = classProbInfo.classId
+
 // 语言ID映射
 const languageIdMap = {
   'c': 1,
@@ -124,7 +143,8 @@ const submitStatus = async (judgeResult) => {
       creatTime: formatDateTime(),
       language: languageStrMap[languageIdMap[selectedLanguage.value]],
       memory: judgeResult.memory.toString(), // 直接使用返回的内存值（已经是KB）
-      status: judgeResult.status.description
+      status: judgeResult.status.description,
+      classId: classId // 添加班级ID
     }
 
     // 先记录提交状态
@@ -147,6 +167,14 @@ const submitStatus = async (judgeResult) => {
       console.error('更新用户提交次数失败:', error)
       ElMessage.error('更新用户提交次数失败')
     }
+    
+    // 增加班级题目的提交次数
+    try {
+      await request.put(`/homework-problem/increment-submit?homeworkId=${classProbInfo.classId}&problemId=${problemId}`)
+    } catch (error) {
+      console.error('更新班级题目提交次数失败:', error)
+      ElMessage.error('更新班级题目提交次数失败')
+    }
 
     // 如果是通过的提交，增加通过次数
     if (judgeResult.status.description === 'Accepted') {
@@ -158,6 +186,9 @@ const submitStatus = async (judgeResult) => {
         await request.put(`/api/student/incrementAc/${user.id}`, null, {
           headers: { Authorization: 'Bearer ' + authInfo.token }
         })
+        
+        // 增加班级题目的通过次数
+        await request.put(`/homework-problem/increment-ac?homeworkId=${classProbInfo.classId}&problemId=${problemId}`)
       } catch (error) {
         console.error('更新通过次数失败:', error)
         ElMessage.error('更新通过次数失败')

@@ -100,6 +100,12 @@ const router = createRouter({
                     component: () =>
                         import ('@/views/page/HomeworkProblem.vue')
                 },
+                {
+                    path: 'homeworkPage',
+                    name: 'HomeworkPage',
+                    component: () =>
+                        import ('@/views/page/HomeworkPage.vue')
+                },
             ]
         },
         {

@@ -198,4 +198,20 @@ public class ProblemService {
         }
         problemMapper.incrementAcCount(id);
     }
+
+    /**
+     * 查询所有问题
+     * @return 返回所有问题的列表
+     */
+    public List<Problem> selectAll() {
+        return problemMapper.selectAll();
+    }
+
+    /**
+     * 查询所有问题，只返回id和name
+     * @return 返回所有问题的id和name列表
+     */
+    public List<Problem> selectAllSimple() {
+        return problemMapper.selectAllSimple();
+    }
 } 

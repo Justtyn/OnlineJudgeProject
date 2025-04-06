@@ -123,4 +123,20 @@ public interface ProblemMapper {
      */
     @Update("UPDATE oj_problem SET ac_count = ac_count + 1 WHERE id = #{id}")
     void incrementAcCount(Integer id);
+
+    /**
+     * 查询所有题目
+     * 
+     * @return 返回所有题目列表
+     */
+    @Select("SELECT * FROM oj_problem ORDER BY id")
+    List<Problem> selectAll();
+
+    /**
+     * 查询所有题目，只返回id和name字段
+     * 
+     * @return 返回所有题目的id和name列表
+     */
+    @Select("SELECT id, name FROM oj_problem ORDER BY id")
+    List<Problem> selectAllSimple();
 } 

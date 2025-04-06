@@ -1,10 +1,11 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { useRoute, useRouter } from 'vue-router'
+import { ElMessage, ElLoading } from 'element-plus'
 import request from "@/utils/request.js"
 
 const route = useRoute()
+const router = useRouter()
 const homeworkId = route.params.id
 const homeworkInfo = ref({
   id: homeworkId,
@@ -14,6 +15,10 @@ const homeworkInfo = ref({
 })
 const problemList = ref([])
 const loading = ref(false)
+const dialogVisible = ref(false)
+const selectedProblems = ref([])
+const problemOptions = ref([])
+const problemsLoading = ref(false)
 
 // 格式化日期时间
 const formatDateTime = (dateTimeStr) => {
@@ -179,9 +184,72 @@ const handleRefresh = () => {
   loadData()
 }
 
-// 跳转到问题详情页
-const goToProblemDetail = (id) => {
-  router.push(`/problem/${id}`)
+// 跳转到问题详情页并保存信息到本地存储
+const goToProblemDetail = (problemId) => {
+  // 保存 classId 和 problemId 到本地存储
+  const classProbSubInfo = {
+    classId: homeworkId, // 使用作业ID作为班级ID
+    problemId: problemId
+  }
+  localStorage.setItem('classProbSubInfo', JSON.stringify(classProbSubInfo))
+  router.push(`/classProblem/${problemId}`)
+}
+
+// 跳转到提交代码页面并保存信息到本地存储
+const goToSubmitPage = (problem) => {
+  // 保存 classId 和 problemId 到本地存储
+  const classProbSubInfo = {
+    classId: homeworkId, // 使用作业ID作为班级ID
+    problemId: problem.id
+  }
+  localStorage.setItem('classProbSubInfo', JSON.stringify(classProbSubInfo))
+  router.push(`/classSubmitPage/${problem.id}/${encodeURIComponent(problem.name)}/${encodeURIComponent(problem.sampleInput)}/${encodeURIComponent(problem.sampleOutput)}`)
+}
+
+// 获取可选题目列表
+const loadProblemOptions = async () => {
+  try {
+    const response = await request.get('/problem/simple')
+    if (response.data?.data) {
+      problemOptions.value = response.data.data.map(item => ({
+        id: item.id,
+        name: `${item.id} - ${item.name}`
+      }))
+    }
+  } catch (error) {
+    ElMessage.error('获取题目列表失败：' + (error.response?.data?.msg || error.message))
+  }
+}
+
+// 添加题目到作业
+const handleAddProblems = async () => {
+  if (!selectedProblems.value.length) {
+    ElMessage.warning('请选择要添加的题目')
+    return
+  }
+
+  const loading = ElLoading.service({
+    lock: true,
+    text: '正在添加题目...',
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
+
+  try {
+    for (const problemId of selectedProblems.value) {
+      await request.post('/homework-problem/add', {
+        homeworkId: homeworkId,
+        problemId: problemId
+      })
+    }
+    ElMessage.success('添加题目成功')
+    dialogVisible.value = false
+    selectedProblems.value = []
+    loadData() // 刷新页面数据
+  } catch (error) {
+    ElMessage.error('添加题目失败：' + (error.response?.data?.msg || error.message))
+  } finally {
+    loading.close()
+  }
 }
 
 onMounted(() => {
@@ -196,10 +264,16 @@ onMounted(() => {
       <template #header>
         <div class="card-header">
           <span class="title">{{ homeworkInfo.title || '作业详情' }}</span>
-          <el-button type="primary" @click="handleRefresh" :loading="loading">
-            <el-icon><Refresh /></el-icon>
-            刷新
-          </el-button>
+          <div class="header-buttons">
+            <el-button type="primary" @click="dialogVisible = true">
+              <el-icon><Plus /></el-icon>
+              添加题目
+            </el-button>
+            <el-button type="primary" @click="handleRefresh" :loading="loading">
+              <el-icon><Refresh /></el-icon>
+              刷新
+            </el-button>
+          </div>
         </div>
       </template>
       
@@ -232,7 +306,7 @@ onMounted(() => {
         <el-table-column type="index" label="序号" width="80" align="center" />
         <el-table-column label="问题" min-width="200" show-overflow-tooltip>
           <template #default="scope">
-            <a @click="$router.push(`/classProblem/${scope.row.id}`)" class="problem-link">
+            <a @click="goToProblemDetail(scope.row.id)" class="problem-link">
               {{ scope.row.name }}
             </a>
           </template>
@@ -250,10 +324,10 @@ onMounted(() => {
         </el-table-column>
         <el-table-column label="操作" width="200" align="center" fixed="right">
           <template #default="scope">
-            <el-button link type="primary" @click="$router.push(`/classProblem/${scope.row.id}`)">
+            <el-button link type="primary" @click="goToProblemDetail(scope.row.id)">
               查看详情
             </el-button>
-            <el-button link type="primary" @click="$router.push(`/classSubmitPage/${scope.row.id}/${encodeURIComponent(scope.row.name)}/${encodeURIComponent(scope.row.sampleInput)}/${encodeURIComponent(scope.row.sampleOutput)}`)">
+            <el-button link type="primary" @click="goToSubmitPage(scope.row)">
               提交代码
             </el-button>
           </template>
@@ -263,6 +337,38 @@ onMounted(() => {
       <!-- 无数据时显示空状态 -->
       <el-empty v-if="problemList.length === 0" description="暂无问题信息" />
     </el-card>
+
+    <!-- 添加题目对话框 -->
+    <el-dialog
+      v-model="dialogVisible"
+      title="添加题目"
+      width="500px"
+      @open="loadProblemOptions"
+    >
+      <el-select
+        v-model="selectedProblems"
+        multiple
+        filterable
+        placeholder="请选择要添加的题目"
+        style="width: 100%"
+        :loading="problemsLoading"
+      >
+        <el-option
+          v-for="item in problemOptions"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+        />
+      </el-select>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleAddProblems">
+            确认
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -329,5 +435,16 @@ onMounted(() => {
 
 :deep(.el-card__body) {
   padding: 20px;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }
 </style>

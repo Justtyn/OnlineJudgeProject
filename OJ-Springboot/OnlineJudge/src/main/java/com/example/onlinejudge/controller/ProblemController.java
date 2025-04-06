@@ -6,6 +6,7 @@ import com.example.onlinejudge.service.ProblemService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -129,5 +130,27 @@ public class ProblemController {
     public Result incrementAcCount(@PathVariable Integer id) {
         problemService.incrementAcCount(id);
         return Result.success("通过次数更新成功");
+    }
+    
+    /**
+     * 查询所有问题
+     * 获取所有问题的列表，不进行分页
+     * @return 返回所有问题的列表，封装在 Result 对象中
+     */
+    @GetMapping("/all")
+    public Result getAllProblems() {
+        List<Problem> problems = problemService.selectAll();
+        return Result.success(problems);
+    }
+    
+    /**
+     * 查询所有问题的简要信息(仅id和name)
+     * 获取所有问题的id和name列表，不进行分页
+     * @return 返回所有问题的id和name列表，封装在 Result 对象中
+     */
+    @GetMapping("/simple")
+    public Result getAllProblemsSimple() {
+        List<Problem> problems = problemService.selectAllSimple();
+        return Result.success(problems);
     }
 } 
