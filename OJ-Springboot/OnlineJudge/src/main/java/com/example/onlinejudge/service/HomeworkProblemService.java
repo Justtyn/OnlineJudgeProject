@@ -28,4 +28,20 @@ public interface HomeworkProblemService extends IService<HomeworkProblem> {
      * @return 题目列表
      */
     List<HomeworkProblem> getHomeworkProblemsByHomeworkId(int homeworkId);
+    
+    /**
+     * 增加作业题目的提交次数
+     * @param homeworkId 作业ID
+     * @param problemId 题目ID
+     * @return 是否增加成功
+     */
+    boolean incrementSubmitCount(int homeworkId, int problemId);
+    
+    /**
+     * 增加作业题目的通过次数
+     * @param homeworkId 作业ID
+     * @param problemId 题目ID
+     * @return 是否增加成功
+     */
+    boolean incrementAcCount(int homeworkId, int problemId);
 }

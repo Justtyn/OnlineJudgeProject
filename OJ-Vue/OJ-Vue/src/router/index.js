@@ -35,6 +35,12 @@ const router = createRouter({
                         import ('@/views/page/ProblemDetailPage.vue') // 懒加载组件 ProblemDetailPage.vue
                 },
                 {
+                    path: 'classProblem/:id', // 动态路由参数 id
+                    name: 'ClassProblemDetail', // 子路由名称
+                    component: () =>
+                        import ('@/views/page/ClassProblemDetailPage.vue') // 懒加载组件 ClassProblemDetail.vue
+                },
+                {
                     path: 'profilePage', // 子路由路径
                     name: 'ProfilePage', // 子路由名称
                     component: () =>
@@ -45,6 +51,12 @@ const router = createRouter({
                     name: 'SubmitPage', // 子路由名称
                     component: () =>
                         import ('@/views/page/SubmitPage.vue') // 懒加载组件 SubmitPage.vue
+                },
+                {
+                    path: 'classSubmitPage/:problemId/:problemName/:sampleInput/:sampleOutput', // 添加样例输入和输出参数
+                    name: 'ClassSubmitPage', // 子路由名称
+                    component: () =>
+                        import ('@/views/page/ClassSubmitPage.vue') // 懒加载组件 SubmitPage.vue
                 },
                 {
                     path: 'statusListPage', // 状态页面路径

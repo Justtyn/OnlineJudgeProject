@@ -44,4 +44,26 @@ public class HomeworkProblemController {
         List<HomeworkProblem> homeworkProblems = homeworkProblemService.getHomeworkProblemsByHomeworkId(homeworkId);
         return ResponseEntity.ok(homeworkProblems);
     }
+    
+    /**
+     * 增加作业题目的提交次数
+     */
+    @PutMapping("/increment-submit")
+    public ResponseEntity<Boolean> incrementSubmitCount(
+            @RequestParam("homeworkId") int homeworkId,
+            @RequestParam("problemId") int problemId) {
+        boolean result = homeworkProblemService.incrementSubmitCount(homeworkId, problemId);
+        return ResponseEntity.ok(result);
+    }
+    
+    /**
+     * 增加作业题目的通过次数
+     */
+    @PutMapping("/increment-ac")
+    public ResponseEntity<Boolean> incrementAcCount(
+            @RequestParam("homeworkId") int homeworkId,
+            @RequestParam("problemId") int problemId) {
+        boolean result = homeworkProblemService.incrementAcCount(homeworkId, problemId);
+        return ResponseEntity.ok(result);
+    }
 }

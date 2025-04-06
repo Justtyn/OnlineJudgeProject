@@ -232,7 +232,7 @@ onMounted(() => {
         <el-table-column type="index" label="序号" width="80" align="center" />
         <el-table-column label="问题" min-width="200" show-overflow-tooltip>
           <template #default="scope">
-            <a @click="$router.push(`/problem/${scope.row.id}`)" class="problem-link">
+            <a @click="$router.push(`/classProblem/${scope.row.id}`)" class="problem-link">
               {{ scope.row.name }}
             </a>
           </template>
@@ -250,10 +250,10 @@ onMounted(() => {
         </el-table-column>
         <el-table-column label="操作" width="200" align="center" fixed="right">
           <template #default="scope">
-            <el-button link type="primary" @click="$router.push(`/problem/${scope.row.id}`)">
+            <el-button link type="primary" @click="$router.push(`/classProblem/${scope.row.id}`)">
               查看详情
             </el-button>
-            <el-button link type="primary" @click="$router.push(`/submitPage/${scope.row.id}/${encodeURIComponent(scope.row.name)}/${encodeURIComponent(scope.row.sampleInput)}/${encodeURIComponent(scope.row.sampleOutput)}`)">
+            <el-button link type="primary" @click="$router.push(`/classSubmitPage/${scope.row.id}/${encodeURIComponent(scope.row.name)}/${encodeURIComponent(scope.row.sampleInput)}/${encodeURIComponent(scope.row.sampleOutput)}`)">
               提交代码
             </el-button>
           </template>
