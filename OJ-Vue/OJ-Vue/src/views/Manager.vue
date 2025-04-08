@@ -23,7 +23,7 @@
               <router-link to="/homePage" class="nav-link">题解</router-link>
               <router-link to="/homePage" class="nav-link">讨论</router-link>
               <router-link to="/announcementPage" class="nav-link">公告</router-link>
-              <router-link to="/homePage" class="nav-link">关于</router-link>
+              <router-link to="/about" class="nav-link">关于</router-link>
             </nav>
           </div>
 

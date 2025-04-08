@@ -2,6 +2,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from "@/utils/request.js";
+import { Clock } from '@element-plus/icons-vue'
 
 // 格式化日期时间
 const formatDateTime = (dateTimeStr) => {
@@ -263,14 +264,15 @@ onMounted(() => {
         >
           <div class="announcement-header" :style="{ backgroundColor: getRandomColor(index) }">
             <div class="announcement-title">{{ item.title }}</div>
-            <div class="announcement-time">{{ formatDateTime(item.time) }}</div>
+            <div class="announcement-time">
+              <el-icon><Clock /></el-icon>
+              <span>{{ formatDateTime(item.time) }}</span>
+            </div>
           </div>
           <div class="announcement-content">
             {{ item.content }}
           </div>
-          <div class="announcement-actions">
-            <el-button type="danger" size="small" @click="handleDelete(item.id)">删除</el-button>
-          </div>
+          <!-- 删除按钮已隐藏 -->
         </el-card>
       </template>
       <el-empty v-else description="暂无公告" />
@@ -310,11 +312,16 @@ body {
   background-color: #f5f7fa;
   min-height: 80vh;
   width: 100%;
+  max-width: 1200px; /* 添加最大宽度限制 */
+  margin: 0 auto; /* 居中显示 */
   overflow-x: hidden; /* 防止横向滚动条 */
 }
 
 .search-card {
   margin-bottom: 20px;
+  max-width: 1200px; /* 保持一致的最大宽度 */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .card-header {
@@ -372,6 +379,12 @@ body {
 .announcement-time {
   font-size: 14px;
   color: #606266;
+  display: flex;
+  align-items: center;
+}
+
+.announcement-time .el-icon {
+  margin-right: 5px;
 }
 
 .announcement-content {
@@ -379,6 +392,8 @@ body {
   min-height: 80px;
   white-space: pre-line;
   line-height: 1.6;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
 .announcement-actions {
