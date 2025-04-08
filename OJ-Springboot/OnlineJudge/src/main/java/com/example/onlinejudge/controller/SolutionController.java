@@ -118,4 +118,41 @@ public class SolutionController {
         
         return ResponseEntity.ok(result);
     }
+    
+    /**
+     * 根据用户ID分页查询题解
+     */
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Map<String, Object>> getSolutionsByUserId(
+            @PathVariable Integer userId,
+            @RequestParam(defaultValue = "1") Integer current,
+            @RequestParam(defaultValue = "10") Integer size) {
+        Map<String, Object> result = new HashMap<>();
+        Page<Solution> page = solutionService.getSolutionsByUserId(userId, current, size);
+        
+        result.put("code", 200);
+        result.put("message", "查询成功");
+        result.put("data", page.getRecords());
+        result.put("total", page.getTotal());
+        result.put("pages", page.getPages());
+        result.put("current", page.getCurrent());
+        result.put("size", page.getSize());
+        
+        return ResponseEntity.ok(result);
+    }
+    
+    /**
+     * 获取题解总数量
+     */
+    @GetMapping("/count")
+    public ResponseEntity<Map<String, Object>> getSolutionCount() {
+        Map<String, Object> result = new HashMap<>();
+        long count = solutionService.getSolutionCount();
+        
+        result.put("code", 200);
+        result.put("message", "查询成功");
+        result.put("data", count);
+        
+        return ResponseEntity.ok(result);
+    }
 }

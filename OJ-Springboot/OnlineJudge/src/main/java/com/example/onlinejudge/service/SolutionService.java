@@ -41,4 +41,19 @@ public interface SolutionService extends IService<Solution> {
      * @return 是否点赞成功
      */
     boolean increaseLike(Integer id);
+    
+    /**
+     * 根据用户ID查询题解
+     * @param userId 用户ID
+     * @param current 当前页
+     * @param size 每页大小
+     * @return 题解分页数据
+     */
+    Page<Solution> getSolutionsByUserId(Integer userId, Integer current, Integer size);
+    
+    /**
+     * 获取题解总数量
+     * @return 题解总数
+     */
+    long getSolutionCount();
 }

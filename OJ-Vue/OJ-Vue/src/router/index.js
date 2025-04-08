@@ -111,6 +111,12 @@ const router = createRouter({
                     name: 'About',
                     component: () =>
                         import ('@/views/page/About.vue')
+                },
+                {
+                    path: 'solutionPage',
+                    name: 'SolutionPage',
+                    component: () =>
+                        import ('@/views/page/SolutionPage.vue')
                 }
             ]
         },

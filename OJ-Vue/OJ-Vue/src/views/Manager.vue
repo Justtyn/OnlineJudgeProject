@@ -20,7 +20,7 @@
               <router-link to="/rankPage" class="nav-link">排名</router-link>
               <router-link to="/homePage" class="nav-link">竞赛</router-link>
               <router-link to="/homeworkPage" class="nav-link">作业</router-link>
-              <router-link to="/homePage" class="nav-link">题解</router-link>
+              <router-link to="/solutionPage" class="nav-link">题解</router-link>
               <router-link to="/homePage" class="nav-link">讨论</router-link>
               <router-link to="/announcementPage" class="nav-link">公告</router-link>
               <router-link to="/about" class="nav-link">关于</router-link>
