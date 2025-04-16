@@ -2,7 +2,7 @@
 import { ref, reactive, onMounted, nextTick } from 'vue'
 import { ElMessage, ElLoading } from 'element-plus'
 import request from "@/utils/request.js";
-import { Plus } from '@element-plus/icons-vue'
+import { Plus, Star } from '@element-plus/icons-vue'
 import * as monaco from 'monaco-editor'
 
 // 获取token和用户ID
@@ -100,6 +100,7 @@ const problemsCache = ref([]);
 const totalProblems = ref(0);
 const currentProblemPage = ref(1);
 const problemPageSize = ref(100);
+const loadingAllProblems = ref(false); // 添加全量加载状态
 
 // 分批加载题目
 const loadMoreProblems = async () => {
@@ -132,6 +133,49 @@ const loadMoreProblems = async () => {
     console.error('加载更多题目失败:', error);
   } finally {
     problemsLoading.value = false;
+  }
+};
+
+// 加载所有题目
+const loadAllProblems = async () => {
+  loadingAllProblems.value = true;
+  
+  // 创建全屏加载动画
+  const loading = ElLoading.service({
+    lock: true,
+    text: '正在加载所有题目...',
+    background: 'rgba(0, 0, 0, 0.7)'
+  });
+  
+  try {
+    // 循环加载直到所有题目都被加载
+    while (problemsCache.value.length < totalProblems.value || totalProblems.value === 0) {
+      await loadMoreProblems();
+      
+      // 更新加载提示
+      if (totalProblems.value > 0) {
+        loading.setText(`正在加载所有题目... (${problemsCache.value.length}/${totalProblems.value})`);
+      }
+      
+      // 如果已加载全部或出错，退出循环
+      if (problemsCache.value.length >= totalProblems.value && totalProblems.value > 0) {
+        break;
+      }
+    }
+    
+    // 更新选项列表为全部题目
+    problemOptions.value = problemsCache.value.map(item => ({
+      id: item.id,
+      name: `${item.id} - ${item.name}`
+    }));
+    
+    ElMessage.success(`已加载全部 ${totalProblems.value} 道题目`);
+  } catch (error) {
+    console.error('加载所有题目失败:', error);
+    ElMessage.error('加载所有题目失败，请重试');
+  } finally {
+    loading.close();
+    loadingAllProblems.value = false;
   }
 };
 
@@ -425,6 +469,32 @@ const handleSelectChange = (value) => {
     });
   }
 };
+
+// 点赞相关
+const handleLike = async (id) => {
+  if (!userId) {
+    ElMessage.warning('请先登录后才能点赞')
+    return
+  }
+  
+  try {
+    const response = await request.put(`/solution/like/${id}`)
+    
+    if (response.data.code === 200) {
+      // 更新当前行的点赞数
+      const index = tableData.value.findIndex(item => item.id === id)
+      if (index !== -1) {
+        tableData.value[index].likeNum = response.data.data.likeNum
+        ElMessage.success(response.data.message || '点赞成功')
+      }
+    } else {
+      ElMessage.error(response.data.message || '点赞失败')
+    }
+  } catch (error) {
+    console.error('点赞失败:', error)
+    ElMessage.error('点赞失败：' + (error.response?.data?.message || error.message || '未知错误'))
+  }
+}
 </script>
 
 <template>
@@ -470,21 +540,31 @@ const handleSelectChange = (value) => {
             <span v-else>加载中...</span>
           </template>
         </el-table-column>
-        <el-table-column prop="likeNum" label="点赞" width="100" align="center">
-          <template #default="scope">
-            {{ scope.row.likeNum || 0 }}
-          </template>
-        </el-table-column>
         <el-table-column prop="createTime" label="发布时间" width="180" align="center">
           <template #default="scope">
             {{ formatDateTime(scope.row.createTime) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="120" align="center" fixed="right">
+        <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
             <el-button link type="primary" @click="$router.push(`/solution/${scope.row.id}`)">
               查看
             </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column prop="likeNum" label="点赞" width="120" align="center" fixed="right">
+          <template #default="scope">
+            <div class="like-container">
+              <el-button 
+                type="primary" 
+                link 
+                @click.stop="handleLike(scope.row.id)"
+                class="like-button"
+              >
+                <el-icon><Star /></el-icon>
+              </el-button>
+              <span>{{ scope.row.likeNum || 0 }}</span>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -538,10 +618,28 @@ const handleSelectChange = (value) => {
               重置
             </el-button>
           </div>
-          <div v-if="problemsCache.length < totalProblems" style="margin-top: 8px; text-align: center;">
-            <el-button type="primary" link @click="loadMoreProblems" :loading="problemsLoading">
+          <div class="problem-actions" style="margin-top: 8px; display: flex; justify-content: space-between;">
+            <el-button 
+              type="primary" 
+              link 
+              @click="loadMoreProblems" 
+              :loading="problemsLoading"
+              v-if="problemsCache.length < totalProblems"
+            >
               加载更多题目 (已加载 {{ problemsCache.length }}/{{ totalProblems }})
             </el-button>
+            <el-button 
+              type="success" 
+              link 
+              @click="loadAllProblems" 
+              :loading="loadingAllProblems"
+              v-if="problemsCache.length < totalProblems"
+            >
+              一键加载全部题目
+            </el-button>
+            <span v-if="problemsCache.length >= totalProblems && totalProblems > 0" class="loaded-all-text">
+              已加载全部 {{ totalProblems }} 道题目
+            </span>
           </div>
         </el-form-item>
         <el-form-item label="题解内容" required style="width: 100%">
@@ -701,5 +799,35 @@ const handleSelectChange = (value) => {
 
 .reset-button {
   flex-shrink: 0;
+}
+
+.loaded-all-text {
+  color: #67c23a;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.problem-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.like-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.like-button {
+  padding: 4px;
+  font-size: 20px; /* 增大图标尺寸 */
+}
+
+.like-button:hover {
+  color: #e6a23c;
+  transform: scale(1.15);
 }
 </style>
