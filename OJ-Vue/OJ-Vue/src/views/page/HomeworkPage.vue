@@ -12,6 +12,9 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
 
+// 新增显示模式状态
+const displayMode = ref('list') // 'list' 或 'card'
+
 // 格式化日期时间
 const formatDateTime = (dateTimeStr) => {
   if (!dateTimeStr) return '-'
@@ -127,6 +130,11 @@ const getRandomColor = (index) => {
   return colors[index % colors.length]
 }
 
+// 切换显示模式的函数
+const toggleDisplayMode = () => {
+  displayMode.value = displayMode.value === 'list' ? 'card' : 'list'
+}
+
 onMounted(() => {
   loadData()
 })
@@ -143,12 +151,16 @@ onMounted(() => {
             <el-icon><Refresh /></el-icon>
             刷新
           </el-button>
+          <!-- 新增切换显示模式的按钮 -->
+          <el-button type="default" @click="toggleDisplayMode">
+            切换到 {{ displayMode.value === 'list' ? '卡片' : '列表' }} 模式
+          </el-button>
         </div>
       </template>
     </el-card>
 
     <!-- 表格展示区域 -->
-    <el-card class="table-card" v-loading="loading">
+    <el-card class="table-card" v-loading="loading" v-if="displayMode === 'list'">
       <el-table :data="homeworkList" style="width: 100%" border stripe highlight-current-row>
         <el-table-column type="index" label="序号" width="80" align="center" />
         <el-table-column label="作业标题" min-width="200" show-overflow-tooltip>
@@ -212,7 +224,7 @@ onMounted(() => {
     </el-card>
 
     <!-- 卡片展示区域 -->
-    <div class="homework-list" v-if="true" v-loading="loading">
+    <div class="homework-list" v-if="displayMode === 'card'" v-loading="loading">
       <template v-if="homeworkList.length > 0">
         <el-card 
           v-for="(item, index) in homeworkList" 
@@ -325,6 +337,7 @@ onMounted(() => {
   transition: all 0.3s;
   width: 100%;
   cursor: pointer;
+  height: 200px; /* 设置固定高度 */
 }
 
 .homework-card:hover {

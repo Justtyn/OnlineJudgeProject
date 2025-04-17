@@ -18,4 +18,6 @@ public class Status {
     private String language;
     private String memory;
     private String status;
+    private String code;
+    private String output;
 }

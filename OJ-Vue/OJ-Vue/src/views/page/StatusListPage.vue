@@ -48,7 +48,9 @@
         <!-- 状态列：根据不同状态显示不同样式 -->
         <el-table-column prop="status" label="状态" width="300" align="center">
           <template #default="scope">
-            <span :class="getStatusClass(scope.row.status)">{{ scope.row.status }}</span>
+            <span @click="$router.push({ name: 'StatusDetail', params: { id: scope.row.id } })" class="status-link">
+              <span :class="getStatusClass(scope.row.status)">{{ scope.row.status }}</span>
+            </span>
           </template>
         </el-table-column>
         <el-table-column prop="language" label="语言" width="140" align="center" />

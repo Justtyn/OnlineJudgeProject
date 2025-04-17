@@ -117,6 +117,12 @@ const router = createRouter({
                     name: 'SolutionPage',
                     component: () =>
                         import ('@/views/page/SolutionPage.vue')
+                },
+                {
+                    path: 'statusDetail/:id', // 状态详情页面路径
+                    name: 'StatusDetail', // 状态详情页面路由名称
+                    component: () =>
+                        import ('@/views/page/StatusDetailPage.vue') // 懒加载组件 StatusDetailPage.vue
                 }
             ]
         },

@@ -120,11 +120,13 @@ const submitStatus = async (judgeResult) => {
       problemId: Number(problemId),
       userId: user.id,
       username: user.username,
-      time: `${Math.round(parseFloat(judgeResult.time) * 1000)}ms`,
+      time: judgeResult.time ? `${Math.round(parseFloat(judgeResult.time) * 1000)}ms` : 'N/A', // 如果没有时间则设置为 'N/A'
       creatTime: formatDateTime(),
       language: languageStrMap[languageIdMap[selectedLanguage.value]],
-      memory: judgeResult.memory.toString(), // 直接使用返回的内存值（已经是KB）
-      status: judgeResult.status.description
+      memory: judgeResult.memory ? judgeResult.memory.toString() : 'N/A', // 如果没有内存则设置为 'N/A'
+      status: judgeResult.status ? judgeResult.status.description : 'Unknown', // 如果没有状态则设置为 'Unknown'
+      code: code.value, // 将代码框中的代码存入statusData的code键
+      output: judgeResult.compile_output || 'No output' // 如果没有输出则设置为 'No output'
     }
 
     // 先记录提交状态
@@ -149,7 +151,7 @@ const submitStatus = async (judgeResult) => {
     }
 
     // 如果是通过的提交，增加通过次数
-    if (judgeResult.status.description === 'Accepted') {
+    if (judgeResult.status && judgeResult.status.description === 'Accepted') {
       try {
         // 增加问题的通过次数
         await request.put(`/problem/${problemId}/ac`)
@@ -203,10 +205,8 @@ const submitCode = async () => {
     const response = await request.post('http://localhost:2358/submissions?wait=true', submitData)
     submissionResult.value = response.data
 
-    // 如果判题请求成功（不论结果如何），提交状态记录
-    if (response.data) {
-      await submitStatus(response.data)
-    }
+    // 无论返回什么状态，都保存到状态中
+    await submitStatus(response.data)
 
     if (response.data.status && response.data.status.description === 'Accepted') {
       ElMessage.success('代码提交成功')

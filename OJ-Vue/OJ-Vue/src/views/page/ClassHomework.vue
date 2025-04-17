@@ -12,6 +12,14 @@ const className = route.query.name || '未知班级'
 const homeworkList = ref([])
 const loading = ref(false)
 
+// 新增：显示模式状态
+const displayMode = ref('list') // 'list' 或 'card'
+
+// 切换显示模式的函数
+const toggleDisplayMode = () => {
+  displayMode.value = displayMode.value === 'list' ? 'card' : 'list'
+}
+
 // 格式化日期时间
 const formatDateTime = (dateTimeStr) => {
   if (!dateTimeStr) return '-'
@@ -116,12 +124,16 @@ onMounted(() => {
             <el-icon><Refresh /></el-icon>
             刷新
           </el-button>
+          <!-- 新增：切换显示模式按钮 -->
+          <el-button type="default" @click="toggleDisplayMode">
+            切换到 {{ displayMode === 'list' ? '卡片' : '列表' }} 模式
+          </el-button>
         </div>
       </template>
     </el-card>
 
-    <!-- 表格展示区域 -->
-    <el-card class="table-card" v-loading="loading">
+    <!-- 根据显示模式渲染内容 -->
+    <el-card class="table-card" v-loading="loading" v-if="displayMode === 'list'">
       <el-table :data="homeworkList" style="width: 100%" border stripe highlight-current-row>
         <el-table-column type="index" label="序号" width="80" align="center" />
         <el-table-column label="作业标题" min-width="200" show-overflow-tooltip>
@@ -171,8 +183,7 @@ onMounted(() => {
       <el-empty v-if="homeworkList.length === 0" description="暂无作业信息" />
     </el-card>
 
-    <!-- 卡片展示区域 -->
-    <div class="homework-list" v-if="true" v-loading="loading">
+    <div class="homework-list" v-if="displayMode === 'card'" v-loading="loading">
       <template v-if="homeworkList.length > 0">
         <el-card 
           v-for="(item, index) in homeworkList" 
@@ -267,6 +278,7 @@ onMounted(() => {
 }
 
 .homework-card {
+  height: 200px; /* 设置每个列表的高度为200px */
   margin-bottom: 0;
   transition: all 0.3s;
   width: 100%;
