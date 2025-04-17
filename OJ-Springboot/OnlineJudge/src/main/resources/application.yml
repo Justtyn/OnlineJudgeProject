@@ -16,7 +16,7 @@ spring:
       static-locations: classpath:/static/
   datasource:
     # 配置数据库连接的 URL，指向本地 MySQL 数据库的 `OnlineJudge` 数据库，字符编码为 utf-8，不使用 SSL，时区为 GMT+8
-    url: jdbc:mysql://localhost:3306/OnlineJudge?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
+    url: jdbc:mysql://localhost:3306/OnlineJudge?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
     # 配置数据库用户名
     username: root
     # 配置数据库密码
