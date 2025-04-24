@@ -1,168 +1,30 @@
-<script setup>
-// 导入打字效果组件，用于注册页面的欢迎文字动画
-import TypingEffectRegister from "@/views/tool/TypingEffect-Register.vue";
-
-// 导入必要的 Vue 组合式 API 函数
-import {reactive, ref, watch} from 'vue'
-// 导入 canvas-confetti 库，用于创建烟花/彩带效果
-import confetti from 'canvas-confetti'
-// 导入封装好的请求工具
-import request from "@/utils/request.js";
-// 导入 Element Plus 的消息提示组件
-import {ElMessage} from "element-plus";
-// 导入路由实例，用于页面跳转
-import router from "@/router/index.js";
-
-// 表单验证相关
-const formRef = ref() // 表单引用，用于表单验证和获取表单实例
-const active = ref(0) // 当前激活的步骤，初始为第一步（索引为0）
-
-// 进度条下一步点击方法
-const next = () => {
-  // 验证表单数据
-  formRef.value.validate((valid) => {
-    if (valid) {
-      // 如果验证通过，步骤索引加1，超过2则重置为0
-      if (active.value++ > 2) active.value = 0
-      console.log(active.value)
-    }
-  })
-}
-
-// 用户注册数据，使用 reactive 创建响应式对象
-const userRegisterData = reactive({
-  form: {
-    role: 'STUDENT', // 默认角色为学生
-    username: '',    // 用户名
-    password: '',    // 密码
-    name: '',        // 姓名
-    sex: '',         // 性别
-    email: '',       // 邮箱
-    phone: ''        // 手机号
-  }
-})
-
-// 监听 active 的变化，当 active 等于 3 时（完成所有步骤）触发烟花效果和注册请求
-watch(active, (newVal) => {
-  if (newVal === 3) {
-    startFireworks(); // 触发烟花效果
-    console.log(userRegisterData.form) // 打印用户注册数据
-    register(); // 调用注册方法
-  }
-});
-
-// 注册方法，向后端发送注册请求
-const register = () => {
-  formRef.value.validate((valid) => {
-    if (valid) {
-      // 发送 POST 请求到注册接口
-      request.post('/register', userRegisterData.form).then(res => {
-        console.log('注册响应：', res)  // 添加响应日志
-        if (res.data.code === '200') {  // 修改这里，访问 res.data
-          ElMessage.success('注册成功')
-          console.log('准备跳转到登录页')  // 添加跳转日志
-          // 添加一个小延时，确保消息显示完成
-          setTimeout(() => {
-            router.replace({
-              path: '/login'
-            }).then(() => {
-              console.log('跳转成功')  // 添加跳转成功日志
-            }).catch(err => {
-              console.error('跳转失败：', err)  // 添加跳转失败日志
-            })
-          }, 1000)
-        } else {
-          ElMessage.error(res.data.msg)  // 修改这里，访问 res.data
-        }
-      }).catch(err => {
-        console.error('注册请求失败：', err)  // 添加请求失败日志
-        ElMessage.error('注册失败，请稍后重试')
-      })
-    }
-  })
-}
-
-// 定义烟花效果函数，使用 canvas-confetti 库创建庆祝效果
-function startFireworks() {
-  const end = Date.now() + 15 * 1000; // 烟花效果持续15秒
-  const colors = ['#bb0000', '#ffffff']; // 烟花颜色
-
-  (function frame() {
-    // 从左侧发射烟花
-    confetti({
-      particleCount: 2, // 粒子数量
-      angle: 60,        // 发射角度
-      spread: 55,       // 扩散范围
-      origin: {x: 0},   // 起始位置（左侧）
-      colors: colors    // 颜色
-    });
-    // 从右侧发射烟花
-    confetti({
-      particleCount: 2, // 粒子数量
-      angle: 120,       // 发射角度
-      spread: 55,       // 扩散范围
-      origin: {x: 1},   // 起始位置（右侧）
-      colors: colors    // 颜色
-    });
-
-    // 如果当前时间小于结束时间，继续动画
-    if (Date.now() < end) {
-      requestAnimationFrame(frame);
-    }
-  }());
-}
-
-// 表单验证规则
-const rules = reactive({
-  username: [
-    {required: true, message: '请输入账号', trigger: 'blur'}, // 账号为必填项
-  ],
-  password: [
-    {required: true, message: '请输入密码', trigger: 'blur'}, // 密码为必填项
-  ],
-})
-
-// 性别选择选项
-const options = [
-  {
-    value: '男',
-    label: '男',
-  },
-  {
-    value: '女',
-    label: '女',
-  },
-  {
-    value: '武装直升机',
-    label: '武装直升机',
-  },
-]
-</script>
-
 <template>
-  <!-- 注册页面容器 -->
-  <div class="register-container">
-    <!-- 欢迎文字区域，使用打字效果组件 -->
+  <div class="login-container">
+    <!-- 欢迎文字区域 -->
     <div class="welcome-text">
-      <TypingEffectRegister/>
+      <TypingEffectRegister />
     </div>
-
-    <!-- 注册表单容器 -->
-    <div class="register-box">
-      <!-- 内容布局容器，使用 flex 布局居中显示 -->
-      <div style="width: 100%;height: 100%;display: flex;flex-direction: column;justify-content: center;align-items: center">
-        <!-- 注册标题 -->
-        <div class="register-text">Register</div>
-        <!-- 步骤条，显示当前注册进度 -->
-        <el-steps style="max-width: 600px;width: 100%" :active="active" align-center>
-          <el-step title="Step 1" description="角色选择"/>
-          <el-step title="Step 2" description="账户信息"/>
-          <el-step title="Step 3" description="个人信息"/>
+    <!-- 注册框主体（使用登录页样式） -->
+    <div class="login-box">
+      <div class="login-text">Register</div>
+      <el-divider />
+      <el-form
+          ref="formRef"
+          :model="userRegisterData.form"
+          :rules="rules"
+          class="login-form"
+      >
+        <!-- 步骤指示条 -->
+        <el-steps style="max-width: 600px; width: 100%" :active="active" align-center>
+          <el-step title="Step 1" description="角色选择" />
+          <el-step title="Step 2" description="账户信息" />
+          <el-step title="Step 3" description="个人信息" />
+          <el-step title="Step 4" description="完成" />
         </el-steps>
 
-        <!-- 注册表单，根据当前步骤显示不同内容 -->
-        <el-form style="width: 30%;height: 45%;" class="register-form" :model="userRegisterData.form" ref="formRef" :rules="rules">
-          <!-- Step 1: 角色选择 -->
+        <!-- 各步骤表单内容 -->
+        <div class="step-wrapper">
+          <!-- 角色选择 -->
           <template v-if="active === 0">
             <el-form-item prop="role">
               <el-select style="width: 100%" v-model="userRegisterData.form.role">
@@ -173,20 +35,33 @@ const options = [
             </el-form-item>
           </template>
 
-          <!-- Step 2: 账户信息 -->
+          <!-- 账户信息 -->
           <template v-else-if="active === 1">
             <el-form-item prop="username">
-              <el-input prefix-icon="User" v-model="userRegisterData.form.username" placeholder="请输入账号"></el-input>
+              <el-input
+                  prefix-icon="User"
+                  v-model="userRegisterData.form.username"
+                  placeholder="请输入账号"
+              />
             </el-form-item>
             <el-form-item prop="password">
-              <el-input show-password prefix-icon="Lock" v-model="userRegisterData.form.password" placeholder="请输入密码"></el-input>
+              <el-input
+                  show-password
+                  prefix-icon="Lock"
+                  v-model="userRegisterData.form.password"
+                  placeholder="请输入密码"
+              />
             </el-form-item>
           </template>
 
-          <!-- Step 3: 个人信息 -->
+          <!-- 个人信息 -->
           <template v-else-if="active === 2">
             <el-form-item prop="name">
-              <el-input prefix-icon="Message" v-model="userRegisterData.form.name" placeholder="请输入姓名"></el-input>
+              <el-input
+                  prefix-icon="Message"
+                  v-model="userRegisterData.form.name"
+                  placeholder="请输入姓名"
+              />
             </el-form-item>
             <el-form-item prop="sex">
               <el-select v-model="userRegisterData.form.sex" placeholder="请选择性别">
@@ -198,81 +73,180 @@ const options = [
                 />
               </el-select>
             </el-form-item>
-
             <el-form-item prop="email">
-              <el-input prefix-icon="Message" v-model="userRegisterData.form.email" placeholder="请输入邮箱"></el-input>
+              <el-input
+                  prefix-icon="Message"
+                  v-model="userRegisterData.form.email"
+                  placeholder="请输入邮箱"
+              />
             </el-form-item>
             <el-form-item prop="phone">
-              <el-input prefix-icon="Iphone" v-model="userRegisterData.form.phone" placeholder="请输入手机号"></el-input>
+              <el-input
+                  prefix-icon="Iphone"
+                  v-model="userRegisterData.form.phone"
+                  placeholder="请输入手机号"
+              />
             </el-form-item>
           </template>
 
-          <!-- Step 4: 大功告成，显示注册完成信息 -->
+          <!-- 注册完成 -->
           <template v-else-if="active === 3">
-            <div style="display: flex;justify-content: center;align-items: center;text-align: center;">
-              <el-text style="margin: auto;font-size: 25px">大功告成 🎉</el-text>
+            <div
+                style="display: flex; justify-content: center; align-items: center; text-align: center;"
+            >
+              <el-text style="margin: auto; font-size: 25px">大功告成 🎉</el-text>
             </div>
           </template>
+        </div>
 
-        </el-form>
-        <!-- 下一步按钮 -->
-        <el-button @click="next">Next</el-button>
-
-      </div>
+        <!-- 下一步 / 注册 按钮 -->
+        <el-button type="primary" style="margin-top: 20px;" @click="next">
+          {{
+            active < 3 ? (active === 2 ? '注册' : '下一步') : '重新开始'
+          }}
+        </el-button>
+      </el-form>
     </div>
   </div>
 </template>
 
+<script setup>
+// 导入打字效果组件，用于注册页面的欢迎文字动画
+import TypingEffectRegister from "@/views/tool/TypingEffect-Register.vue";
+// 导入必要的 Vue 组合式 API 函数
+import { reactive, ref } from "vue";
+// 导入 canvas-confetti 库，用于创建烟花/彩带效果
+import confetti from "canvas-confetti";
+// 导入封装好的请求工具
+import request from "@/utils/request.js";
+// 导入 Element Plus 的消息提示组件
+import { ElMessage } from "element-plus";
+// 导入路由实例，用于页面跳转
+import router from "@/router/index.js";
+
+// 表单引用，用于验证
+const formRef = ref();
+// 当前步骤索引
+const active = ref(0);
+// 性别下拉选项
+const options = reactive([
+  { label: "男", value: "M" },
+  { label: "女", value: "F" }
+]);
+
+// 用户注册数据
+const userRegisterData = reactive({
+  form: {
+    role: 'STUDENT',
+    username: '',
+    password: '',
+    name: '',
+    sex: '',
+    email: '',
+    phone: ''
+  }
+});
+
+// 校验规则
+const rules = {
+  role: [{ required: true, message: '请选择身份', trigger: 'change' }],
+  username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+  name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
+  sex: [{ required: true, message: '请选择性别', trigger: 'change' }],
+  email: [
+    { required: true, message: '请输入邮箱', trigger: 'blur' },
+    { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
+  ],
+  phone: [
+    { required: true, message: '请输入手机号', trigger: 'blur' },
+    { pattern: /^1[3-9]\d{9}$/, message: '手机号格式不正确', trigger: 'blur' }
+  ]
+};
+
+// 下一步或重新开始
+const next = () => {
+  formRef.value.validate(valid => {
+    if (valid) {
+      if (active.value < 3) {
+        active.value++;
+      } else {
+        active.value = 0;
+      }
+      if (active.value === 3) {
+        // 最后一步：提交注册
+        handleRegister();
+      }
+    }
+  });
+};
+
+// 注册提交逻辑
+const handleRegister = async () => {
+  try {
+    const res = await request.post("/register", userRegisterData.form);
+    if (res.data.code === "200") {
+      ElMessage.success(res.data.msg || "注册成功");
+      confetti();
+      await router.push("/login");
+    } else {
+      ElMessage.error(res.data.msg || "注册失败");
+    }
+  } catch (error) {
+    ElMessage.error("注册过程中发生错误");
+  }
+};
+</script>
+
 <style scoped>
-/* 全局样式重置，确保页面占满整个视口且无滚动条 */
+/* —— 登录页背景及容器样式 —— */
 html, body {
   height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden; /* 避免滚动条影响布局 */
+  overflow: hidden;
 }
-
-/* 注册页面容器样式 */
-.register-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.login-container {
   height: 100vh;
   width: 100vw;
-  flex-direction: column;
-  background: deeppink; /* 背景颜色 */
-}
-
-/* 注册表单盒子样式 */
-.register-box {
-  background: white;
-  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.67);
-  width: 40vw;
-  height: 50vh;
-  border-radius: 30px;
-}
-
-/* 欢迎文字区域样式 */
-.welcome-text {
-  height: 100px;
-  margin-bottom: 30px;
-}
-
-/* 注册表单样式 */
-.register-form {
   display: flex;
-  flex-direction: column;
-  margin: 10px;
+  flex-flow: column;
+  align-items: center;
   justify-content: center;
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
 }
-
-/* 注册标题文字样式 */
-.register-text {
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.login-box {
+  border-radius: 25px;
+  background-color: rgba(255,255,255,0.85);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  padding: 40px;
+  width: min(600px, 90%);
+  margin-bottom: 200px;
+}
+.login-text {
   color: grey;
   font-weight: bold;
   font-size: 30px;
   text-align: center;
-  margin: 15px;
+  margin-bottom: 30px;
+}
+.login-form {
+  padding: 0 50px;
+}
+.welcome-text {
+  height: 100px;
+  margin-bottom: 30px;
+}
+/* —— 多步骤注册表单样式 —— */
+.step-wrapper {
+  margin: 20px 0;
 }
 </style>

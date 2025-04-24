@@ -1,100 +1,55 @@
-<script setup>
-// 导入打字效果组件，用于登录页面的动态文字展示
-import TypingEffect from "@/views/tool/TypingEffect-Login.vue"
-// 导入 Vue 的响应式 API
-import {reactive, ref} from "vue";
-// 导入 Element Plus 的消息提示组件
-import {ElMessage} from "element-plus";
-// 导入封装好的请求工具
-import request from "@/utils/request.js";
-// 导入路由实例，用于页面跳转
-import router from "@/router/index.js";
-
-// 记住登录信息的开关（虽然在界面中被注释掉了，但变量保留）
-const saveUserLoginInfo = ref(true)
-
-// 表单引用，用于表单验证和获取表单实例
-const formRef = ref()
-
-// 用户数据对象，使用 reactive 使其具有响应性
-const data = reactive({
-  form: {
-    username: '', // 用户名输入
-    password: '', // 密码输入
-    role: 'STUDENT' // 默认角色为学生
-  }
-})
-
-// 表单验证规则定义
-const rules = {
-  username: [
-    {required: true, message: '请输入账号', trigger: 'blur'}, // 用户名为必填项
-  ],
-  password: [
-    {required: true, message: '请输入密码', trigger: 'blur'}, // 密码为必填项
-  ],
-}
-
-// 登录方法，使用 async/await 处理异步操作
-const login = async () => {
-  try {
-    // 表单验证，确保所有必填项都已填写
-    const valid = await formRef.value.validate()
-    if (!valid) return // 如果验证失败，直接返回不继续执行
-    
-    // 发送登录请求到后端
-    const res = await request.post('/login', data.form)
-    console.log(res) // 打印响应结果，用于调试
-    if (res.data.code === '200') {  // 检查响应状态码是否为成功
-      // 将用户信息和 token 存储到本地存储中，用于保持登录状态
-      localStorage.setItem('student-user', JSON.stringify(res.data.data))
-      // 显示登录成功消息
-      ElMessage.success(res.data.msg || '登录成功')
-      try {
-        // 登录成功后跳转到首页
-        await router.push('/')  // 先跳转到根路由，让它自动重定向到 homePage
-        console.log('路由跳转完成')
-      } catch (err) {
-        // 处理路由跳转失败的情况
-        console.error('路由跳转失败:', err)
-        ElMessage.error('页面跳转失败，请刷新重试')
-      }
-    } else {
-      // 显示登录失败消息
-      ElMessage.error(res.data.msg || '登录失败')
-    }
-  } catch (error) {
-    // 处理登录过程中的其他错误
-    console.error('登录出错:', error)
-    ElMessage.error('登录过程中发生错误')
-  }
-}
-</script>
-
 <template>
-  <!-- 登录页面容器，水平垂直居中、浮动布局 -->
   <div class="login-container">
-    <!-- 欢迎文字区域，使用打字效果组件 -->
+    <!-- 欢迎文字区域 -->
     <div class="welcome-text">
-      <TypingEffect/>
+      <TypingEffect />
     </div>
     <!-- 登录框主体 -->
     <div class="login-box">
-      <!-- 登录标题 -->
       <div class="login-text">Login</div>
-      <!-- 分隔线 -->
-      <el-divider/>
-      <!-- 登录表单，绑定数据模型、表单引用和验证规则 -->
-      <el-form class="login-form" :model="data.form" ref="formRef" :rules="rules">
-        <!-- 账号输入框，带验证 -->
+      <el-divider />
+      <el-form
+          class="login-form"
+          :model="data.form"
+          ref="formRef"
+          :rules="rules"
+      >
+        <!-- 账号输入框 -->
         <el-form-item prop="username">
-          <el-input prefix-icon="User" v-model="data.form.username" placeholder="请输入账号"></el-input>
+          <el-input
+              prefix-icon="User"
+              v-model="data.form.username"
+              placeholder="请输入账号"
+          ></el-input>
         </el-form-item>
-        <!-- 密码输入框，带验证和密码隐藏功能 -->
+        <!-- 密码输入框 -->
         <el-form-item prop="password">
-          <el-input show-password prefix-icon="Lock" v-model="data.form.password" placeholder="请输入密码"></el-input>
+          <el-input
+              show-password
+              prefix-icon="Lock"
+              v-model="data.form.password"
+              placeholder="请输入密码"
+          ></el-input>
         </el-form-item>
-        <!-- 角色选择下拉框 -->
+        <!-- 验证码输入 -->
+        <el-form-item prop="captcha">
+          <div class="captcha-wrapper">
+            <el-input
+                v-model="data.form.captcha"
+                placeholder="请输入验证码"
+                class="captcha-input"
+                prefix-icon="Key"
+            ></el-input>
+            <canvas
+                ref="captchaCanvas"
+                @click="generateCaptcha"
+                width="100"
+                height="38"
+                class="captcha-img"
+            ></canvas>
+          </div>
+        </el-form-item>
+        <!-- 角色选择 -->
         <el-form-item prop="role">
           <el-select style="width: 100%" v-model="data.form.role">
             <el-option value="STUDENT" label="学生"></el-option>
@@ -102,64 +57,211 @@ const login = async () => {
             <el-option value="ADMIN" label="管理员"></el-option>
           </el-select>
         </el-form-item>
-        <!-- 记住登录状态复选框（已被注释掉，暂未启用） -->
-<!--        <el-checkbox v-model="saveUserLoginInfo" label="始终保持登录状态" size="large"/>-->
         <!-- 登录按钮 -->
         <el-form-item>
-          <el-button type="danger" style="width: 100%" @click="login">登 陆</el-button>
+          <el-button type="danger" style="width: 100%" @click="login"
+          >登 陆</el-button
+          >
         </el-form-item>
       </el-form>
-      <!-- 注册提示文字 -->
+      <!-- 注册提示 -->
       <div class="register-text">
-        还没有账号？请<router-link to="/register" class="register-link">注册</router-link>
+        还没有账号？请
+        <router-link to="/register" class="register-link"
+        >注册</router-link
+        >
       </div>
     </div>
   </div>
 </template>
 
+<script setup>
+// 导入打字效果组件，用于登录页面的动态文字展示
+import TypingEffect from "@/views/tool/TypingEffect-Login.vue";
+// 导入 Vue 的响应式 API
+import { reactive, ref, onMounted } from "vue";
+// 导入 Element Plus 的消息提示组件
+import { ElMessage } from "element-plus";
+// 导入封装好的请求工具
+import request from "@/utils/request.js";
+// 导入路由实例，用于页面跳转
+import router from "@/router/index.js";
+
+// 记住登录信息的开关（界面中未启用）
+const saveUserLoginInfo = ref(true);
+
+// 表单引用
+const formRef = ref();
+// 验证码画布引用
+const captchaCanvas = ref(null);
+
+// 用户数据对象
+const data = reactive({
+  form: {
+    username: "",
+    password: "",
+    role: "STUDENT",
+    captcha: ""
+  }
+});
+
+// 表单验证规则定义
+const rules = {
+  username: [{ required: true, message: "请输入账号", trigger: "blur" }],
+  password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+  captcha: [{ required: true, message: "请输入验证码", trigger: "blur" }]
+};
+
+// 验证码原始值
+const captchaCode = ref("");
+
+// 生成 4 位随机验证码
+const generateCaptcha = () => {
+  const chars =
+      "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+  let code = "";
+  for (let i = 0; i < 4; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  captchaCode.value = code;
+  drawCaptcha(code);
+};
+
+// 将码绘制到 Canvas
+const drawCaptcha = (code) => {
+  const canvas = captchaCanvas.value;
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width;
+  const h = canvas.height;
+  // 清空画布
+  ctx.clearRect(0, 0, w, h);
+  // 填充背景
+  ctx.fillStyle = randomLightColor();
+  ctx.fillRect(0, 0, w, h);
+  // 绘制字符
+  for (let i = 0; i < code.length; i++) {
+    ctx.font = "24px sans-serif";
+    ctx.fillStyle = randomDarkColor();
+    const x = 10 + i * 22;
+    const y = 28 + Math.random() * 4;
+    ctx.fillText(code[i], x, y);
+  }
+  // 干扰线
+  for (let i = 0; i < 3; i++) {
+    ctx.strokeStyle = randomDarkColor();
+    ctx.beginPath();
+    ctx.moveTo(Math.random() * w, Math.random() * h);
+    ctx.lineTo(Math.random() * w, Math.random() * h);
+    ctx.stroke();
+  }
+};
+
+// 生成浅色背景
+const randomLightColor = () => {
+  const r = 180 + Math.floor(Math.random() * 75);
+  const g = 180 + Math.floor(Math.random() * 75);
+  const b = 180 + Math.floor(Math.random() * 75);
+  return `rgb(${r},${g},${b})`;
+};
+
+// 生成深色文字/线条
+const randomDarkColor = () => {
+  const r = Math.floor(Math.random() * 100);
+  const g = Math.floor(Math.random() * 100);
+  const b = Math.floor(Math.random() * 100);
+  return `rgb(${r},${g},${b})`;
+};
+
+// 组件挂载后初始化验证码
+onMounted(() => {
+  generateCaptcha();
+});
+
+// 登录方法，验证验证码后再请求
+const login = async () => {
+  try {
+    const valid = await formRef.value.validate();
+    if (!valid) return;
+    // 本地验证码校验
+    if (
+        data.form.captcha.trim().toLowerCase() !==
+        captchaCode.value.toLowerCase()
+    ) {
+      ElMessage.error("验证码错误，请重新输入");
+      data.form.captcha = "";
+      generateCaptcha();
+      return;
+    }
+    // 发送登录请求
+    const res = await request.post("/login", data.form);
+    if (res.data.code === "200") {
+      localStorage.setItem(
+          "student-user",
+          JSON.stringify(res.data.data)
+      );
+      ElMessage.success(res.data.msg || "登录成功");
+      try {
+        await router.push("/");
+      } catch (err) {
+        ElMessage.error("页面跳转失败，请刷新重试");
+      }
+    } else {
+      ElMessage.error(res.data.msg || "登录失败");
+      generateCaptcha();
+    }
+  } catch (error) {
+    ElMessage.error("登录过程中发生错误");
+    generateCaptcha();
+  }
+};
+</script>
+
 <style scoped>
-/* 重置 HTML 和 body 样式，确保登录页面占满整个视口 */
-html, body {
+html,
+body {
   height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden; /* 避免滚动条影响布局 */
+  overflow: hidden;
 }
-
-/* 登录容器样式，占满整个视口并居中内容 */
 .login-container {
-  height: 100vh; /* 视口高度 */
-  width: 100vw; /* 视口宽度 */
-  display: flex; /* 弹性布局 */
-  flex-flow: column; /* 纵向排列 */
-  align-items: center; /* 水平居中 */
-  justify-content: center; /* 垂直居中 */
-  /* 渐变背景色 */
-  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+      -45deg,
+      #ee7752,
+      #e73c7e,
+      #23a6d5,
+      #23d5ab
+  );
   background-size: 400% 400%;
-  /* 背景动画 */
   animation: gradientBG 15s ease infinite;
 }
-
-/* 背景渐变动画关键帧 */
 @keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
-
-/* 登录框样式 */
 .login-box {
-  border-radius: 25px; /* 圆角边框 */
-  background-color: rgba(255, 255, 255, 0.85); /* 半透明白色背景 */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+  border-radius: 25px;
+  background-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   padding: 40px;
-  width: min(600px, 90%); /* 响应式宽度，最大600px或90%视口宽度 */
-  margin-bottom: 200px; /* 底部外边距 */
+  width: min(600px, 90%);
+  margin-bottom: 200px;
 }
-
-/* 登录标题文字样式 */
 .login-text {
   color: grey;
   font-weight: bold;
@@ -167,31 +269,44 @@ html, body {
   text-align: center;
   margin-bottom: 30px;
 }
-
-/* 登录表单内边距 */
 .login-form {
   padding: 0 50px;
 }
-
-/* 欢迎文字区域样式 */
 .welcome-text {
   height: 100px;
   margin-bottom: 30px;
 }
-
-/* 注册提示文字样式 */
 .register-text {
   margin-top: 30px;
   text-align: right;
   font-size: 15px;
   color: black;
 }
-
 .register-link {
   color: #1890ff;
   text-decoration: none;
 }
 .register-link:hover {
   text-decoration: underline;
+}
+/* 验证码区域样式 */
+.captcha-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.captcha-input {
+  flex: 1;
+  margin-right: 10px;
+}
+.captcha-img {
+  width: 100px;
+  height: 38px;
+  cursor: pointer;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+}
+.captcha-img:hover {
+  opacity: 0.8;
 }
 </style>
