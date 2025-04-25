@@ -15,6 +15,22 @@ const total = ref(0)
 // 新增显示模式状态
 const displayMode = ref('list') // 'list' 或 'card'
 
+// 添加作业相关状态
+const dialogVisible = ref(false)
+const formData = ref({
+  title: '',
+  classId: '',
+  startTime: '',
+  endTime: ''
+})
+const classList = ref([])
+const formRules = {
+  title: [{ required: true, message: '请输入作业标题', trigger: 'blur' }],
+  classId: [{ required: true, message: '请选择班级', trigger: 'change' }],
+  startTime: [{ required: true, message: '请选择开始时间', trigger: 'change' }],
+  endTime: [{ required: true, message: '请选择结束时间', trigger: 'change' }]
+}
+
 // 格式化日期时间
 const formatDateTime = (dateTimeStr) => {
   if (!dateTimeStr) return '-'
@@ -63,6 +79,73 @@ const getHomeworkStatus = (startTime, endTime) => {
   }
 }
 
+// 获取班级列表
+const getClassList = async () => {
+  try {
+    const response = await request.get('/courses/all')
+    if (response.data && response.data.success) {
+      classList.value = response.data.data
+    }
+  } catch (error) {
+    console.error('获取班级列表失败:', error)
+    ElMessage.error('获取班级列表失败')
+  }
+}
+
+// 打开添加作业弹窗
+const openAddDialog = () => {
+  formData.value = {
+    title: '',
+    classId: '',
+    startTime: new Date().toISOString().slice(0, 16),
+    endTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 16)
+  }
+  dialogVisible.value = true
+}
+
+// 提交添加作业
+const submitForm = async () => {
+  try {
+    // 格式化日期时间
+    const formatDateTime = (date) => {
+      if (!date) return ''
+      const d = new Date(date)
+      const year = d.getFullYear()
+      const month = String(d.getMonth() + 1).padStart(2, '0')
+      const day = String(d.getDate()).padStart(2, '0')
+      const hours = String(d.getHours()).padStart(2, '0')
+      const minutes = String(d.getMinutes()).padStart(2, '0')
+      const seconds = String(d.getSeconds()).padStart(2, '0')
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+    }
+
+    const response = await request.post('/homework', {
+      title: formData.value.title,
+      classId: formData.value.classId,
+      startTime: formatDateTime(formData.value.startTime),
+      endTime: formatDateTime(formData.value.endTime)
+    })
+    
+    if (response.data && response.data.code === '200') {
+      ElMessage.success('添加作业成功')
+      dialogVisible.value = false
+      loadData() // 刷新列表
+    } else {
+      ElMessage.error(response.data?.msg || '添加作业失败')
+    }
+  } catch (error) {
+    console.error('添加作业失败:', error)
+    ElMessage.error('添加作业失败：' + (error.message || '未知错误'))
+  }
+}
+
+// 处理开始时间变化
+const handleStartTimeChange = (val) => {
+  if (val && formData.value.endTime && new Date(val) > new Date(formData.value.endTime)) {
+    formData.value.endTime = new Date(new Date(val).getTime() + 24 * 60 * 60 * 1000).toISOString().slice(0, 16)
+  }
+}
+
 // 加载数据
 const loadData = async () => {
   loading.value = true
@@ -74,21 +157,11 @@ const loadData = async () => {
       }
     })
     
-    if (response.data && response.data.records) {
-      homeworkList.value = response.data.records
+    if (response.data) {
+      homeworkList.value = response.data.records || []
       total.value = response.data.total || 0
       console.log('成功获取作业数据:', homeworkList.value)
-    } else if (Array.isArray(response.data)) {
-      homeworkList.value = response.data
-      total.value = response.data.length
-      console.log('成功获取作业数据:', homeworkList.value)
-    } else if (response.data && response.data.success && Array.isArray(response.data.data)) {
-      // 兼容 {success: true, data: [...]} 格式
-      homeworkList.value = response.data.data
-      total.value = response.data.data.length
-      console.log('成功获取作业数据:', homeworkList.value)
     } else {
-      // 如果返回的不是数组也不是标准格式，则设为空数组
       homeworkList.value = []
       total.value = 0
       ElMessage.warning('未获取到作业数据')
@@ -137,6 +210,7 @@ const toggleDisplayMode = () => {
 
 onMounted(() => {
   loadData()
+  getClassList()
 })
 </script>
 
@@ -146,15 +220,22 @@ onMounted(() => {
     <el-card class="header-card">
       <template #header>
         <div class="card-header">
-          <span class="title">作业列表</span>
-          <el-button type="primary" @click="handleRefresh" :loading="loading">
-            <el-icon><Refresh /></el-icon>
-            刷新
-          </el-button>
-          <!-- 新增切换显示模式的按钮 -->
-          <el-button type="default" @click="toggleDisplayMode">
-            切换到 {{ displayMode.value === 'list' ? '卡片' : '列表' }} 模式
-          </el-button>
+          <div class="header-left">
+            <span class="title">作业列表</span>
+            <el-button type="primary" @click="handleRefresh" :loading="loading" size="small">
+              <el-icon><Refresh /></el-icon>
+              刷新
+            </el-button>
+            <el-button type="success" @click="openAddDialog" size="small">
+              <el-icon><Plus /></el-icon>
+              添加作业
+            </el-button>
+          </div>
+          <div class="header-right">
+            <el-button type="default" @click="toggleDisplayMode" size="small">
+              切换到 {{ displayMode === 'list' ? '卡片' : '列表' }} 模式
+            </el-button>
+          </div>
         </div>
       </template>
     </el-card>
@@ -165,7 +246,14 @@ onMounted(() => {
         <el-table-column type="index" label="序号" width="80" align="center" />
         <el-table-column label="作业标题" min-width="200" show-overflow-tooltip>
           <template #default="scope">
-            <a @click="$router.push(`/homework/${scope.row.id}`)" class="homework-link">
+            <a @click="$router.push({
+              path: `/homework/${scope.row.id}`,
+              query: {
+                title: scope.row.title,
+                startTime: scope.row.startTime,
+                endTime: scope.row.endTime
+              }
+            })" class="homework-link">
               {{ scope.row.title }}
             </a>
           </template>
@@ -279,6 +367,68 @@ onMounted(() => {
       </template>
       <el-empty v-else description="暂无作业信息" />
     </div>
+
+    <!-- 添加作业弹窗 -->
+    <el-dialog
+      v-model="dialogVisible"
+      title="添加作业"
+      width="500px"
+      :close-on-click-modal="false"
+    >
+      <el-form
+        :model="formData"
+        :rules="formRules"
+        label-width="100px"
+        ref="formRef"
+      >
+        <el-form-item label="作业标题" prop="title">
+          <el-input v-model="formData.title" placeholder="请输入作业标题" />
+        </el-form-item>
+        
+        <el-form-item label="选择班级" prop="classId">
+          <el-select
+            v-model="formData.classId"
+            placeholder="请选择班级"
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in classList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        
+        <el-form-item label="开始时间" prop="startTime">
+          <el-date-picker
+            v-model="formData.startTime"
+            type="datetime"
+            placeholder="选择开始时间"
+            style="width: 100%"
+            :disabled-date="(time) => time.getTime() < Date.now() - 8.64e7"
+            @change="handleStartTimeChange"
+          />
+        </el-form-item>
+        
+        <el-form-item label="结束时间" prop="endTime">
+          <el-date-picker
+            v-model="formData.endTime"
+            type="datetime"
+            placeholder="选择结束时间"
+            style="width: 100%"
+            :disabled-date="(time) => time.getTime() < new Date(formData.startTime).getTime()"
+          />
+        </el-form-item>
+      </el-form>
+      
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="submitForm">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -301,9 +451,21 @@ onMounted(() => {
   align-items: center;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
 .title {
   font-size: 18px;
   font-weight: bold;
+  margin-right: 8px;
 }
 
 .homework-link {
@@ -394,5 +556,11 @@ onMounted(() => {
 
 :deep(.el-card__body) {
   padding: 20px;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }
 </style>

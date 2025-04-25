@@ -1,6 +1,7 @@
 package com.example.onlinejudge.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.onlinejudge.common.Result;
 import com.example.onlinejudge.entity.Homework;
 import com.example.onlinejudge.service.HomeworkService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,9 @@ public class HomeworkController {
     private HomeworkService homeworkService;
     
     @PostMapping
-    public boolean addHomework(@RequestBody Homework homework) {
-        return homeworkService.addHomework(homework);
+    public Result<Boolean> addHomework(@RequestBody Homework homework) {
+        boolean success = homeworkService.addHomework(homework);
+        return success ? Result.success(true) : Result.error("500", "添加作业失败");
     }
     
     @DeleteMapping("/{id}")

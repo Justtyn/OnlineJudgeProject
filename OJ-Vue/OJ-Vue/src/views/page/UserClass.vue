@@ -17,6 +17,14 @@ const classId = localUser && localUser.classId ? localUser.classId : null;
 // 班级列表数据
 const classList = ref([])
 
+// 添加显示模式状态
+const displayMode = ref('list') // 'list' 或 'card'
+
+// 切换显示模式的函数
+const toggleDisplayMode = () => {
+  displayMode.value = displayMode.value === 'list' ? 'card' : 'list'
+}
+
 // 加载数据
 const loadData = async () => {
   try {
@@ -90,19 +98,26 @@ onMounted(() => {
     <el-card class="header-card">
       <template #header>
         <div class="card-header">
-          <span class="title">我的班级</span>
-          <el-button type="primary" @click="handleRefresh">
-            <el-icon>
-              <Refresh />
-            </el-icon>
-            刷新
-          </el-button>
+          <div class="header-left">
+            <span class="title">我的班级</span>
+            <el-button type="primary" @click="handleRefresh">
+              <el-icon>
+                <Refresh />
+              </el-icon>
+              刷新
+            </el-button>
+          </div>
+          <div class="header-right">
+            <el-button type="default" @click="toggleDisplayMode" size="small">
+              切换到 {{ displayMode === 'list' ? '卡片' : '列表' }} 模式
+            </el-button>
+          </div>
         </div>
       </template>
     </el-card>
 
-    <!-- 班级展示区域 -->
-    <el-card class="table-card">
+    <!-- 表格展示区域 -->
+    <el-card class="table-card" v-if="displayMode === 'list'">
       <el-table :data="classList" style="width: 100%" border stripe highlight-current-row>
         <el-table-column prop="id" label="班级ID" width="100" align="center" />
         <el-table-column label="班级名称" min-width="200" show-overflow-tooltip>
@@ -140,8 +155,8 @@ onMounted(() => {
       <el-empty v-if="classList.length === 0" description="暂无班级信息" />
     </el-card>
 
-    <!-- 班级卡片展示区域（备选方案） -->
-    <div class="class-list" v-if="true">
+    <!-- 班级卡片展示区域 -->
+    <div class="class-list" v-if="displayMode === 'card'">
       <template v-if="classList.length > 0">
         <el-card 
           v-for="(item, index) in classList" 
@@ -194,9 +209,21 @@ onMounted(() => {
   align-items: center;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
 .title {
   font-size: 18px;
   font-weight: bold;
+  margin-right: 8px;
 }
 
 /* 表格样式 */

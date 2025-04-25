@@ -102,81 +102,44 @@ const currentProblemPage = ref(1);
 const problemPageSize = ref(100);
 const loadingAllProblems = ref(false); // 添加全量加载状态
 
-// 分批加载题目
-const loadMoreProblems = async () => {
-  if (problemsCache.value.length >= totalProblems.value && totalProblems.value > 0) {
-    return; // 已加载全部题目
-  }
+// 初始化加载
+const initProblemOptions = async () => {
+  // 重置缓存
+  problemsCache.value = [];
+  totalProblems.value = 0;
+  currentProblemPage.value = 1;
   
-  problemsLoading.value = true;
   try {
-    const response = await request.get('/problem/page', {
-      params: {
-        pageNum: currentProblemPage.value,
-        pageSize: problemPageSize.value
-      }
-    });
-    
-    if (response.data?.code === '200' && response.data?.data?.list) {
-      // 添加到缓存
-      problemsCache.value = [...problemsCache.value, ...response.data.data.list];
-      totalProblems.value = response.data.data.total;
-      currentProblemPage.value++;
+    // 使用与 HomeworkProblem.vue 相同的接口获取题目列表
+    const response = await request.get('/problem/simple')
+    if (response.data?.data) {
+      // 更新缓存
+      problemsCache.value = response.data.data;
+      totalProblems.value = response.data.data.length;
       
-      // 更新下拉选项
-      problemOptions.value = problemsCache.value.map(item => ({
+      // 更新选项列表
+      problemOptions.value = response.data.data.map(item => ({
         id: item.id,
         name: `${item.id} - ${item.name}`
       }));
     }
   } catch (error) {
-    console.error('加载更多题目失败:', error);
+    console.error('获取题目列表失败:', error);
+    ElMessage.error('获取题目列表失败：' + (error.response?.data?.msg || error.message));
   } finally {
     problemsLoading.value = false;
   }
 };
 
-// 加载所有题目
+// 由于现在使用简化版接口，可以移除或简化这些相关函数
+const loadMoreProblems = async () => {
+  // 使用 simple 接口后不再需要分页加载
+  return;
+};
+
 const loadAllProblems = async () => {
-  loadingAllProblems.value = true;
-  
-  // 创建全屏加载动画
-  const loading = ElLoading.service({
-    lock: true,
-    text: '正在加载所有题目...',
-    background: 'rgba(0, 0, 0, 0.7)'
-  });
-  
-  try {
-    // 循环加载直到所有题目都被加载
-    while (problemsCache.value.length < totalProblems.value || totalProblems.value === 0) {
-      await loadMoreProblems();
-      
-      // 更新加载提示
-      if (totalProblems.value > 0) {
-        loading.setText(`正在加载所有题目... (${problemsCache.value.length}/${totalProblems.value})`);
-      }
-      
-      // 如果已加载全部或出错，退出循环
-      if (problemsCache.value.length >= totalProblems.value && totalProblems.value > 0) {
-        break;
-      }
-    }
-    
-    // 更新选项列表为全部题目
-    problemOptions.value = problemsCache.value.map(item => ({
-      id: item.id,
-      name: `${item.id} - ${item.name}`
-    }));
-    
-    ElMessage.success(`已加载全部 ${totalProblems.value} 道题目`);
-  } catch (error) {
-    console.error('加载所有题目失败:', error);
-    ElMessage.error('加载所有题目失败，请重试');
-  } finally {
-    loading.close();
-    loadingAllProblems.value = false;
-  }
+  // 使用 simple 接口后不再需要全量加载
+  return;
 };
 
 // 搜索题目 - 使用缓存方案
@@ -202,17 +165,6 @@ const remoteSearch = async (query) => {
     
     problemsLoading.value = false;
   }
-};
-
-// 初始化加载
-const initProblemOptions = async () => {
-  // 重置缓存
-  problemsCache.value = [];
-  totalProblems.value = 0;
-  currentProblemPage.value = 1;
-  
-  // 加载第一批
-  await loadMoreProblems();
 };
 
 // 重置题目搜索
@@ -592,13 +544,9 @@ const handleLike = async (id) => {
             <el-select
               v-model="publishForm.problemId"
               filterable
-              remote
-              reserve-keyword
               placeholder="输入题目关键词搜索"
-              :remote-method="remoteSearch"
               :loading="problemsLoading"
               style="width: 100%"
-              @change="handleSelectChange"
             >
               <el-option
                 v-for="item in problemOptions"
@@ -617,29 +565,6 @@ const handleLike = async (id) => {
             >
               重置
             </el-button>
-          </div>
-          <div class="problem-actions" style="margin-top: 8px; display: flex; justify-content: space-between;">
-            <el-button 
-              type="primary" 
-              link 
-              @click="loadMoreProblems" 
-              :loading="problemsLoading"
-              v-if="problemsCache.length < totalProblems"
-            >
-              加载更多题目 (已加载 {{ problemsCache.length }}/{{ totalProblems }})
-            </el-button>
-            <el-button 
-              type="success" 
-              link 
-              @click="loadAllProblems" 
-              :loading="loadingAllProblems"
-              v-if="problemsCache.length < totalProblems"
-            >
-              一键加载全部题目
-            </el-button>
-            <span v-if="problemsCache.length >= totalProblems && totalProblems > 0" class="loaded-all-text">
-              已加载全部 {{ totalProblems }} 道题目
-            </span>
           </div>
         </el-form-item>
         <el-form-item label="题解内容" required style="width: 100%">

@@ -119,10 +119,28 @@ const router = createRouter({
                         import ('@/views/page/SolutionPage.vue')
                 },
                 {
+                    path: 'solution/:id', // 添加题解详情页路由
+                    name: 'SolutionDetail',
+                    component: () =>
+                        import ('@/views/page/SolutionDetail.vue')
+                },
+                {
                     path: 'statusDetail/:id', // 状态详情页面路径
                     name: 'StatusDetail', // 状态详情页面路由名称
                     component: () =>
                         import ('@/views/page/StatusDetailPage.vue') // 懒加载组件 StatusDetailPage.vue
+                },
+                {
+                    path: 'discussPage',
+                    name: 'DiscussPage',
+                    component: () =>
+                        import ('@/views/page/DiscussPage.vue')
+                },
+                {
+                    path: 'discuss/:id',
+                    name: 'DiscussDetail',
+                    component: () =>
+                        import ('@/views/page/DiscussDetail.vue')
                 }
             ]
         },

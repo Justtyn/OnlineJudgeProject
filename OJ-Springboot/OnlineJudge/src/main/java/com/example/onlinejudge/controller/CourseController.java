@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -96,6 +97,27 @@ public class CourseController {
         } else {
             response.put("success", false);
             response.put("message", "未找到指定课程");
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    /**
+     * 获取所有课程列表（不分页）
+     * @return 所有课程列表
+     */
+    @GetMapping("/all")
+    public ResponseEntity<Map<String, Object>> listAllCourses() {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<Course> courses = courseService.listAllCourses();
+            response.put("success", true);
+            response.put("message", "获取课程列表成功");
+            response.put("data", courses);
+            response.put("total", courses.size());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "获取课程列表失败：" + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }

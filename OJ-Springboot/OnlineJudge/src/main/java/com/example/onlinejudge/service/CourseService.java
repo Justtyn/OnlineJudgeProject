@@ -2,6 +2,7 @@ package com.example.onlinejudge.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.onlinejudge.entity.Course;
+import java.util.List;
 
 public interface CourseService {
     
@@ -33,4 +34,10 @@ public interface CourseService {
      * @return 课程信息
      */
     Course getCourseById(Integer id);
+
+    /**
+     * 获取所有课程列表（不分页）
+     * @return 所有课程列表
+     */
+    List<Course> listAllCourses();
 }

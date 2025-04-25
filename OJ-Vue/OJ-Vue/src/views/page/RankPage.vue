@@ -273,9 +273,13 @@ onMounted(() => {
     <!-- 表格区域 -->
     <el-card class="table-card">
       <el-table :data="tableData" style="width: 100%" border stripe highlight-current-row>
-        <el-table-column type="index" label="#" width="60" align="center" />
+        <el-table-column type="index" label="#" width="60" align="center">
+          <template #default="scope">
+            <span :class="['rank-number', `rank-${scope.$index + 1}`]">{{ scope.$index + 1 }}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="username" label="账号" min-width="120" show-overflow-tooltip />
-        <el-table-column prop="name" label="姓名" width="100" align="center" />
+        <el-table-column prop="name" label="姓名" width="150" align="center" />
         <el-table-column prop="score" label="Rating" width="100" align="center">
           <template #default="scope">
             {{ scope.row.score || 0 }}
@@ -358,4 +362,50 @@ onMounted(() => {
   color: #40a9ff;
 }
 
+.rank-number {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+.rank-1 {
+  background-color: #FFD700;
+  color: #fff;
+}
+
+.rank-2 {
+  background-color: #C0C0C0;
+  color: #fff;
+}
+
+.rank-3 {
+  background-color: #CD7F32;
+  color: #fff;
+}
+
+:deep(.el-table__row) {
+  transition: all 0.3s;
+}
+
+:deep(.el-table__row:nth-child(1)) {
+  background-color: rgba(255, 215, 0, 0.1) !important;
+}
+
+:deep(.el-table__row:nth-child(2)) {
+  background-color: rgba(192, 192, 192, 0.1) !important;
+}
+
+:deep(.el-table__row:nth-child(3)) {
+  background-color: rgba(205, 127, 50, 0.1) !important;
+}
+
+:deep(.el-table__row:nth-child(1):hover),
+:deep(.el-table__row:nth-child(2):hover),
+:deep(.el-table__row:nth-child(3):hover) {
+  background-color: rgba(64, 158, 255, 0.1) !important;
+}
 </style>

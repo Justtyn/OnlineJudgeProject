@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import request from "@/utils/request.js"
+import { Refresh, Grid } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const classId = route.params.id
@@ -119,13 +120,19 @@ onMounted(() => {
     <el-card class="header-card">
       <template #header>
         <div class="card-header">
-          <span class="title">作业列表 - {{ className }}</span>
-          <el-button type="primary" @click="handleRefresh" :loading="loading">
-            <el-icon><Refresh /></el-icon>
-            刷新
-          </el-button>
-          <!-- 新增：切换显示模式按钮 -->
+          <div class="header-left">
+            <span class="title">作业列表 - {{ className }}</span>
+            <el-button 
+              type="primary" 
+              :icon="Refresh" 
+              circle 
+              @click="handleRefresh" 
+              :loading="loading"
+              class="refresh-btn"
+            />
+          </div>
           <el-button type="default" @click="toggleDisplayMode">
+            <el-icon><Grid /></el-icon>
             切换到 {{ displayMode === 'list' ? '卡片' : '列表' }} 模式
           </el-button>
         </div>
@@ -253,9 +260,25 @@ onMounted(() => {
   align-items: center;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .title {
   font-size: 18px;
   font-weight: bold;
+  color: #303133;
+}
+
+.refresh-btn {
+  margin-left: 8px;
+  transition: transform 0.3s;
+}
+
+.refresh-btn:hover {
+  transform: rotate(180deg);
 }
 
 .homework-link {
