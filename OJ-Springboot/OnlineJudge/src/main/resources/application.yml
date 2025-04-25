@@ -24,6 +24,7 @@ spring:
     # 配置 MySQL 驱动的类名
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+
 # MyBatis 配置
 mybatis:
   # 配置 MyBatis 的全局设置
