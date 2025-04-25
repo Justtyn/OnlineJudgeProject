@@ -18,7 +18,7 @@
               <router-link to="/problemListPage" class="nav-link">题库</router-link>
               <router-link to="/statusListPage" class="nav-link">状态</router-link>
               <router-link to="/rankPage" class="nav-link">排名</router-link>
-              <router-link to="/homePage" class="nav-link">竞赛</router-link>
+              <router-link to="/stats" class="nav-link">统计</router-link>
               <router-link to="/homeworkPage" class="nav-link">作业</router-link>
               <router-link to="/solutionPage" class="nav-link">题解</router-link>
               <router-link to="/discussPage" class="nav-link">讨论</router-link>

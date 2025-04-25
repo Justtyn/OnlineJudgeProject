@@ -147,6 +147,12 @@ const router = createRouter({
                     name: 'DiscussDetail',
                     component: () =>
                         import ('@/views/page/DiscussDetail.vue')
+                },
+                {
+                    path: 'stats',
+                    name: 'Stats',
+                    component: () =>
+                        import ('@/views/page/Stats.vue')
                 }
             ]
         },
