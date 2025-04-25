@@ -15,6 +15,7 @@
           <div class="header-body nav-section">
             <nav class="nav-links">
               <router-link to="/homePage" class="nav-link">首页</router-link>
+              <router-link to="/charts" class="nav-link">测试</router-link>
               <router-link to="/problemListPage" class="nav-link">题库</router-link>
               <router-link to="/statusListPage" class="nav-link">状态</router-link>
               <router-link to="/rankPage" class="nav-link">排名</router-link>

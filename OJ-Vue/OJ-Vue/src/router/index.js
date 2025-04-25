@@ -153,6 +153,12 @@ const router = createRouter({
                     name: 'Stats',
                     component: () =>
                         import ('@/views/page/Stats.vue')
+                },
+                {
+                    path: 'charts',
+                    name: 'Charts',
+                    component: () =>
+                        import ('@/views/page/Charts.vue')
                 }
             ]
         },
