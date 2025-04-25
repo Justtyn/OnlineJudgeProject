@@ -3,7 +3,7 @@
     <!-- 主评论 -->
     <div class="comment-main">
       <div class="comment-header">
-        <div class="user-info">
+        <div class="user-info" @click="$emit('click-user', comment.userId)">
           <el-avatar 
             :src="commentUserInfo?.avatar" 
             :size="32"
@@ -25,7 +25,7 @@
     <div v-if="comment.children && comment.children.length > 0" class="comment-children">
       <div v-for="child in comment.children" :key="child.id" class="child-comment">
         <div class="comment-header">
-          <div class="user-info">
+          <div class="user-info" @click="$emit('click-user', child.userId)">
             <el-avatar 
               :src="childUserInfo[child.id]?.avatar" 
               :size="24"
@@ -50,6 +50,7 @@
             :comment="grandChild"
             :user-info="userInfo"
             @reply="$emit('reply', $event)"
+            @click-user="$emit('click-user', $event)"
           />
         </div>
       </div>
@@ -72,7 +73,7 @@ const props = defineProps({
   }
 })
 
-defineEmits(['reply'])
+defineEmits(['reply', 'click-user'])
 
 // 获取token
 const getAuthInfo = () => {
@@ -164,6 +165,11 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 8px;
+  cursor: pointer;
+}
+
+.user-info:hover {
+  opacity: 0.8;
 }
 
 .user-avatar {

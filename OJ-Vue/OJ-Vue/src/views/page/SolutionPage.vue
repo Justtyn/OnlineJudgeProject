@@ -473,7 +473,7 @@ const handleLike = async (id) => {
         <el-table-column prop="id" label="#" width="80" align="center" />
         <el-table-column label="发布者" width="180" align="center">
           <template #default="scope">
-            <div class="user-info" @click="$router.push('/profilePage')" v-if="userCache[scope.row.userId]">
+            <div class="user-info" @click="$router.push(`/userProfile/${scope.row.userId}`)" v-if="userCache[scope.row.userId]">
               <el-avatar 
                 :src="userCache[scope.row.userId].avatar" 
                 class="user-avatar"

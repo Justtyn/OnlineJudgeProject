@@ -77,6 +77,12 @@ const router = createRouter({
                         import ('@/views/page/RankPage.vue') // 懒加载组件 AnnouncementPage.vue
                 },
                 {
+                    path: 'userProfile/:id', // 用户个人资料页面路径
+                    name: 'UserProfile', // 用户个人资料页面路由名称
+                    component: () =>
+                        import ('@/views/page/UserProfilePage.vue') // 懒加载组件 UserProfilePage.vue
+                },
+                {
                     path: 'userClass', // 用户班级页面路径
                     name: 'UserClass', // 用户班级页面路由名称
                     component: () =>

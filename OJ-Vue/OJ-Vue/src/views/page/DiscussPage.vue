@@ -373,7 +373,13 @@ onMounted(() => {
             <a class="discuss-link" @click="handleViewDiscuss(scope.row)">{{ scope.row.title }}</a>
           </template>
         </el-table-column>
-        <el-table-column prop="username" label="作者" width="120" align="center" />
+        <el-table-column prop="username" label="作者" width="120" align="center">
+          <template #default="scope">
+            <a class="problem-link" @click="$router.push(`/userProfile/${scope.row.userId}`)">
+              {{ scope.row.username }}
+            </a>
+          </template>
+        </el-table-column>
         <el-table-column prop="problemId" label="相关题目" width="120" align="center">
           <template #default="scope">
             <a @click="$router.push(`/problem/${scope.row.problemId}`)" class="problem-link">

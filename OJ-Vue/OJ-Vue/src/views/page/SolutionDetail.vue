@@ -26,7 +26,7 @@
           </a>
         </el-descriptions-item>
         <el-descriptions-item label="发布者">
-          <div class="user-info" v-if="userInfo">
+          <div class="user-info" v-if="userInfo" @click="$router.push(`/userProfile/${solutionData.userId}`)">
             <el-avatar 
               :src="userInfo.avatar" 
               class="user-avatar"

@@ -44,7 +44,13 @@
           </template>
         </el-table-column>
         <!-- 其他数据列 -->
-        <el-table-column prop="username" label="用户名" width="180" align="center" />
+        <el-table-column prop="username" label="用户名" width="180" align="center">
+          <template #default="scope">
+            <a @click="$router.push(`/userProfile/${scope.row.userId}`)" class="problem-link">
+              {{ scope.row.username }}
+            </a>
+          </template>
+        </el-table-column>
         <!-- 状态列：根据不同状态显示不同样式 -->
         <el-table-column prop="status" label="状态" width="300" align="center">
           <template #default="scope">

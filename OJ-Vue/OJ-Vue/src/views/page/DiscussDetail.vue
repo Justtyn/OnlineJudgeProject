@@ -214,7 +214,7 @@ onMounted(async () => {
           </a>
         </el-descriptions-item>
         <el-descriptions-item label="发布者">
-          <div class="user-info" v-if="userInfo">
+          <div class="user-info" v-if="userInfo" @click="$router.push(`/userProfile/${discussData.userId}`)">
             <el-avatar 
               :src="userInfo.avatar" 
               class="user-avatar"
@@ -255,6 +255,7 @@ onMounted(async () => {
               :comment="comment"
               :user-info="userInfo"
               @reply="handleReply"
+              @click-user="(userId) => $router.push(`/userProfile/${userId}`)"
             />
           </div>
         </div>

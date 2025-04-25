@@ -26,7 +26,9 @@
             </a>
           </el-descriptions-item>
           <el-descriptions-item label="用户名">
-            {{ statusData.username }}
+            <a class="problem-link" @click="$router.push(`/userProfile/${statusData.userId}`)">
+              {{ statusData.username }}
+            </a>
           </el-descriptions-item>
           <el-descriptions-item label="耗时">
             {{ statusData.time }}

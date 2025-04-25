@@ -239,6 +239,11 @@ const handleSizeChange = (val) => {
 onMounted(() => {
   loadData()
 })
+
+// 在 script setup 部分添加处理函数
+const handleRowClick = (row) => {
+  router.push(`/userProfile/${row.id}`);
+};
 </script>
 
 <template>
@@ -272,7 +277,7 @@ onMounted(() => {
 
     <!-- 表格区域 -->
     <el-card class="table-card">
-      <el-table :data="tableData" style="width: 100%" border stripe highlight-current-row>
+      <el-table :data="tableData" style="width: 100%" border stripe highlight-current-row @row-click="handleRowClick">
         <el-table-column type="index" label="#" width="60" align="center">
           <template #default="scope">
             <span :class="['rank-number', `rank-${scope.$index + 1}`]">{{ scope.$index + 1 }}</span>
