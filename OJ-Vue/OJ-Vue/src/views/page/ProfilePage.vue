@@ -171,17 +171,17 @@ if (!localUser) {
 }
 
 // 默认头像和背景图（请替换为实际地址）
-const defaultAvatar = 'http://124.222.43.168:9090/uploads/1743236403200_IMG_0748.JPG';
-const defaultBackground = 'http://124.222.43.168:9090/uploads/ocean-8032698_1920.jpg';
+const defaultAvatar = 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG';
+const defaultBackground = 'http://localhost:9090/uploads/ocean-8032698_1920.jpg';
 const defaultBackgrounds = [
-  'http://124.222.43.168:9090/uploads/ocean-8032698_1920.jpg',
-  'http://124.222.43.168:9090/uploads/pattern-8032716_1920.jpg',
-  'http://124.222.43.168:9090/uploads/winter-landscape-7891462_1920.jpg',
-  'http://124.222.43.168:9090/uploads/wood-pallets-3614890_1280.jpg',
+  'http://localhost:9090/uploads/ocean-8032698_1920.jpg',
+  'http://localhost:9090/uploads/pattern-8032716_1920.jpg',
+  'http://localhost:9090/uploads/winter-landscape-7891462_1920.jpg',
+  'http://localhost:9090/uploads/wood-pallets-3614890_1280.jpg',
 
-  'http://124.222.43.168:9090/uploads/bokeh-2072271_1920.jpg',
-  'http://124.222.43.168:9090/uploads/clouds-4215608_1920.jpg',
-  'http://124.222.43.168:9090/uploads/curtain-9060879_1920.jpg',
+  'http://localhost:9090/uploads/bokeh-2072271_1920.jpg',
+  'http://localhost:9090/uploads/clouds-4215608_1920.jpg',
+  'http://localhost:9090/uploads/curtain-9060879_1920.jpg',
 ];
 
 // 学生信息响应式对象

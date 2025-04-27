@@ -233,20 +233,20 @@ const fetchUserInfo = async (userId) => {
       const userData = response.data.data;
       userCache[userId] = {
         username: userData.username || userData.name || '未知用户',
-        avatar: userData.avatar || 'http://124.222.43.168:9090/uploads/1743236403200_IMG_0748.JPG' // 默认头像
+        avatar: userData.avatar || 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG' // 默认头像
       };
     } else {
       console.error('获取用户信息失败:', response.data.msg);
       userCache[userId] = {
         username: '未知用户',
-        avatar: 'http://124.222.43.168:9090/uploads/1743236403200_IMG_0748.JPG' // 默认头像
+        avatar: 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG' // 默认头像
       };
     }
   } catch (error) {
     console.error('获取用户信息异常:', error);
     userCache[userId] = {
       username: '未知用户',
-      avatar: 'http://124.222.43.168:9090/uploads/1743236403200_IMG_0748.JPG' // 默认头像
+      avatar: 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG' // 默认头像
     };
   }
 }

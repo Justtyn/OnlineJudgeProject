@@ -7,7 +7,7 @@ import router from '../router' // 导入Vue路由实例
  * 配置基本请求参数，如基础URL、超时时间和请求头
  */
 const service = axios.create({
-    baseURL: 'http://124.222.43.168:9090', // 设置API的基础URL
+    baseURL: 'http://localhost:9090', // 设置API的基础URL
     timeout: 10000, // 设置请求超时时间为10秒
     headers: {
         'Content-Type': 'application/json' // 设置默认请求头为JSON格式
