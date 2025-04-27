@@ -7,8 +7,10 @@ import com.example.onlinejudge.entity.Account;
 import com.example.onlinejudge.entity.Student;
 import com.example.onlinejudge.exception.CustomException;
 import com.example.onlinejudge.mapper.StudentMapper;
+import com.example.onlinejudge.service.MailService;
 import com.example.onlinejudge.service.StudentService;
 import com.example.onlinejudge.utils.JwtUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,8 +26,14 @@ import java.util.Map;
 public class StudentServiceImpl implements StudentService {
     private static final String PASS_SALT = "OnlineJudge";
 
+    @Value("${app.base-url}")
+    private String baseUrl;
+
     @Resource
     private StudentMapper studentMapper;
+
+    @Resource
+    private MailService mailService;
 
     private String securePass(String password) {
         return SecureUtil.md5(password + PASS_SALT);
@@ -119,6 +127,7 @@ public class StudentServiceImpl implements StudentService {
         if (student == null) {
             throw new CustomException("学生不存在");
         }
+        // 1) 保存文件到磁盘
         String uploadDir = System.getProperty("user.dir") + "/uploads/";
         File dir = new File(uploadDir);
         if (!dir.exists()) {
@@ -127,7 +136,11 @@ public class StudentServiceImpl implements StudentService {
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
         File dest = new File(dir, fileName);
         file.transferTo(dest);
-        String avatarUrl = "http://localhost:9090/uploads/" + fileName;
+
+        // 2) 用配置的 baseUrl 拼成完整外网地址
+        String avatarUrl = baseUrl + "/uploads/" + fileName;
+
+        // 3) 更新数据库并返回
         student.setAvatar(avatarUrl);
         int updated = studentMapper.update(student);
         if (updated > 0) {
@@ -216,5 +229,113 @@ public class StudentServiceImpl implements StudentService {
             throw new CustomException("年份参数无效");
         }
         return studentMapper.selectByCreateTimeYear(year);
+    }
+
+    @Override
+    public boolean isUsernameExists(String username) {
+        return studentMapper.selectByUsername(username) != null;
+    }
+
+    @Override
+    @Transactional
+    public boolean resetPassword(String username, String email) {
+        Student student = studentMapper.selectByUsername(username);
+        if (student == null) {
+            throw new CustomException("用户名不存在");
+        }
+        if (!student.getEmail().equals(email)) {
+            throw new CustomException("邮箱与用户名不匹配");
+        }
+
+        // 生成6位随机密码
+        String newPassword = String.format("%06d", (int)(Math.random() * 1000000));
+        // 加密新密码
+        String encryptedPassword = securePass(newPassword);
+        
+        // 更新数据库中的密码
+        student.setPassword(encryptedPassword);
+        studentMapper.update(student);
+
+        // 发送邮件
+        String subject = "【在线评测系统】密码重置通知";
+        String htmlContent = String.format(
+            "<div style='max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;'>" +
+            "<div style='background-color: #f8f9fa; padding: 20px; border-radius: 5px;'>" +
+            "<h2 style='color: #333; text-align: center;'>密码重置通知</h2>" +
+            "<p style='color: #666;'>亲爱的 <strong>%s</strong> 用户：</p>" +
+            "<p style='color: #666;'>您好！</p>" +
+            "<p style='color: #666;'>我们收到了您的密码重置请求。为了保障您的账号安全，系统已为您生成新的临时密码。</p>" +
+            "<div style='background-color: #fff; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<p style='color: #333; margin: 0;'><strong>您的新密码是：</strong></p>" +
+            "<p style='color: #007bff; font-size: 24px; font-weight: bold; text-align: center; margin: 10px 0;'>%s</p>" +
+            "</div>" +
+            "<div style='background-color: #fff; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<p style='color: #333; margin: 0;'><strong>请注意：</strong></p>" +
+            "<ul style='color: #666;'>" +
+            "<li>请使用此临时密码尽快登录系统</li>" +
+            "<li>登录后请立即修改密码</li>" +
+            "<li>请勿将此密码告知他人</li>" +
+            "</ul>" +
+            "</div>" +
+            "<p style='color: #666;'>如果这不是您本人的操作，请忽略此邮件。</p>" +
+            "<p style='color: #666;'>祝您使用愉快！</p>" +
+            "<p style='color: #666; text-align: right;'>在线评测系统团队</p>" +
+            "</div>" +
+            "</div>",
+            username, newPassword
+        );
+        mailService.sendHtmlMail(email, subject, htmlContent);
+        
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean changePassword(String username, String oldPassword, String newPassword) {
+        Student student = studentMapper.selectByUsername(username);
+        if (student == null) {
+            throw new CustomException("用户名不存在");
+        }
+        if (!securePass(oldPassword).equals(student.getPassword())) {
+            throw new CustomException("旧密码错误");
+        }
+
+        // 加密新密码
+        String encryptedPassword = securePass(newPassword);
+        
+        // 更新数据库中的密码
+        student.setPassword(encryptedPassword);
+        studentMapper.update(student);
+
+        // 发送邮件
+        String subject = "【在线评测系统】密码修改通知";
+        String htmlContent = String.format(
+            "<div style='max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;'>" +
+            "<div style='background-color: #f8f9fa; padding: 20px; border-radius: 5px;'>" +
+            "<h2 style='color: #333; text-align: center;'>密码修改通知</h2>" +
+            "<p style='color: #666;'>亲爱的 <strong>%s</strong> 用户：</p>" +
+            "<p style='color: #666;'>您好！</p>" +
+            "<p style='color: #666;'>您的密码已经成功修改。</p>" +
+            "<div style='background-color: #fff; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<p style='color: #333; margin: 0;'><strong>您的新密码是：</strong></p>" +
+            "<p style='color: #007bff; font-size: 24px; font-weight: bold; text-align: center; margin: 10px 0;'>%s</p>" +
+            "</div>" +
+            "<div style='background-color: #fff; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<p style='color: #333; margin: 0;'><strong>请注意：</strong></p>" +
+            "<ul style='color: #666;'>" +
+            "<li>请妥善保管您的新密码</li>" +
+            "<li>请勿将此密码告知他人</li>" +
+            "<li>如果这不是您本人的操作，请立即联系管理员</li>" +
+            "</ul>" +
+            "</div>" +
+            "<p style='color: #666;'>祝您使用愉快！</p>" +
+            "<p style='color: #666; text-align: right;'>在线评测系统团队</p>" +
+            "</div>" +
+            "</div>",
+            username, newPassword
+        );
+        mailService.sendHtmlMail(student.getEmail(), subject, htmlContent);
+        
+        return true;
     }
 }

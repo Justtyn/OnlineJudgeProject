@@ -14,51 +14,55 @@
         <!-- 信息描述表格 -->
         <el-descriptions
           border
-          :column="2"
+          :column="3"
           class="detail-table"
+          :label-style="{ width: '120px', fontWeight: 'bold', backgroundColor: '#f5f7fa' }"
+          :content-style="{ padding: '12px 20px' }"
         >
-          <el-descriptions-item label="状态ID">
-            {{ statusData.id }}
+          <el-descriptions-item label="状态ID" :span="1">
+            <span class="detail-value">{{ statusData.id }}</span>
           </el-descriptions-item>
-          <el-descriptions-item label="题目ID">
+          <el-descriptions-item label="题目ID" :span="1">
             <a class="problem-link" @click="$router.push(`/problem/${statusData.problemId}`)">
               {{ statusData.problemId }}
             </a>
           </el-descriptions-item>
-          <el-descriptions-item label="用户名">
+          <el-descriptions-item label="用户名" :span="1">
             <a class="problem-link" @click="$router.push(`/userProfile/${statusData.userId}`)">
               {{ statusData.username }}
             </a>
           </el-descriptions-item>
-          <el-descriptions-item label="耗时">
-            {{ statusData.time }}
+          <el-descriptions-item label="耗时" :span="1">
+            <span class="detail-value">{{ statusData.time }}</span>
           </el-descriptions-item>
-          <el-descriptions-item label="状态">
+          <el-descriptions-item label="状态" :span="1">
             <span :class="getStatusClass(statusData.status)">
               {{ statusData.status }}
             </span>
           </el-descriptions-item>
-          <el-descriptions-item label="语言">
-            {{ statusData.language }}
+          <el-descriptions-item label="语言" :span="1">
+            <span class="detail-value">{{ statusData.language }}</span>
           </el-descriptions-item>
-          <el-descriptions-item label="内存">
-            {{ statusData.memory }} KB
+          <el-descriptions-item label="内存" :span="1">
+            <span class="detail-value">{{ statusData.memory }} KB</span>
           </el-descriptions-item>
-          <el-descriptions-item label="提交时间">
-            {{ formatDateTime(statusData.creatTime) }}
+          <el-descriptions-item label="提交时间" :span="2">
+            <span class="detail-value">{{ formatDateTime(statusData.creatTime) }}</span>
           </el-descriptions-item>
-          <el-descriptions-item label="输出信息">
-            <span v-if="output" :class="getStatusClass('Wrong Answer')">
-              {{ output }}
-            </span>
-            <span v-else class="status-pending">暂无信息</span>
+          <el-descriptions-item label="输出信息" :span="3">
+            <div class="output-info">
+              <span v-if="output" :class="getStatusClass('Wrong Answer')">
+                {{ output }}
+              </span>
+              <span v-else class="status-pending">暂无信息</span>
+            </div>
           </el-descriptions-item>
         </el-descriptions>
   
         <!-- Run Code 工具栏 -->
         <div class="code-toolbar">
           <span class="code-title">Run Code</span>
-          <el-button type="success" size="mini" @click="runCode">
+          <el-button type="success" size="small" @click="runCode" class="refresh-btn">
             <el-icon><Refresh /></el-icon>
           </el-button>
         </div>
@@ -239,14 +243,19 @@
     padding: 20px;
     background-color: #f5f7fa;
     height: 100%;
+    width: 100%;
+    box-sizing: border-box;
   }
   .table-card {
     margin-bottom: 20px;
+    width: 100%;
   }
   .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
   }
   .title {
     font-size: 18px;
@@ -254,13 +263,49 @@
   }
   .detail-table {
     margin-bottom: 20px;
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  }
+  .detail-value {
+    color: #606266;
+    font-size: 14px;
+  }
+  .output-info {
+    padding: 8px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+  }
+  :deep(.el-descriptions__cell) {
+    padding: 12px 20px;
   }
   :deep(.el-descriptions__label) {
-    font-weight: bold;
-    width: 120px;
+    color: #606266;
+    font-weight: 600;
   }
   :deep(.el-descriptions__content) {
     color: #303133;
+    word-break: break-word;
+  }
+  :deep(.el-descriptions__body) {
+    background-color: #ffffff;
+  }
+  :deep(.el-descriptions__table) {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  :deep(.el-descriptions__cell.is-bordered) {
+    border: 1px solid #ebeef5;
+  }
+  :deep(.el-descriptions__cell.is-bordered:first-child) {
+    border-left: 1px solid #ebeef5;
+  }
+  :deep(.el-descriptions__cell.is-bordered:last-child) {
+    border-right: 1px solid #ebeef5;
   }
   .problem-link {
     color: #1890ff;
@@ -275,6 +320,8 @@
     justify-content: space-between;
     align-items: center;
     margin: 16px 0 8px;
+    flex-wrap: wrap;
+    gap: 10px;
   }
   .code-title {
     font-size: 16px;
@@ -285,6 +332,7 @@
     background: #2d2d2d;
     border-radius: 4px;
     overflow: auto;
+    width: 100%;
   }
   .code-block {
     counter-reset: line;
@@ -295,6 +343,8 @@
     line-height: 1.6em;
     color: #f8f8f2;
     background: transparent;
+    white-space: pre-wrap;
+    word-wrap: break-word;
   }
   .code-block code {
     display: block;
@@ -356,9 +406,13 @@
   /* AI 对话样式 */
   .ai-chat {
     margin-top: 20px;
+    width: 100%;
   }
   .model-select {
     margin-bottom: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
   }
   .thinking {
     display: flex;
@@ -393,11 +447,62 @@
     max-height: 200px;
     overflow-y: auto;
     scroll-behavior: smooth;
+    width: 100%;
   }
   .chat-window pre {
     margin: 0;
     white-space: pre-wrap;
     word-wrap: break-word;
+  }
+  
+  /* 移动端适配 */
+  @media screen and (max-width: 768px) {
+    .status-container {
+      padding: 10px;
+    }
+    .card-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .title {
+      font-size: 16px;
+    }
+    :deep(.el-descriptions__label) {
+      width: 80px !important;
+      font-size: 13px;
+    }
+    :deep(.el-descriptions__content) {
+      font-size: 13px;
+    }
+    :deep(.el-descriptions__cell) {
+      padding: 8px 12px !important;
+    }
+    .code-toolbar {
+      flex-direction: row;
+      align-items: center;
+      margin: 12px 0 6px;
+    }
+    .refresh-btn {
+      padding: 6px !important;
+      min-height: 28px !important;
+    }
+    .refresh-btn :deep(.el-icon) {
+      font-size: 14px;
+    }
+    .model-select {
+      flex-direction: row;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .chat-window {
+      max-height: 150px;
+    }
+    .detail-value {
+      font-size: 13px;
+    }
+    .problem-link {
+      font-size: 13px;
+    }
   }
   </style>
   

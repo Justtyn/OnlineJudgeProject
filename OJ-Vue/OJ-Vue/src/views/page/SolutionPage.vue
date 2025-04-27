@@ -233,20 +233,20 @@ const fetchUserInfo = async (userId) => {
       const userData = response.data.data;
       userCache[userId] = {
         username: userData.username || userData.name || '未知用户',
-        avatar: userData.avatar || 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG' // 默认头像
+        avatar: userData.avatar || 'http://124.222.43.168:9090/uploads/1743236403200_IMG_0748.JPG' // 默认头像
       };
     } else {
       console.error('获取用户信息失败:', response.data.msg);
       userCache[userId] = {
         username: '未知用户',
-        avatar: 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG' // 默认头像
+        avatar: 'http://124.222.43.168:9090/uploads/1743236403200_IMG_0748.JPG' // 默认头像
       };
     }
   } catch (error) {
     console.error('获取用户信息异常:', error);
     userCache[userId] = {
       username: '未知用户',
-      avatar: 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG' // 默认头像
+      avatar: 'http://124.222.43.168:9090/uploads/1743236403200_IMG_0748.JPG' // 默认头像
     };
   }
 }
@@ -590,7 +590,7 @@ const handleLike = async (id) => {
 .solution-container {
   padding: 20px;
   background-color: #f5f7fa;
-  height: 80vh;
+  min-height: 100vh;
 }
 
 .title-card {
@@ -754,5 +754,80 @@ const handleLike = async (id) => {
 .like-button:hover {
   color: #e6a23c;
   transform: scale(1.15);
+}
+
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .solution-container {
+    padding: 10px;
+  }
+  
+  .search-card {
+    margin-bottom: 15px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  :deep(.el-form) {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  :deep(.el-form-item) {
+    margin-right: 0;
+    width: 100%;
+  }
+  
+  :deep(.el-input) {
+    width: 100%;
+  }
+  
+  :deep(.el-table) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__header) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__body) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table .cell) {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  
+  :deep(.el-pagination) {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  :deep(.el-dialog) {
+    width: 90% !important;
+    margin: 0 auto;
+  }
+  
+  :deep(.el-dialog__body) {
+    padding: 15px;
+  }
+  
+  :deep(.el-form-item__label) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-input__inner) {
+    font-size: 14px;
+  }
 }
 </style>

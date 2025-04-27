@@ -46,6 +46,18 @@
               <span class="info-label">邮箱：</span>
               <span class="info-value">{{ studentInfo.email }}</span>
             </div>
+            <div class="info-item">
+              <span class="info-label">学校：</span>
+              <span class="info-value">{{ studentInfo.school }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">创建时间：</span>
+              <span class="info-value">{{ studentInfo.createTime }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">最后访问：</span>
+              <span class="info-value">{{ studentInfo.lastVisitTime }}</span>
+            </div>
           </div>
         </el-tab-pane>
 
@@ -66,7 +78,9 @@
         <el-tab-pane label="设置" name="settings">
           <div class="settings-container">
             <el-button type="primary" @click="openEditDialog">修改信息</el-button>
+            <el-button type="primary" @click="showChangePassword">修改密码</el-button>
           </div>
+          <change-password ref="changePasswordRef" />
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -82,6 +96,8 @@
             <el-select v-model="editForm.sex">
               <el-option label="男" value="男"></el-option>
               <el-option label="女" value="女"></el-option>
+              <el-option label="沃尔玛购物袋" value="沃尔玛购物袋"></el-option>
+              <el-option label="武装直升机" value="武装直升机"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="出生日期" prop="birth">
@@ -92,6 +108,9 @@
           </el-form-item>
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="editForm.email" />
+          </el-form-item>
+          <el-form-item label="学校" prop="school">
+            <el-input v-model="editForm.school" />
           </el-form-item>
         </el-form>
       </div>
@@ -108,9 +127,16 @@
       </div>
       <!-- 修改头像上传按钮 -->
       <div style="text-align: center; margin-top: 20px;">
-        <el-upload action="/api/student/uploadAvatar" :data="{ id: studentInfo.id }"
-          :on-success="handleAvatarUploadSuccess" :headers="{ Authorization: 'Bearer ' + token }"
-          :show-file-list="false">
+        <el-upload
+            class="avatar-uploader"
+            action="/api/student/uploadAvatar"
+            name="file"
+            :data="{ id: studentInfo.id }"
+            :headers="{ Authorization: 'Bearer ' + token }"
+            :on-success="handleAvatarUploadSuccess"
+            :show-file-list="false"
+            accept="image/*"
+        >
           <el-button type="primary" size="mini">修改头像</el-button>
         </el-upload>
       </div>
@@ -126,6 +152,7 @@ import { ref, reactive, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import request from '@/utils/request.js';
 import router from '@/router/index.js';
+import ChangePassword from '@/components/ChangePassword.vue'
 
 // 从 localStorage 中获取登录信息
 const localUser = localStorage.getItem('student-user') 
@@ -144,17 +171,17 @@ if (!localUser) {
 }
 
 // 默认头像和背景图（请替换为实际地址）
-const defaultAvatar = 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG';
-const defaultBackground = 'http://localhost:9090/uploads/ocean-8032698_1920.jpg';
+const defaultAvatar = 'http://124.222.43.168:9090/uploads/1743236403200_IMG_0748.JPG';
+const defaultBackground = 'http://124.222.43.168:9090/uploads/ocean-8032698_1920.jpg';
 const defaultBackgrounds = [
-  'http://localhost:9090/uploads/ocean-8032698_1920.jpg',
-  'http://localhost:9090/uploads/pattern-8032716_1920.jpg',
-  'http://localhost:9090/uploads/winter-landscape-7891462_1920.jpg',
-  'http://localhost:9090/uploads/wood-pallets-3614890_1280.jpg',
+  'http://124.222.43.168:9090/uploads/ocean-8032698_1920.jpg',
+  'http://124.222.43.168:9090/uploads/pattern-8032716_1920.jpg',
+  'http://124.222.43.168:9090/uploads/winter-landscape-7891462_1920.jpg',
+  'http://124.222.43.168:9090/uploads/wood-pallets-3614890_1280.jpg',
 
-  'http://localhost:9090/uploads/bokeh-2072271_1920.jpg',
-  'http://localhost:9090/uploads/clouds-4215608_1920.jpg',
-  'http://localhost:9090/uploads/curtain-9060879_1920.jpg',
+  'http://124.222.43.168:9090/uploads/bokeh-2072271_1920.jpg',
+  'http://124.222.43.168:9090/uploads/clouds-4215608_1920.jpg',
+  'http://124.222.43.168:9090/uploads/curtain-9060879_1920.jpg',
 ];
 
 // 学生信息响应式对象
@@ -167,7 +194,10 @@ const studentInfo = reactive({
   phone: '',
   email: '',
   avatar: '',
-  background: ''
+  background: '',
+  school: '',
+  createTime: '',
+  lastVisitTime: ''
 });
 
 const formatDateTime = (dateTimeStr) => {
@@ -196,6 +226,9 @@ const fetchStudentInfo = async () => {
     studentInfo.email = localUser.email || '';
     studentInfo.avatar = localUser.avatar || '';
     studentInfo.background = localUser.background || defaultBackground;
+    studentInfo.school = localUser.school || '';
+    studentInfo.createTime = localUser.createTime || '';
+    studentInfo.lastVisitTime = localUser.lastVisitTime || '';
     return;
   }
 
@@ -215,6 +248,9 @@ const fetchStudentInfo = async () => {
       studentInfo.email = data.email || '';
       studentInfo.avatar = data.avatar || '';
       studentInfo.background = data.background || defaultBackground;
+      studentInfo.school = data.school || '';
+      studentInfo.createTime = data.createTime || '';
+      studentInfo.lastVisitTime = data.lastVisitTime || '';
     } else {
       ElMessage.error(res.data.msg || '获取用户信息失败');
     }
@@ -239,7 +275,8 @@ const editForm = reactive({
   birth: '',
   phone: '',
   email: '',
-  background: defaultBackground
+  background: defaultBackground,
+  school: ''
 });
 const editFormRef = ref();
 
@@ -251,6 +288,7 @@ const openEditDialog = () => {
   editForm.phone = studentInfo.phone;
   editForm.email = studentInfo.email;
   editForm.background = studentInfo.background || defaultBackground;
+  editForm.school = studentInfo.school;
   editDialogVisible.value = true;
 };
 
@@ -265,7 +303,8 @@ const submitEdit = async () => {
     birth: editForm.birth,
     phone: editForm.phone,
     email: editForm.email,
-    background: editForm.background
+    background: editForm.background,
+    school: editForm.school
   };
   try {
     const res = await request.put(`/api/student/update`, payload, {
@@ -328,6 +367,12 @@ const handleAvatarUploadSuccess = (res: any) => {
  * 我们不直接使用 size="100" ，改用 size="large" 并在 CSS 中自定义宽高
  */
 const avatarSize = ref('large');
+
+const changePasswordRef = ref(null)
+
+const showChangePassword = () => {
+  changePasswordRef.value.dialogVisible = true
+}
 </script>
 
 <style scoped>

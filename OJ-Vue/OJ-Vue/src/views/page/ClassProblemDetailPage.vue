@@ -165,8 +165,61 @@ onMounted(() => {
 /* 题目详情页面的主容器样式 */
 .problem-detail-container {
   padding: 20px;
-  background-color: #f5f7fa;  /* 浅灰色背景 */
-  min-height: 100vh;  /* 最小高度为视口高度，确保内容少时也能填满屏幕 */
+  background-color: #f5f7fa;
+  min-height: 100vh;
+}
+
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .problem-detail-container {
+    padding: 10px;
+  }
+  
+  .problem-card {
+    margin: 0;
+  }
+  
+  .card-header {
+    gap: 8px;
+  }
+  
+  .problem-title {
+    font-size: 20px;
+  }
+  
+  .problem-meta {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  :deep(.el-tag) {
+    font-size: 12px;
+  }
+  
+  .section h3 {
+    font-size: 16px;
+  }
+  
+  .content {
+    font-size: 14px;
+  }
+  
+  .sample-card {
+    margin: 10px 0;
+  }
+  
+  .sample-card pre {
+    font-size: 12px;
+    padding: 8px;
+  }
+  
+  :deep(.el-card__header) {
+    padding: 10px;
+  }
+  
+  :deep(.el-card__body) {
+    padding: 15px;
+  }
 }
 
 /* 题目卡片样式 */

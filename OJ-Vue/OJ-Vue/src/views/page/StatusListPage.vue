@@ -6,8 +6,8 @@
         <div class="card-header">
           <span class="title">状态列表</span>
           <!-- 刷新按钮：点击时重新加载数据 -->
-          <el-button type="primary" size="small" circle @click="loadData" title="刷新数据">
-            <el-icon><Refresh /></el-icon>
+          <el-button type="primary" size="small" circle @click="loadData" class="refresh-btn" title="刷新数据">
+            <el-icon class="refresh-icon"><Refresh /></el-icon>
           </el-button>
         </div>
       </template>
@@ -314,11 +314,14 @@ onBeforeUnmount(() => {
   padding: 20px;
   background-color: #f5f7fa;
   height: 80vh;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* 搜索卡片样式 */
 .search-card {
   margin-bottom: 20px;
+  width: 100%;
 }
 
 /* 卡片头部样式 */
@@ -326,6 +329,8 @@ onBeforeUnmount(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 /* 标题样式 */
@@ -337,6 +342,8 @@ onBeforeUnmount(() => {
 /* 表格卡片样式 */
 .table-card {
   margin-bottom: 20px;
+  width: 100%;
+  overflow-x: auto;
 }
 
 /* 表格头部样式 */
@@ -345,6 +352,8 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   align-items: center;
   padding-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 /* 表格标题样式 */
@@ -363,6 +372,7 @@ onBeforeUnmount(() => {
   margin-top: 20px;
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 /* Element Plus 卡片样式覆盖 */
@@ -438,5 +448,115 @@ onBeforeUnmount(() => {
   color: #909399;
   border: 1px solid #e4e7ed;
   width: 100%;
+}
+
+/* 移动端适配 */
+@media screen and (max-width: 768px) {
+  .status-container {
+    padding: 10px;
+    height: auto;
+  }
+
+  .card-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  :deep(.el-table) {
+    font-size: 14px;
+  }
+
+  :deep(.el-table .el-table__row) {
+    height: auto;
+  }
+
+  :deep(.el-table__cell) {
+    padding: 8px !important;
+  }
+
+  :deep(.el-pagination) {
+    font-size: 14px;
+  }
+
+  :deep(.el-pagination .el-pagination__sizes) {
+    display: none;
+  }
+
+  :deep(.el-pagination .el-pagination__jump) {
+    display: none;
+  }
+
+  :deep(.el-form-item) {
+    margin-bottom: 10px;
+  }
+
+  :deep(.el-input) {
+    width: 100%;
+  }
+
+  :deep(.el-button) {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  /* 刷新按钮移动端样式 */
+  .refresh-btn {
+    width: auto !important;
+    margin-top: 0 !important;
+    padding: 8px !important;
+    min-height: 32px !important;
+  }
+
+  .refresh-icon {
+    font-size: 14px;
+  }
+
+  /* 状态标签移动端样式 */
+  .status-success,
+  .status-error,
+  .status-warning,
+  .status-pending,
+  .status-unknown {
+    width: auto !important;
+    display: inline-block;
+    padding: 2px 6px !important;
+    font-size: 12px !important;
+  }
+}
+
+/* 刷新按钮样式 */
+.refresh-btn {
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #409eff, #36cfc9);
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.refresh-btn:hover {
+  transform: rotate(180deg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.refresh-icon {
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.refresh-btn:hover .refresh-icon {
+  transform: scale(1.1);
+}
+
+.refresh-icon {
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.refresh-btn:hover .refresh-icon {
+  transform: scale(1.1);
 }
 </style>

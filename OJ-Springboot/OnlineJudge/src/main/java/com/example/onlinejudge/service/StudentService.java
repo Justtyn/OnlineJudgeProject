@@ -66,4 +66,31 @@ public interface StudentService {
      * @return 匹配的学生列表
      */
     List<Student> getStudentsByCreateTimeYear(Integer year);
+
+    /**
+     * 检查用户名是否已存在
+     * 
+     * @param username 要检查的用户名
+     * @return 如果用户名已存在返回true，否则返回false
+     */
+    boolean isUsernameExists(String username);
+
+    /**
+     * 找回密码
+     * 
+     * @param username 用户名
+     * @param email 邮箱
+     * @return 是否成功发送邮件
+     */
+    boolean resetPassword(String username, String email);
+
+    /**
+     * 修改密码
+     * 
+     * @param username 用户名
+     * @param oldPassword 旧密码
+     * @param newPassword 新密码
+     * @return 是否成功修改密码
+     */
+    boolean changePassword(String username, String oldPassword, String newPassword);
 }

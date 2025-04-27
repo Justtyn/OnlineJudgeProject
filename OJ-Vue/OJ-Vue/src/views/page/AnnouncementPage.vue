@@ -312,9 +312,75 @@ body {
   background-color: #f5f7fa;
   min-height: 80vh;
   width: 100%;
-  max-width: 1200px; /* 添加最大宽度限制 */
-  margin: 0 auto; /* 居中显示 */
-  overflow-x: hidden; /* 防止横向滚动条 */
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow-x: hidden;
+}
+
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .announcement-container {
+    padding: 10px;
+  }
+  
+  .search-card {
+    margin-bottom: 15px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  :deep(.el-form) {
+    padding: 10px 0;
+  }
+  
+  :deep(.el-form-item) {
+    margin-right: 0;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+  
+  :deep(.el-input) {
+    width: 100%;
+  }
+  
+  .announcement-card {
+    margin-bottom: 15px;
+  }
+  
+  .announcement-header {
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+  }
+  
+  .announcement-title {
+    font-size: 16px;
+  }
+  
+  .announcement-time {
+    font-size: 12px;
+  }
+  
+  .announcement-content {
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  :deep(.el-dialog) {
+    width: 90% !important;
+    margin: 0 auto;
+  }
+  
+  :deep(.el-dialog__body) {
+    padding: 15px;
+  }
 }
 
 .search-card {

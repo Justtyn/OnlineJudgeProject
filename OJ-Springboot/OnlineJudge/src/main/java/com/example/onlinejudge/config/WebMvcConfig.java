@@ -30,8 +30,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // 映射上传的文件目录：将所有 /uploads/** 的请求转发到工作目录下的 uploads 文件夹
         // 例如：请求 /uploads/image.jpg 会访问服务器上 {工作目录}/uploads/image.jpg 文件
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/");
-
+                .addResourceLocations(
+                        "file:" + System.getProperty("user.dir") + "/uploads/",
+                        "classpath:/static/uploads/"
+                );
         // 保留原有的静态资源映射
         // 将所有其他请求映射到 classpath:/static/ 目录下
         // 并添加自定义的资源解析器，用于支持前端单页应用的路由
@@ -134,9 +136,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
          * @return 是否被忽略
          */
         private boolean isIgnored(String path) {
-            return ignoredPaths.stream().anyMatch(path::startsWith);
+            return ignoredPaths.stream().anyMatch(path::startsWith)
+                    || path.startsWith("uploads/");  // 额外忽略 uploads 前缀
         }
-
         /**
          * 判断路径是否为需要处理的静态资源
          * 根据文件扩展名判断

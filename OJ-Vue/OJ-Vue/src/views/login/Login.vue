@@ -67,11 +67,34 @@
       <!-- 注册提示 -->
       <div class="register-text">
         还没有账号？请
-        <router-link to="/register" class="register-link"
-        >注册</router-link
-        >
+        <router-link to="/register" class="register-link">注册</router-link>
+        <span class="divider">|</span>
+        <a href="javascript:;" class="reset-link" @click="showResetDialog">忘记密码？</a>
       </div>
     </div>
+
+    <!-- 重置密码对话框 -->
+    <el-dialog
+      v-model="resetDialogVisible"
+      title="重置密码"
+      width="30%"
+      :close-on-click-modal="false"
+    >
+      <el-form :model="resetForm" :rules="resetRules" ref="resetFormRef" label-width="80px">
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="resetForm.username" placeholder="请输入用户名"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="resetForm.email" placeholder="请输入邮箱"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="resetDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleResetPassword">确认</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -215,6 +238,43 @@ const login = async () => {
     generateCaptcha();
   }
 };
+
+// 重置密码相关
+const resetDialogVisible = ref(false);
+const resetFormRef = ref();
+const resetForm = reactive({
+  username: '',
+  email: ''
+});
+
+const resetRules = {
+  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+  email: [
+    { required: true, message: '请输入邮箱', trigger: 'blur' },
+    { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }
+  ]
+};
+
+const showResetDialog = () => {
+  resetDialogVisible.value = true;
+  resetForm.username = '';
+  resetForm.email = '';
+};
+
+const handleResetPassword = async () => {
+  try {
+    await resetFormRef.value.validate();
+    const res = await request.post('/api/student/resetPassword', resetForm);
+    if (res.data.code === '200') {
+      ElMessage.success('重置密码邮件已发送，请查收邮箱');
+      resetDialogVisible.value = false;
+    } else {
+      ElMessage.error(res.data.msg || '重置密码失败');
+    }
+  } catch (error) {
+    ElMessage.error('重置密码过程中发生错误');
+  }
+};
 </script>
 
 <style scoped>
@@ -308,5 +368,74 @@ body {
 }
 .captcha-img:hover {
   opacity: 0.8;
+}
+
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .login-box {
+    padding: 20px;
+    margin-bottom: 100px;
+  }
+  
+  .login-form {
+    padding: 0 20px;
+  }
+  
+  .login-text {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .welcome-text {
+    height: 60px;
+    margin-bottom: 20px;
+  }
+  
+  .register-text {
+    margin-top: 20px;
+    font-size: 14px;
+  }
+  
+  .captcha-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .captcha-input {
+    margin-right: 0;
+  }
+  
+  .captcha-img {
+    width: 80px;
+    height: 32px;
+  }
+}
+
+.divider {
+  margin: 0 10px;
+  color: #999;
+}
+
+.reset-link {
+  color: #1890ff;
+  text-decoration: none;
+}
+
+.reset-link:hover {
+  text-decoration: underline;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* 移动端适配 */
+@media screen and (max-width: 768px) {
+  .el-dialog {
+    width: 90% !important;
+  }
 }
 </style>

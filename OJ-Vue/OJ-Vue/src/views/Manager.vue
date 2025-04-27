@@ -12,19 +12,19 @@
           </div>
 
           <!-- 中间菜单部分 -->
-          <div class="header-body nav-section">
+          <div class="header-body nav-section" :class="{ 'nav-active': isMenuOpen }">
             <nav class="nav-links">
-              <router-link to="/homePage" class="nav-link">首页</router-link>
-              <router-link to="/charts" class="nav-link">测试</router-link>
-              <router-link to="/problemListPage" class="nav-link">题库</router-link>
-              <router-link to="/statusListPage" class="nav-link">状态</router-link>
-              <router-link to="/rankPage" class="nav-link">排名</router-link>
-              <router-link to="/stats" class="nav-link">统计</router-link>
-              <router-link to="/homeworkPage" class="nav-link">作业</router-link>
-              <router-link to="/solutionPage" class="nav-link">题解</router-link>
-              <router-link to="/discussPage" class="nav-link">讨论</router-link>
-              <router-link to="/announcementPage" class="nav-link">公告</router-link>
-              <router-link to="/about" class="nav-link">关于</router-link>
+              <router-link to="/homePage" class="nav-link" @click="closeMenu">首页</router-link>
+              <!-- <router-link to="/charts" class="nav-link" @click="closeMenu">测试</router-link> -->
+              <router-link to="/problemListPage" class="nav-link" @click="closeMenu">题库</router-link>
+              <router-link to="/statusListPage" class="nav-link" @click="closeMenu">状态</router-link>
+              <router-link to="/rankPage" class="nav-link" @click="closeMenu">排名</router-link>
+              <router-link to="/stats" class="nav-link" @click="closeMenu">统计</router-link>
+              <router-link to="/homeworkPage" class="nav-link" @click="closeMenu">作业</router-link>
+              <router-link to="/solutionPage" class="nav-link" @click="closeMenu">题解</router-link>
+              <router-link to="/discussPage" class="nav-link" @click="closeMenu">讨论</router-link>
+              <router-link to="/announcementPage" class="nav-link" @click="closeMenu">公告</router-link>
+              <router-link to="/about" class="nav-link" @click="closeMenu">关于</router-link>
             </nav>
           </div>
 
@@ -50,6 +50,12 @@
                 </template>
               </el-dropdown>
             </template>
+            <!-- 汉堡菜单按钮 -->
+            <div class="menu-toggle" @click="toggleMenu">
+              <el-icon :size="24">
+                <Menu />
+              </el-icon>
+            </div>
           </div>
         </div>
       </el-header>
@@ -74,11 +80,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { SwitchFilled } from '@element-plus/icons-vue'
+import { SwitchFilled, Menu } from '@element-plus/icons-vue'
 
 const router = useRouter()
+const isMenuOpen = ref(false)
 
 // 获取 token（从 localStorage 中解析 student-user 对象）
 const token = computed<string | null>(() => {
@@ -137,6 +144,14 @@ const handleCommand = (command: string) => {
     default:
       break
   }
+}
+
+const toggleMenu = () => {
+  isMenuOpen.value = !isMenuOpen.value
+}
+
+const closeMenu = () => {
+  isMenuOpen.value = false
 }
 </script>
 
@@ -215,6 +230,26 @@ html, body {
   text-decoration: none;
 }
 
+.menu-toggle {
+  display: none;
+  cursor: pointer;
+  padding: 8px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  margin-left: 8px;
+}
+
+.menu-toggle:hover {
+  background: #e6e6e6;
+  transform: scale(1.05);
+}
+
+.menu-toggle .el-icon {
+  color: #2c3e50;
+  font-size: 24px;
+}
+
 .nav-section {
   flex: 1;
   display: flex;
@@ -248,6 +283,7 @@ html, body {
   gap: 16px;
   min-width: 150px;
   justify-content: flex-end;
+  align-items: center;
 }
 
 .auth-link {
@@ -297,7 +333,7 @@ html, body {
 
 @media (max-width: 768px) {
   .nav-links {
-    display: none;
+    display: flex;
   }
   
   .header-box {
@@ -306,6 +342,60 @@ html, body {
   
   .auth-section {
     gap: 8px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+  }
+
+  .nav-section {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 64px);
+    background: white;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  .nav-section.nav-active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .nav-link {
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  .header-box {
+    padding: 0 16px;
+  }
+
+  .logo-section {
+    min-width: auto;
+  }
+
+  .auth-section {
+    min-width: auto;
   }
 }
 </style>

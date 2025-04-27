@@ -352,6 +352,34 @@ export default {
   background-color: #f5f5f5;
 }
 
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .charts-container {
+    padding: 10px;
+  }
+  
+  .chart-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .chart-item {
+    width: 100%;
+  }
+  
+  .chart {
+    height: 300px;
+  }
+  
+  :deep(.echarts-tooltip) {
+    font-size: 12px;
+  }
+  
+  :deep(.echarts-title) {
+    font-size: 14px;
+  }
+}
+
 .chart-row {
   display: flex;
   margin-bottom: 20px;

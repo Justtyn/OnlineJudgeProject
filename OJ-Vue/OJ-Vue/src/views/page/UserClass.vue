@@ -196,23 +196,28 @@ onMounted(() => {
   background-color: #f5f7fa;
   min-height: 80vh;
   width: 100%;
-  overflow-x: hidden; /* 防止横向滚动条 */
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .header-card, .table-card {
   margin-bottom: 20px;
+  width: 100%;
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .header-left {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .header-right {
@@ -229,6 +234,8 @@ onMounted(() => {
 /* 表格样式 */
 :deep(.el-table) {
   margin-top: 10px;
+  width: 100%;
+  overflow-x: auto;
 }
 
 .class-link {
@@ -242,7 +249,7 @@ onMounted(() => {
   text-decoration: underline;
 }
 
-/* 卡片列表样式（备选方案） */
+/* 卡片列表样式 */
 .class-list {
   display: flex;
   flex-direction: column;
@@ -272,6 +279,7 @@ onMounted(() => {
 .class-title {
   font-size: 16px;
   font-weight: bold;
+  word-break: break-word;
 }
 
 .class-info {
@@ -287,6 +295,7 @@ onMounted(() => {
 .class-item {
   display: flex;
   margin-bottom: 8px;
+  flex-wrap: wrap;
 }
 
 .info-label {
@@ -296,6 +305,7 @@ onMounted(() => {
 
 .info-value {
   color: #303133;
+  word-break: break-word;
 }
 
 .class-actions {
@@ -310,5 +320,64 @@ onMounted(() => {
 
 :deep(.el-card__body) {
   padding: 20px;
+}
+
+/* 移动端适配 */
+@media screen and (max-width: 768px) {
+  .class-container {
+    padding: 10px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-left {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  :deep(.el-table) {
+    font-size: 14px;
+  }
+
+  :deep(.el-table .el-table__row) {
+    height: auto;
+  }
+
+  .class-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .class-title {
+    font-size: 14px;
+  }
+
+  .class-info {
+    font-size: 12px;
+  }
+
+  .class-content {
+    padding: 12px;
+  }
+
+  .info-label {
+    width: 80px;
+  }
+
+  .class-actions {
+    justify-content: center;
+  }
+
+  :deep(.el-button) {
+    width: 100%;
+  }
 }
 </style>

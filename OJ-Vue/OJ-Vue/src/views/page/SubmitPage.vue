@@ -202,7 +202,7 @@ const submitCode = async () => {
       expected_output: sampleOutput
     }
 
-    const response = await request.post('http://localhost:2358/submissions?wait=true', submitData)
+    const response = await request.post('http://106.53.51.77:2358/submissions?wait=true', submitData)
     submissionResult.value = response.data
 
     // 无论返回什么状态，都保存到状态中
@@ -311,6 +311,8 @@ watch(selectedTheme, (newTheme) => {
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   height: 80vh;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 h2 {
@@ -319,12 +321,15 @@ h2 {
   margin-bottom: 10px;
   color: #333333;
   text-align: center;
+  word-break: break-word;
 }
 
 .settings {
   display: flex;
   justify-content: space-between;
   margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .el-select {
@@ -361,6 +366,7 @@ h2 {
   position: relative;
   height: 550px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
 h1,
@@ -374,5 +380,39 @@ h2 {
 
 .el-option {
   font-size: 14px;
+}
+
+/* 移动端适配 */
+@media screen and (max-width: 768px) {
+  .submit-code-container {
+    padding: 10px;
+    height: auto;
+    min-height: 80vh;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  .settings {
+    flex-direction: column;
+  }
+
+  .select {
+    width: 100%;
+  }
+
+  .el-select {
+    width: 100%;
+  }
+
+  .code-editor-container {
+    height: 400px;
+  }
+
+  .el-button {
+    font-size: 14px;
+    padding: 10px;
+  }
 }
 </style>

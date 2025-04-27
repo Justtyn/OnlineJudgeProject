@@ -50,7 +50,7 @@ public interface StudentMapper {
      */
     @Update("update student set username=#{username}, name=#{name}, sex=#{sex}, " +
             "birth=#{birth}, phone=#{phone}, email=#{email}, avatar=#{avatar}, " +
-            "ac=#{ac}, submit=#{submit} " +
+            "ac=#{ac}, submit=#{submit}, password=#{password} " +
             "where id=#{id}")
     int update(Student student);
 

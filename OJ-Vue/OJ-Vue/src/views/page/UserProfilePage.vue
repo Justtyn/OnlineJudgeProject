@@ -46,6 +46,18 @@
               <span class="info-label">邮箱：</span>
               <span class="info-value">{{ studentInfo.email }}</span>
             </div>
+            <div class="info-item">
+              <span class="info-label">学校：</span>
+              <span class="info-value">{{ studentInfo.school }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">创建时间：</span>
+              <span class="info-value">{{ studentInfo.createTime }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">最后访问：</span>
+              <span class="info-value">{{ studentInfo.lastVisitTime }}</span>
+            </div>
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -89,8 +101,8 @@ if (!localUser) {
 }
 
 // 默认头像和背景图
-const defaultAvatar = 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG';
-const defaultBackground = 'http://localhost:9090/uploads/ocean-8032698_1920.jpg';
+const defaultAvatar = 'http://124.222.43.168:9090/uploads/1743236403200_IMG_0748.JPG';
+const defaultBackground = 'http://124.222.43.168:9090/uploads/ocean-8032698_1920.jpg';
 
 // 学生信息响应式对象
 const studentInfo = reactive({
@@ -102,7 +114,10 @@ const studentInfo = reactive({
   phone: '',
   email: '',
   avatar: '',
-  background: ''
+  background: '',
+  school: '',
+  createTime: '',
+  lastVisitTime: ''
 });
 
 const formatDateTime = (dateTimeStr) => {
@@ -135,6 +150,9 @@ const fetchStudentInfo = async () => {
       studentInfo.email = data.email || '';
       studentInfo.avatar = data.avatar || '';
       studentInfo.background = data.background || defaultBackground;
+      studentInfo.school = data.school || '';
+      studentInfo.createTime = data.createTime || '';
+      studentInfo.lastVisitTime = data.lastVisitTime || '';
     } else {
       ElMessage.error(res.data.msg || '获取用户信息失败');
     }
@@ -168,15 +186,18 @@ const avatarSize = ref('large');
   background-color: #fff;
   height: 80vh;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* 顶部背景图 */
 .profile-header {
   position: relative;
-  height: 260px; /* 或根据需要调整高度 */
-  background-size: 100% auto; /* 宽度铺满，自动计算高度 */
+  height: 260px;
+  background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+  width: 100%;
 }
 
 /* 头像+用户名 */
@@ -186,6 +207,8 @@ const avatarSize = ref('large');
   position: absolute;
   bottom: -60px;
   left: 40px;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 /* 自定义头像尺寸 */
@@ -207,12 +230,15 @@ const avatarSize = ref('large');
   font-weight: bold;
   margin: 0;
   color: #333;
+  word-break: break-word;
 }
 
 /* 主体下方 Tab */
 .profile-tabs {
   margin-top: 80px;
   padding: 20px 40px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* 信息栏 */
@@ -240,11 +266,11 @@ const avatarSize = ref('large');
   display: flex;
   align-items: center;
   margin-bottom: 8px;
+  flex-wrap: wrap;
 }
 
 .info-label {
   width: 120px;
-  /* 固定宽度，根据需要调整 */
   font-size: 15px;
   color: #888;
 }
@@ -252,5 +278,59 @@ const avatarSize = ref('large');
 .info-value {
   font-size: 15px;
   color: #555;
+  word-break: break-word;
+}
+
+/* 移动端适配 */
+@media screen and (max-width: 768px) {
+  .profile-page {
+    height: auto;
+    min-height: 80vh;
+  }
+
+  .profile-header {
+    height: 200px;
+  }
+
+  .avatar-section {
+    left: 20px;
+    bottom: -40px;
+  }
+
+  .profile-avatar {
+    width: 80px !important;
+    height: 80px !important;
+  }
+
+  .username {
+    font-size: 18px;
+  }
+
+  .profile-tabs {
+    margin-top: 60px;
+    padding: 15px;
+  }
+
+  .info-label {
+    width: 100px;
+    font-size: 14px;
+  }
+
+  .info-value {
+    font-size: 14px;
+  }
+
+  .avatar-preview-img {
+    width: 150px;
+    height: 150px;
+  }
+
+  :deep(.el-tabs__nav) {
+    width: 100%;
+  }
+
+  :deep(.el-tabs__item) {
+    font-size: 14px;
+  }
 }
 </style>

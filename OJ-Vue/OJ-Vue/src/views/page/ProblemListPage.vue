@@ -298,7 +298,7 @@ onMounted(() => {
       <template #header>
         <div class="card-header">
           <span class="title">问题列表</span>
-          <el-button type="primary" @click="handleAdd">
+          <el-button type="primary" @click="handleAdd" disabled>
             <el-icon>
               <Plus />
             </el-icon>
@@ -358,7 +358,7 @@ onMounted(() => {
             <el-button link type="primary" @click="$router.push(`/problem/${scope.row.id}`)">
               查看
             </el-button>
-            <el-button link type="primary" @click="handleEdit(scope.row)">
+            <el-button link type="primary" @click="handleEdit(scope.row)" disabled>
               编辑
             </el-button>
           </template>

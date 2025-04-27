@@ -441,6 +441,94 @@ onMounted(() => {
   overflow-x: hidden;
 }
 
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .homework-container {
+    padding: 10px;
+  }
+  
+  .header-card {
+    margin-bottom: 15px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .header-left {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .header-right {
+    width: 100%;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  :deep(.el-table) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__header) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__body) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-tag) {
+    font-size: 12px;
+  }
+  
+  .homework-card {
+    height: auto;
+    min-height: 150px;
+  }
+  
+  .homework-header {
+    padding: 10px;
+  }
+  
+  .homework-title {
+    font-size: 16px;
+  }
+  
+  .homework-content {
+    padding: 12px;
+  }
+  
+  .homework-item {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .info-label {
+    width: auto;
+  }
+  
+  :deep(.el-dialog) {
+    width: 90% !important;
+    margin: 0 auto;
+  }
+  
+  :deep(.el-dialog__body) {
+    padding: 15px;
+  }
+  
+  :deep(.el-form-item__label) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-input__inner) {
+    font-size: 14px;
+  }
+}
+
 .header-card, .table-card {
   margin-bottom: 20px;
 }

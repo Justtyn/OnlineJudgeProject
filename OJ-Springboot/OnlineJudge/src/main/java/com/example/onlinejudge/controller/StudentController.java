@@ -29,6 +29,10 @@ public class StudentController {
      */
     @PostMapping("/add") // 处理POST请求，路径为/api/student/add
     public Result add(@RequestBody Student student) {
+        // 检查用户名是否已存在
+        if (studentService.isUsernameExists(student.getUsername())) {
+            return Result.error("400", "用户名已存在");
+        }
         studentService.add(student);
         return Result.success();
     }
@@ -53,6 +57,15 @@ public class StudentController {
      */
     @PutMapping("/update") // 处理PUT请求，路径为/api/student/update
     public Result update(@RequestBody Student student) {
+        // 获取原有学生信息
+        Student existingStudent = studentService.getStudentById(student.getId());
+        if (existingStudent == null) {
+            return Result.error("404", "学生不存在");
+        }
+        // 保留原有密码、AC数和提交次数
+        student.setPassword(existingStudent.getPassword());
+        student.setAc(existingStudent.getAc());
+        student.setSubmit(existingStudent.getSubmit());
         boolean updated = studentService.update(student);
         return updated ? Result.success() : Result.error("500", "更新失败");
     }
@@ -222,6 +235,53 @@ public class StudentController {
         try {
             List<Student> students = studentService.getStudentsByCreateTimeYear(year);
             return Result.success(students);
+        } catch (Exception e) {
+            return Result.error("500", e.getMessage());
+        }
+    }
+
+    /**
+     * 找回密码
+     * 
+     * @param map 包含用户名和邮箱的Map对象
+     * @return 操作结果
+     */
+    @PostMapping("/resetPassword")
+    public Result resetPassword(@RequestBody Map<String, String> map) {
+        String username = map.get("username");
+        String email = map.get("email");
+        
+        if (username == null || email == null) {
+            return Result.error("400", "用户名和邮箱不能为空");
+        }
+        
+        try {
+            boolean success = studentService.resetPassword(username, email);
+            return success ? Result.success() : Result.error("500", "密码找回失败");
+        } catch (Exception e) {
+            return Result.error("500", e.getMessage());
+        }
+    }
+
+    /**
+     * 修改密码
+     * 
+     * @param params 包含username、oldPassword和newPassword的Map
+     * @return 修改结果
+     */
+    @PostMapping("/changePassword")
+    public Result<?> changePassword(@RequestBody Map<String, String> params) {
+        String username = params.get("username");
+        String oldPassword = params.get("oldPassword");
+        String newPassword = params.get("newPassword");
+
+        if (username == null || oldPassword == null || newPassword == null) {
+            return Result.error("400", "参数不完整");
+        }
+
+        try {
+            boolean success = studentService.changePassword(username, oldPassword, newPassword);
+            return success ? Result.success() : Result.error("500", "修改密码失败");
         } catch (Exception e) {
             return Result.error("500", e.getMessage());
         }

@@ -325,6 +325,77 @@ const handleRowClick = (row) => {
   height: 80vh;
 }
 
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .problem-container {
+    padding: 10px;
+  }
+  
+  .search-card {
+    margin-bottom: 15px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  :deep(.el-form) {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  :deep(.el-form-item) {
+    margin-right: 0;
+    width: 100%;
+  }
+  
+  :deep(.el-input) {
+    width: 100%;
+  }
+  
+  :deep(.el-table) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__header) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__body) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table .cell) {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  
+  :deep(.el-pagination) {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .rank-number {
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 12px;
+  }
+  
+  :deep(.el-table__row:nth-child(1)),
+  :deep(.el-table__row:nth-child(2)),
+  :deep(.el-table__row:nth-child(3)) {
+    background-color: transparent !important;
+  }
+}
+
 .search-card {
   margin-bottom: 20px;
 }

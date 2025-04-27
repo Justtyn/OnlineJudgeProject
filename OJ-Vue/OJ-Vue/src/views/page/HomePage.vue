@@ -59,4 +59,22 @@ import TypingEffect from "@/views/tool/TypingEffect-Main.vue";
     transform: scale(1);   /* 原始大小 */
   }
 }
+
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .card {
+    padding: 15px;
+    line-height: 24px;
+  }
+  
+  :deep(.typewriter-container) {
+    font-size: 24px;
+  }
+  
+  :deep(.cursor) {
+    width: 5px;
+    height: 20px;
+    margin-left: 3px;
+  }
+}
 </style>

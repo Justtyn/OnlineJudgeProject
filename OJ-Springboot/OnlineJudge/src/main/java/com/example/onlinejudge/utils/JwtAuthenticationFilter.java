@@ -30,7 +30,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 登录接口不进行 Token 校验（或其他白名单接口）
         // 对于登录和注册接口，用户尚未获取token，因此不需要进行token验证
         String path = request.getRequestURI();
-        if ("/api/login".equals(path) || "/api/register".equals(path)) {
+        if ("/api/login".equals(path) || "/api/register".equals(path) || 
+            "/api/student/resetPassword".equals(path) || "/api/student/changePassword".equals(path)) {
             filterChain.doFilter(request, response);
             return;
         }

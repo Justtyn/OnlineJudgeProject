@@ -62,14 +62,14 @@ const fetchUserInfo = async (userId) => {
       const userData = response.data.data
       userInfo.value = {
         username: userData.name || userData.username || '未知用户',
-        avatar: userData.avatar || 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG'
+        avatar: userData.avatar || 'http://124.222.43.168:9090/uploads/1743236403200_IMG_0748.JPG'
       }
     }
   } catch (error) {
     console.error('获取用户信息失败:', error)
     userInfo.value = {
       username: '未知用户',
-      avatar: 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG'
+      avatar: 'http://124.222.43.168:9090/uploads/1743236403200_IMG_0748.JPG'
     }
   }
 }
@@ -116,12 +116,12 @@ const loadMoreComments = async () => {
           if (userResponse.data.code === '200') {
             const userData = userResponse.data.data
             comment.username = userData.name || userData.username || '未知用户'
-            comment.avatar = userData.avatar || 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG'
+            comment.avatar = userData.avatar || 'http://124.222.43.168:9090/uploads/1743236403200_IMG_0748.JPG'
           }
         } catch (error) {
           console.error('获取评论用户信息失败:', error)
           comment.username = '未知用户'
-          comment.avatar = 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG'
+          comment.avatar = 'http://124.222.43.168:9090/uploads/1743236403200_IMG_0748.JPG'
         }
       }
       discussData.value.comments = comments
@@ -294,6 +294,75 @@ onMounted(async () => {
   padding: 20px;
   background-color: #f5f7fa;
   min-height: 100vh;
+}
+
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .discuss-container {
+    padding: 10px;
+  }
+  
+  .table-card {
+    margin-bottom: 15px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  :deep(.el-descriptions__label) {
+    width: 100px;
+    font-size: 14px;
+  }
+  
+  :deep(.el-descriptions__content) {
+    font-size: 14px;
+  }
+  
+  .content-section {
+    padding: 15px;
+    margin: 15px 0;
+  }
+  
+  .discuss-title {
+    font-size: 20px;
+  }
+  
+  .discuss-content {
+    font-size: 14px;
+  }
+  
+  .comments-section {
+    margin-bottom: 80px;
+  }
+  
+  .section-title {
+    font-size: 16px;
+  }
+  
+  .comment-form {
+    padding: 15px;
+  }
+  
+  .comment-form .el-button {
+    font-size: 14px;
+    padding: 8px;
+  }
+  
+  .reply-info {
+    font-size: 14px;
+    padding: 6px;
+  }
+  
+  :deep(.el-dialog) {
+    width: 90% !important;
+    margin: 0 auto;
+  }
 }
 
 .table-card {
