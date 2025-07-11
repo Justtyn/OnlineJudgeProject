@@ -497,6 +497,79 @@ onMounted(() => {
   }
 }
 
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .discuss-container {
+    padding: 10px;
+  }
+  
+  .search-card {
+    margin-bottom: 15px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  :deep(.el-form) {
+    padding: 10px 0;
+  }
+  
+  :deep(.el-form-item) {
+    margin-right: 0;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+  
+  :deep(.el-input) {
+    width: 100%;
+  }
+  
+  :deep(.el-table) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__header) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__body) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-pagination) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-dialog) {
+    width: 90% !important;
+    margin: 0 auto;
+  }
+  
+  :deep(.el-dialog__body) {
+    padding: 15px;
+  }
+  
+  .problem-select-wrapper {
+    flex-direction: column;
+  }
+  
+  .reset-button {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
 .search-card {
   margin-bottom: 20px;
   transition: all 0.3s ease;

@@ -94,6 +94,7 @@ public interface StudentService {
      * @return 是否成功修改密码
      */
     boolean changePassword(String username, String oldPassword, String newPassword);
+<<<<<<< HEAD
 
     /**
      * 更新学生的每日挑战状态
@@ -127,4 +128,6 @@ public interface StudentService {
 
     // 获取指定时间段内新注册的用户数
     long getNewUserCount(LocalDate startDate, LocalDate endDate);
+=======
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }

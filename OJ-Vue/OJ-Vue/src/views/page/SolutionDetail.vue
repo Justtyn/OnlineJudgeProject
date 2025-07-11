@@ -803,4 +803,74 @@ onMounted(() => fetchSolutionDetail(route.params.id))
     animation-delay: calc(var(--line-index) * 0.03s);
   }
 }
+
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .solution-container {
+    padding: 10px;
+  }
+  
+  .table-card {
+    margin-bottom: 15px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  :deep(.el-descriptions__label) {
+    width: 100px;
+    font-size: 14px;
+  }
+  
+  :deep(.el-descriptions__content) {
+    font-size: 14px;
+  }
+  
+  .code-toolbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .code-title {
+    font-size: 16px;
+  }
+  
+  .code-block {
+    font-size: 12px;
+    padding: 10px;
+  }
+  
+  .ai-chat {
+    margin-top: 15px;
+  }
+  
+  .model-select {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .chat-window {
+    min-height: 150px;
+    max-height: 250px;
+  }
+  
+  .chat-window pre {
+    font-size: 14px;
+  }
+  
+  :deep(.el-dialog) {
+    width: 90% !important;
+    margin: 0 auto;
+  }
+  
+  :deep(.el-dialog__body) {
+    padding: 15px;
+  }
+}
 </style>

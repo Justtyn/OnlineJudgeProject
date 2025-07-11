@@ -34,7 +34,11 @@ public class StudentController {
      */
     @ApiOperation("新增学生")
     @PostMapping("/add") // 处理POST请求，路径为/api/student/add
+<<<<<<< HEAD
     public Result add(@ApiParam("学生信息") @RequestBody Student student) {
+=======
+    public Result add(@RequestBody Student student) {
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
         // 检查用户名是否已存在
         if (studentService.isUsernameExists(student.getUsername())) {
             return Result.error("400", "用户名已存在");
@@ -64,7 +68,11 @@ public class StudentController {
      */
     @ApiOperation("修改学生信息")
     @PutMapping("/update") // 处理PUT请求，路径为/api/student/update
+<<<<<<< HEAD
     public Result update(@ApiParam("学生信息") @RequestBody Student student) {
+=======
+    public Result update(@RequestBody Student student) {
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
         // 获取原有学生信息
         Student existingStudent = studentService.getStudentById(student.getId());
         if (existingStudent == null) {
@@ -264,11 +272,16 @@ public class StudentController {
      * @param map 包含用户名和邮箱的Map对象
      * @return 操作结果
      */
+<<<<<<< HEAD
     @ApiOperation("找回密码")
     @PostMapping("/resetPassword")
     public Result resetPassword(
             @ApiParam(value = "重置信息", example = "{\"username\":\"user123\",\"email\":\"user@example.com\"}") 
             @RequestBody Map<String, String> map) {
+=======
+    @PostMapping("/resetPassword")
+    public Result resetPassword(@RequestBody Map<String, String> map) {
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
         String username = map.get("username");
         String email = map.get("email");
         
@@ -290,10 +303,15 @@ public class StudentController {
      * @param params 包含username、oldPassword和newPassword的Map
      * @return 修改结果
      */
+<<<<<<< HEAD
     @ApiOperation("修改密码")
     @PostMapping("/changePassword")
     public Result<?> changePassword(
             @ApiParam("密码修改信息") @RequestBody Map<String, String> params) {
+=======
+    @PostMapping("/changePassword")
+    public Result<?> changePassword(@RequestBody Map<String, String> params) {
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
         String username = params.get("username");
         String oldPassword = params.get("oldPassword");
         String newPassword = params.get("newPassword");
@@ -309,6 +327,7 @@ public class StudentController {
             return Result.error("500", e.getMessage());
         }
     }
+<<<<<<< HEAD
 
     /**
      * 更新学生的每日挑战状态
@@ -334,5 +353,7 @@ public class StudentController {
             return Result.error("404", e.getMessage());
         }
     }
+=======
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 

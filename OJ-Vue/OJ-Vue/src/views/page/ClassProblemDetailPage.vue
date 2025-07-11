@@ -170,6 +170,7 @@ onMounted(() => {
   padding: 20px;
   background-color: #f5f7fa;
   min-height: 100vh;
+<<<<<<< HEAD
   animation: gradientBG 15s ease infinite;
   background: linear-gradient(-45deg, #f5f7fa, #e4e7eb, #f0f2f5, #e8eaf6);
   background-size: 400% 400%;
@@ -292,6 +293,8 @@ onMounted(() => {
 
 .sample-card:hover pre {
   background-color: #f0f2f5;
+=======
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 
 /* 添加移动端适配样式 */

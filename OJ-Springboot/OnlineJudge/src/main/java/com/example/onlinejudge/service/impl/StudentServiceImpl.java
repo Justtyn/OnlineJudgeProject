@@ -250,10 +250,17 @@ public class StudentServiceImpl implements StudentService {
         }
 
         // 生成6位随机密码
+<<<<<<< HEAD
         String newPassword = String.format("%06d", (int) (Math.random() * 1000000));
         // 加密新密码
         String encryptedPassword = securePass(newPassword);
 
+=======
+        String newPassword = String.format("%06d", (int)(Math.random() * 1000000));
+        // 加密新密码
+        String encryptedPassword = securePass(newPassword);
+        
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
         // 更新数据库中的密码
         student.setPassword(encryptedPassword);
         studentMapper.update(student);
@@ -261,6 +268,7 @@ public class StudentServiceImpl implements StudentService {
         // 发送邮件
         String subject = "【在线评测系统】密码重置通知";
         String htmlContent = String.format(
+<<<<<<< HEAD
                 "<div style='max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;'>" +
                         "<div style='background-color: #f8f9fa; padding: 20px; border-radius: 5px;'>" +
                         "<h2 style='color: #333; text-align: center;'>密码重置通知</h2>" +
@@ -288,6 +296,35 @@ public class StudentServiceImpl implements StudentService {
         );
         mailService.sendHtmlMail(email, subject, htmlContent);
 
+=======
+            "<div style='max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;'>" +
+            "<div style='background-color: #f8f9fa; padding: 20px; border-radius: 5px;'>" +
+            "<h2 style='color: #333; text-align: center;'>密码重置通知</h2>" +
+            "<p style='color: #666;'>亲爱的 <strong>%s</strong> 用户：</p>" +
+            "<p style='color: #666;'>您好！</p>" +
+            "<p style='color: #666;'>我们收到了您的密码重置请求。为了保障您的账号安全，系统已为您生成新的临时密码。</p>" +
+            "<div style='background-color: #fff; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<p style='color: #333; margin: 0;'><strong>您的新密码是：</strong></p>" +
+            "<p style='color: #007bff; font-size: 24px; font-weight: bold; text-align: center; margin: 10px 0;'>%s</p>" +
+            "</div>" +
+            "<div style='background-color: #fff; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<p style='color: #333; margin: 0;'><strong>请注意：</strong></p>" +
+            "<ul style='color: #666;'>" +
+            "<li>请使用此临时密码尽快登录系统</li>" +
+            "<li>登录后请立即修改密码</li>" +
+            "<li>请勿将此密码告知他人</li>" +
+            "</ul>" +
+            "</div>" +
+            "<p style='color: #666;'>如果这不是您本人的操作，请忽略此邮件。</p>" +
+            "<p style='color: #666;'>祝您使用愉快！</p>" +
+            "<p style='color: #666; text-align: right;'>在线评测系统团队</p>" +
+            "</div>" +
+            "</div>",
+            username, newPassword
+        );
+        mailService.sendHtmlMail(email, subject, htmlContent);
+        
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
         return true;
     }
 
@@ -304,7 +341,11 @@ public class StudentServiceImpl implements StudentService {
 
         // 加密新密码
         String encryptedPassword = securePass(newPassword);
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
         // 更新数据库中的密码
         student.setPassword(encryptedPassword);
         studentMapper.update(student);
@@ -312,6 +353,7 @@ public class StudentServiceImpl implements StudentService {
         // 发送邮件
         String subject = "【在线评测系统】密码修改通知";
         String htmlContent = String.format(
+<<<<<<< HEAD
                 "<div style='max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;'>" +
                         "<div style='background-color: #f8f9fa; padding: 20px; border-radius: 5px;'>" +
                         "<h2 style='color: #333; text-align: center;'>密码修改通知</h2>" +
@@ -399,4 +441,34 @@ public class StudentServiceImpl implements StudentService {
     public long getNewUserCount(LocalDate startDate, LocalDate endDate) {
         return studentMapper.countNewUsers(startDate, endDate);
     }
+=======
+            "<div style='max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;'>" +
+            "<div style='background-color: #f8f9fa; padding: 20px; border-radius: 5px;'>" +
+            "<h2 style='color: #333; text-align: center;'>密码修改通知</h2>" +
+            "<p style='color: #666;'>亲爱的 <strong>%s</strong> 用户：</p>" +
+            "<p style='color: #666;'>您好！</p>" +
+            "<p style='color: #666;'>您的密码已经成功修改。</p>" +
+            "<div style='background-color: #fff; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<p style='color: #333; margin: 0;'><strong>您的新密码是：</strong></p>" +
+            "<p style='color: #007bff; font-size: 24px; font-weight: bold; text-align: center; margin: 10px 0;'>%s</p>" +
+            "</div>" +
+            "<div style='background-color: #fff; padding: 15px; border-radius: 5px; margin: 20px 0;'>" +
+            "<p style='color: #333; margin: 0;'><strong>请注意：</strong></p>" +
+            "<ul style='color: #666;'>" +
+            "<li>请妥善保管您的新密码</li>" +
+            "<li>请勿将此密码告知他人</li>" +
+            "<li>如果这不是您本人的操作，请立即联系管理员</li>" +
+            "</ul>" +
+            "</div>" +
+            "<p style='color: #666;'>祝您使用愉快！</p>" +
+            "<p style='color: #666; text-align: right;'>在线评测系统团队</p>" +
+            "</div>" +
+            "</div>",
+            username, newPassword
+        );
+        mailService.sendHtmlMail(student.getEmail(), subject, htmlContent);
+        
+        return true;
+    }
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }

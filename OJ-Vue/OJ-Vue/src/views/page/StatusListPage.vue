@@ -316,13 +316,17 @@ onBeforeUnmount(() => {
   height: 80vh;
   width: 100%;
   box-sizing: border-box;
+<<<<<<< HEAD
   transition: all 0.3s ease;
+=======
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 
 /* 搜索卡片样式 */
 .search-card {
   margin-bottom: 20px;
   width: 100%;
+<<<<<<< HEAD
   transition: all 0.3s ease;
   border-radius: 8px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
@@ -331,6 +335,8 @@ onBeforeUnmount(() => {
 .search-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.1);
+=======
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 
 /* 卡片头部样式 */
@@ -357,6 +363,7 @@ onBeforeUnmount(() => {
   margin-bottom: 20px;
   width: 100%;
   overflow-x: auto;
+<<<<<<< HEAD
   transition: all 0.3s ease;
   border-radius: 8px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
@@ -365,6 +372,18 @@ onBeforeUnmount(() => {
 .table-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.1);
+=======
+}
+
+/* 表格头部样式 */
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  flex-wrap: wrap;
+  gap: 10px;
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 
 /* 表格样式优化 */
@@ -383,8 +402,17 @@ onBeforeUnmount(() => {
   padding: 12px 0;
 }
 
+<<<<<<< HEAD
 :deep(.el-table--striped .el-table__body tr.el-table__row--striped td) {
   background: #fafafa;
+=======
+/* 分页容器样式 */
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 
 :deep(.el-table__body tr:hover > td) {
@@ -620,5 +648,115 @@ onBeforeUnmount(() => {
     font-size: 12px !important;
     border-radius: 4px !important;
   }
+}
+
+/* 移动端适配 */
+@media screen and (max-width: 768px) {
+  .status-container {
+    padding: 10px;
+    height: auto;
+  }
+
+  .card-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  :deep(.el-table) {
+    font-size: 14px;
+  }
+
+  :deep(.el-table .el-table__row) {
+    height: auto;
+  }
+
+  :deep(.el-table__cell) {
+    padding: 8px !important;
+  }
+
+  :deep(.el-pagination) {
+    font-size: 14px;
+  }
+
+  :deep(.el-pagination .el-pagination__sizes) {
+    display: none;
+  }
+
+  :deep(.el-pagination .el-pagination__jump) {
+    display: none;
+  }
+
+  :deep(.el-form-item) {
+    margin-bottom: 10px;
+  }
+
+  :deep(.el-input) {
+    width: 100%;
+  }
+
+  :deep(.el-button) {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  /* 刷新按钮移动端样式 */
+  .refresh-btn {
+    width: auto !important;
+    margin-top: 0 !important;
+    padding: 8px !important;
+    min-height: 32px !important;
+  }
+
+  .refresh-icon {
+    font-size: 14px;
+  }
+
+  /* 状态标签移动端样式 */
+  .status-success,
+  .status-error,
+  .status-warning,
+  .status-pending,
+  .status-unknown {
+    width: auto !important;
+    display: inline-block;
+    padding: 2px 6px !important;
+    font-size: 12px !important;
+  }
+}
+
+/* 刷新按钮样式 */
+.refresh-btn {
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #409eff, #36cfc9);
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.refresh-btn:hover {
+  transform: rotate(180deg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.refresh-icon {
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.refresh-btn:hover .refresh-icon {
+  transform: scale(1.1);
+}
+
+.refresh-icon {
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.refresh-btn:hover .refresh-icon {
+  transform: scale(1.1);
 }
 </style>

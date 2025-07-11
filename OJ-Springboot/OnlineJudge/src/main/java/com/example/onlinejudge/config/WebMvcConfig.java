@@ -145,7 +145,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
             return ignoredPaths.stream().anyMatch(path::startsWith)
                     || path.startsWith("uploads/");  // 额外忽略 uploads 前缀
         }
-
         /**
          * 判断路径是否为需要处理的静态资源
          * 根据文件扩展名判断

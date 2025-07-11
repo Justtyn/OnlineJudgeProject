@@ -50,6 +50,7 @@
           <div class="header-body nav-section" :class="{ 'nav-active': isMenuOpen }">
             <nav class="nav-links">
               <router-link to="/homePage" class="nav-link" @click="closeMenu">首页</router-link>
+<<<<<<< HEAD
               <!-- <el-dropdown @command="handleNavCommand" class="nav-dropdown">
                 <span class="nav-link dropdown-trigger">
                   统计<el-icon class="el-icon--right"><ArrowDown /></el-icon>
@@ -65,6 +66,13 @@
               <router-link to="/problemListPage" class="nav-link" @click="closeMenu">题库</router-link>
               <router-link to="/statusListPage" class="nav-link" @click="closeMenu">状态</router-link>
               <router-link to="/rankPage" class="nav-link" @click="closeMenu">排名</router-link>
+=======
+              <!-- <router-link to="/charts" class="nav-link" @click="closeMenu">测试</router-link> -->
+              <router-link to="/problemListPage" class="nav-link" @click="closeMenu">题库</router-link>
+              <router-link to="/statusListPage" class="nav-link" @click="closeMenu">状态</router-link>
+              <router-link to="/rankPage" class="nav-link" @click="closeMenu">排名</router-link>
+              <router-link to="/stats" class="nav-link" @click="closeMenu">统计</router-link>
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
               <router-link to="/homeworkPage" class="nav-link" @click="closeMenu">作业</router-link>
               <router-link to="/solutionPage" class="nav-link" @click="closeMenu">题解</router-link>
               <router-link to="/discussPage" class="nav-link" @click="closeMenu">讨论</router-link>
@@ -132,6 +140,7 @@
 </template>
 
 <script lang="ts" setup>
+<<<<<<< HEAD
 import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { SwitchFilled, Menu, ArrowDown, Document, Check } from '@element-plus/icons-vue'
@@ -151,6 +160,14 @@ const codeLines = ref([
   { keyword: 'public', text: ' static void main() {', left: 80, delay: 1.4 },
   { keyword: 'System.out.println', text: '("Hello OJ");', left: 90, delay: 1.6 }
 ])
+=======
+import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { SwitchFilled, Menu } from '@element-plus/icons-vue'
+
+const router = useRouter()
+const isMenuOpen = ref(false)
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 
 // 获取 token（从 localStorage 中解析 student-user 对象）
 const token = computed<string | null>(() => {
@@ -236,6 +253,7 @@ const toggleMenu = () => {
 const closeMenu = () => {
   isMenuOpen.value = false
 }
+<<<<<<< HEAD
 
 const handleNavCommand = (command: string) => {
   switch (command) {
@@ -248,6 +266,8 @@ const handleNavCommand = (command: string) => {
   }
   closeMenu()
 }
+=======
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 </script>
 
 <style scoped>
@@ -407,6 +427,26 @@ html, body {
   font-size: 24px;
 }
 
+.menu-toggle {
+  display: none;
+  cursor: pointer;
+  padding: 8px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  margin-left: 8px;
+}
+
+.menu-toggle:hover {
+  background: #e6e6e6;
+  transform: scale(1.05);
+}
+
+.menu-toggle .el-icon {
+  color: #2c3e50;
+  font-size: 24px;
+}
+
 .nav-section {
   flex: 1;
   display: flex;
@@ -492,7 +532,10 @@ html, body {
   min-width: 150px;
   justify-content: flex-end;
   align-items: center;
+<<<<<<< HEAD
   z-index: 2;
+=======
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 
 .auth-link {
@@ -554,6 +597,7 @@ html, body {
   }
 }
 
+<<<<<<< HEAD
 @media screen and (max-width: 1024px) {
   .nav-links {
     gap: 16px;
@@ -575,6 +619,9 @@ html, body {
     padding: 0 16px;
   }
 
+=======
+@media screen and (max-width: 768px) {
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
   .menu-toggle {
     display: flex;
     align-items: center;
@@ -595,7 +642,10 @@ html, body {
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
+<<<<<<< HEAD
     z-index: 1;
+=======
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
   }
 
   .nav-section.nav-active {
@@ -607,7 +657,10 @@ html, body {
     flex-direction: column;
     align-items: center;
     gap: 16px;
+<<<<<<< HEAD
     width: 100%;
+=======
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
   }
 
   .nav-link {
@@ -615,6 +668,7 @@ html, body {
     text-align: center;
     padding: 12px;
     font-size: 16px;
+<<<<<<< HEAD
     border-radius: 8px;
     background: #f5f5f5;
     transition: all 0.3s ease;
@@ -623,6 +677,12 @@ html, body {
   .nav-link:hover {
     background: #e6e6e6;
     transform: translateY(-2px);
+=======
+  }
+
+  .header-box {
+    padding: 0 16px;
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
   }
 
   .logo-section {
@@ -631,6 +691,7 @@ html, body {
 
   .auth-section {
     min-width: auto;
+<<<<<<< HEAD
     gap: 8px;
   }
 
@@ -813,4 +874,8 @@ html, body {
   opacity: 0.5;
   box-shadow: 0 0 10px rgba(24, 144, 255, 0.3);
 }
+=======
+  }
+}
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 </style>

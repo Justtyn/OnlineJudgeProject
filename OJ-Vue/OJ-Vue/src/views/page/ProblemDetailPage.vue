@@ -242,6 +242,64 @@ onMounted(() => {
   }
 }
 
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .problem-detail-container {
+    padding: 10px;
+  }
+  
+  .problem-card {
+    margin: 0;
+  }
+  
+  .card-header {
+    gap: 8px;
+  }
+  
+  .problem-title {
+    font-size: 20px;
+  }
+  
+  .problem-meta {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  :deep(.el-tag) {
+    font-size: 12px;
+  }
+  
+  .section h3 {
+    font-size: 16px;
+  }
+  
+  .content {
+    font-size: 14px;
+  }
+  
+  .sample-card {
+    margin: 10px 0;
+  }
+  
+  .sample-card pre {
+    font-size: 12px;
+    padding: 8px;
+  }
+  
+  :deep(.el-card__header) {
+    padding: 10px;
+  }
+  
+  :deep(.el-card__body) {
+    padding: 15px;
+  }
+  
+  :deep(.el-button) {
+    font-size: 14px;
+    padding: 8px;
+  }
+}
+
 /* 题目卡片样式 */
 .problem-card {
   max-width: 1200px;  /* 限制最大宽度，提高可读性 */

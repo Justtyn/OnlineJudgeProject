@@ -127,8 +127,12 @@ const studentInfo = reactive({
   background: '',
   school: '',
   createTime: '',
+<<<<<<< HEAD
   lastVisitTime: '',
   dailyChallenge: ''
+=======
+  lastVisitTime: ''
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 });
 
 const formatDateTime = (dateTimeStr) => {
@@ -164,7 +168,10 @@ const fetchStudentInfo = async () => {
       studentInfo.school = data.school || '';
       studentInfo.createTime = data.createTime || '';
       studentInfo.lastVisitTime = data.lastVisitTime || '';
+<<<<<<< HEAD
       studentInfo.dailyChallenge = data.dailyChallenge || '';
+=======
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
     } else {
       ElMessage.error(res.data.msg || '获取用户信息失败');
     }
@@ -264,7 +271,11 @@ const avatarSize = ref('large');
 /* 顶部背景图 */
 .profile-header {
   position: relative;
+<<<<<<< HEAD
   height: 360px;
+=======
+  height: 260px;
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -279,7 +290,12 @@ const avatarSize = ref('large');
   top: 50%;
   transform: translateY(-50%);
   left: 40px;
+<<<<<<< HEAD
   z-index: 10;
+=======
+  flex-wrap: wrap;
+  gap: 20px;
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 
 /* 自定义头像尺寸 */
@@ -308,8 +324,13 @@ const avatarSize = ref('large');
 .profile-tabs {
   margin-top: 0;
   padding: 20px 40px;
+<<<<<<< HEAD
   position: relative;
   z-index: 1;
+=======
+  width: 100%;
+  box-sizing: border-box;
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 
 /* 信息栏 */
@@ -503,6 +524,7 @@ const avatarSize = ref('large');
   overflow: hidden;
   display: inline-flex;
   align-items: center;
+<<<<<<< HEAD
   gap: 8px;
 }
 
@@ -637,5 +659,74 @@ const avatarSize = ref('large');
 
 .golden-mode .el-tabs__item:hover {
   color: #FFD700;
+=======
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.info-label {
+  width: 120px;
+  font-size: 15px;
+  color: #888;
+}
+
+.info-value {
+  font-size: 15px;
+  color: #555;
+  word-break: break-word;
+}
+
+/* 移动端适配 */
+@media screen and (max-width: 768px) {
+  .profile-page {
+    height: auto;
+    min-height: 80vh;
+  }
+
+  .profile-header {
+    height: 200px;
+  }
+
+  .avatar-section {
+    left: 20px;
+    bottom: -40px;
+  }
+
+  .profile-avatar {
+    width: 80px !important;
+    height: 80px !important;
+  }
+
+  .username {
+    font-size: 18px;
+  }
+
+  .profile-tabs {
+    margin-top: 60px;
+    padding: 15px;
+  }
+
+  .info-label {
+    width: 100px;
+    font-size: 14px;
+  }
+
+  .info-value {
+    font-size: 14px;
+  }
+
+  .avatar-preview-img {
+    width: 150px;
+    height: 150px;
+  }
+
+  :deep(.el-tabs__nav) {
+    width: 100%;
+  }
+
+  :deep(.el-tabs__item) {
+    font-size: 14px;
+  }
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 </style>

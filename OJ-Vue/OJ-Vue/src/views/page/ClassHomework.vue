@@ -250,6 +250,7 @@ onMounted(() => {
   overflow-x: hidden;
 }
 
+<<<<<<< HEAD
 /* 添加动画关键帧 */
 @keyframes fadeIn {
   from {
@@ -271,6 +272,8 @@ onMounted(() => {
   }
 }
 
+=======
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 /* 添加移动端适配样式 */
 @media screen and (max-width: 768px) {
   .homework-container {

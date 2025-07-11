@@ -175,6 +175,7 @@ onErrorCaptured((err) => {
     height: 20px;
     margin-left: 3px;
   }
+<<<<<<< HEAD
 
   .button-container {
     width: 240px;  /* 移动端稍微窄一些 */
@@ -184,5 +185,7 @@ onErrorCaptured((err) => {
     font-size: 16px;
     padding: 12px 30px;
   }
+=======
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 </style>

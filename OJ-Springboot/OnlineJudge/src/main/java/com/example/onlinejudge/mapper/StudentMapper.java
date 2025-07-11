@@ -53,12 +53,18 @@ public interface StudentMapper extends BaseMapper<Student> {
      * @return 返回受影响的行数，通常成功更新时返回1
      */
     @Update("update student set username=#{username}, name=#{name}, sex=#{sex}, " +
+<<<<<<< HEAD
     "birth=#{birth}, phone=#{phone}, email=#{email}, avatar=#{avatar}, " +
     "ac=#{ac}, submit=#{submit}, password=#{password}, school=#{school}, " +
     "background=#{background}, class_id=#{classId}, daily_challenge=#{dailyChallenge}, " +
     "role=#{role}, last_login_time=#{lastLoginTime}, last_language=#{lastLanguage}, " +
     "last_visit_time=#{lastVisitTime} " +
     "where id=#{id}")
+=======
+            "birth=#{birth}, phone=#{phone}, email=#{email}, avatar=#{avatar}, " +
+            "ac=#{ac}, submit=#{submit}, password=#{password} " +
+            "where id=#{id}")
+>>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
     int update(Student student);
 
     /**
