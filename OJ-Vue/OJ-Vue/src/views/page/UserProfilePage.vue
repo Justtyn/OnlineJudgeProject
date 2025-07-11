@@ -111,7 +111,7 @@ if (!localUser) {
 }
 
 // 默认头像和背景图
-const defaultAvatar = 'http://localhost8:9090/uploads/1743236403200_IMG_0748.JPG';
+const defaultAvatar = 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG';
 const defaultBackground = 'http://localhost:9090/uploads/ocean-8032698_1920.jpg';
 
 // 学生信息响应式对象
