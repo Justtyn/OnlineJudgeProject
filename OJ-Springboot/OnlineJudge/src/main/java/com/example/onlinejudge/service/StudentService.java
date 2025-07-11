@@ -37,7 +37,7 @@ public interface StudentService {
 
     /**
      * 分页获取按AC数量降序排列的学生列表
-     * 
+     *
      * @param pageNum 当前页码
      * @param pageSize 每页显示数量
      * @return 包含分页信息和学生列表的Map
@@ -46,7 +46,7 @@ public interface StudentService {
 
     /**
      * 根据用户名模糊查询学生信息
-     * 
+     *
      * @param username 用户名关键字
      * @return 匹配的学生列表
      */
@@ -54,7 +54,7 @@ public interface StudentService {
 
     /**
      * 根据姓名模糊查询学生信息
-     * 
+     *
      * @param name 姓名关键字
      * @return 匹配的学生列表
      */
@@ -62,7 +62,7 @@ public interface StudentService {
 
     /**
      * 根据创建时间的年份查询学生信息
-     * 
+     *
      * @param year 年份，如2023
      * @return 匹配的学生列表
      */
@@ -70,7 +70,7 @@ public interface StudentService {
 
     /**
      * 检查用户名是否已存在
-     * 
+     *
      * @param username 要检查的用户名
      * @return 如果用户名已存在返回true，否则返回false
      */
@@ -78,7 +78,7 @@ public interface StudentService {
 
     /**
      * 找回密码
-     * 
+     *
      * @param username 用户名
      * @param email 邮箱
      * @return 是否成功发送邮件
@@ -87,18 +87,17 @@ public interface StudentService {
 
     /**
      * 修改密码
-     * 
+     *
      * @param username 用户名
      * @param oldPassword 旧密码
      * @param newPassword 新密码
      * @return 是否成功修改密码
      */
     boolean changePassword(String username, String oldPassword, String newPassword);
-<<<<<<< HEAD
 
     /**
      * 更新学生的每日挑战状态
-     * 
+     *
      * @param id 学生ID
      * @param dailyChallenge 每日挑战状态
      * @return 是否成功更新
@@ -128,6 +127,4 @@ public interface StudentService {
 
     // 获取指定时间段内新注册的用户数
     long getNewUserCount(LocalDate startDate, LocalDate endDate);
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }

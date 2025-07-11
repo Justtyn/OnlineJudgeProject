@@ -332,18 +332,12 @@
     height: 100%;
     width: 100%;
     box-sizing: border-box;
-<<<<<<< HEAD
     animation: fadeIn 0.5s ease-in-out;
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
   }
   .table-card {
     margin-bottom: 20px;
     width: 100%;
-<<<<<<< HEAD
     animation: slideIn 0.6s ease-out;
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
   }
   .card-header {
     display: flex;
@@ -351,10 +345,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 10px;
-<<<<<<< HEAD
     animation: slideDown 0.5s ease-out;
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
   }
   .title {
     font-size: 18px;
@@ -366,10 +357,7 @@
     overflow-x: auto;
     border-radius: 8px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-<<<<<<< HEAD
     animation: fadeIn 0.7s ease-out;
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
   }
   .detail-value {
     color: #606266;
@@ -436,10 +424,7 @@
     border-radius: 4px;
     overflow: auto;
     width: 100%;
-<<<<<<< HEAD
     animation: slideUp 0.6s ease-out;
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
   }
   .code-block {
     counter-reset: line;
@@ -512,7 +497,6 @@
   
   /* 更新的 AI 对话样式 */
   .ai-chat {
-<<<<<<< HEAD
     margin-top: 30px;
     width: 100%;
     animation: fadeIn 0.8s ease-out;
@@ -520,10 +504,6 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     overflow: hidden;
-=======
-    margin-top: 20px;
-    width: 100%;
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
   }
   
   .ai-toolbar {
@@ -560,15 +540,8 @@
   }
   
   .model-select {
-<<<<<<< HEAD
     width: 160px;
     border-radius: 4px;
-=======
-    margin-bottom: 8px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
   }
   
   .ai-button {
@@ -627,15 +600,11 @@
     max-height: 500px;
     overflow-y: auto;
     scroll-behavior: smooth;
-<<<<<<< HEAD
     width: calc(100% - 40px);
     color: rgba(255, 255, 255, 0.9);
     font-size: 14px;
     line-height: 1.6;
     backdrop-filter: blur(10px);
-=======
-    width: 100%;
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
   }
   
   .chat-window pre {
@@ -789,56 +758,6 @@
   
   .code-block code > span:hover {
     background-color: rgba(255, 255, 255, 0.05);
-  }
-  
-  /* 移动端适配 */
-  @media screen and (max-width: 768px) {
-    .status-container {
-      padding: 10px;
-    }
-    .card-header {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .title {
-      font-size: 16px;
-    }
-    :deep(.el-descriptions__label) {
-      width: 80px !important;
-      font-size: 13px;
-    }
-    :deep(.el-descriptions__content) {
-      font-size: 13px;
-    }
-    :deep(.el-descriptions__cell) {
-      padding: 8px 12px !important;
-    }
-    .code-toolbar {
-      flex-direction: row;
-      align-items: center;
-      margin: 12px 0 6px;
-    }
-    .refresh-btn {
-      padding: 6px !important;
-      min-height: 28px !important;
-    }
-    .refresh-btn :deep(.el-icon) {
-      font-size: 14px;
-    }
-    .model-select {
-      flex-direction: row;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .chat-window {
-      max-height: 150px;
-    }
-    .detail-value {
-      font-size: 13px;
-    }
-    .problem-link {
-      font-size: 13px;
-    }
   }
   </style>
   

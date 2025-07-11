@@ -18,6 +18,7 @@ public interface StudentMapper extends BaseMapper<Student> {
 
     /**
      * 根据用户名查询学生信息
+     *
      * @param username 用户名
      * @return 返回匹配的学生对象，如果不存在则返回null
      */
@@ -26,50 +27,48 @@ public interface StudentMapper extends BaseMapper<Student> {
 
     /**
      * 插入新的学生记录
+     *
      * @param student 要插入的学生对象，包含完整的学生信息
      */
     @Insert("insert into student (username,password,name,sex,birth,phone,email,avatar,role,ac,submit,school,background,class_id,daily_challenge) " +
             "values (#{username},#{password},#{name},#{sex},#{birth},#{phone},#{email},#{avatar},#{role},0,0,#{school},#{background},#{classId},'0')")
     int insert(Student student);
-    
+
     /**
      * 根据ID查询学生信息
+     *
      * @param id 学生ID
      * @return 返回匹配的学生对象，如果不存在则返回null
      */
     @Select("select * from student where id = #{id}")
     Student selectById(Integer id);
-    
+
     /**
      * 查询所有学生信息
+     *
      * @return 返回包含所有学生对象的列表
      */
     @Select("select * from student")
     List<Student> selectAll();
-    
+
     /**
      * 更新学生信息
      * @param student 包含更新信息的学生对象，必须包含id字段
      * @return 返回受影响的行数，通常成功更新时返回1
      */
     @Update("update student set username=#{username}, name=#{name}, sex=#{sex}, " +
-<<<<<<< HEAD
-    "birth=#{birth}, phone=#{phone}, email=#{email}, avatar=#{avatar}, " +
-    "ac=#{ac}, submit=#{submit}, password=#{password}, school=#{school}, " +
-    "background=#{background}, class_id=#{classId}, daily_challenge=#{dailyChallenge}, " +
-    "role=#{role}, last_login_time=#{lastLoginTime}, last_language=#{lastLanguage}, " +
-    "last_visit_time=#{lastVisitTime} " +
-    "where id=#{id}")
-=======
             "birth=#{birth}, phone=#{phone}, email=#{email}, avatar=#{avatar}, " +
-            "ac=#{ac}, submit=#{submit}, password=#{password} " +
+            "ac=#{ac}, submit=#{submit}, password=#{password}, school=#{school}, " +
+            "background=#{background}, class_id=#{classId}, daily_challenge=#{dailyChallenge}, " +
+            "role=#{role}, last_login_time=#{lastLoginTime}, last_language=#{lastLanguage}, " +
+            "last_visit_time=#{lastVisitTime} " +
             "where id=#{id}")
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
     int update(Student student);
 
     /**
      * 更新学生的背景图片
-     * @param id 学生ID
+     *
+     * @param id         学生ID
      * @param background 新的背景图片路径或URL
      * @return 返回受影响的行数，通常成功更新时返回1
      */
@@ -78,14 +77,16 @@ public interface StudentMapper extends BaseMapper<Student> {
 
     /**
      * 根据ID删除学生记录
+     *
      * @param id 要删除的学生ID
      * @return 返回受影响的行数，通常成功删除时返回1
      */
     @Delete("delete from student where id = #{id}")
     int deleteById(Integer id);
-    
+
     /**
      * 根据AC数排序查询所有学生
+     *
      * @return 返回按AC数量降序排列的学生列表
      */
     @Select("select * from student order by ac desc")
@@ -105,6 +106,7 @@ public interface StudentMapper extends BaseMapper<Student> {
 
     /**
      * 根据用户名模糊查询学生信息
+     *
      * @param username 用户名关键字
      * @return 返回匹配的学生对象列表
      */
@@ -113,6 +115,7 @@ public interface StudentMapper extends BaseMapper<Student> {
 
     /**
      * 根据姓名模糊查询学生信息
+     *
      * @param name 姓名关键字
      * @return 返回匹配的学生对象列表
      */
@@ -121,6 +124,7 @@ public interface StudentMapper extends BaseMapper<Student> {
 
     /**
      * 根据创建时间的年份查询学生信息
+     *
      * @param year 年份，如"2023"
      * @return 返回匹配的学生对象列表
      */
@@ -129,7 +133,8 @@ public interface StudentMapper extends BaseMapper<Student> {
 
     /**
      * 更新学生的每日挑战状态
-     * @param id 学生ID
+     *
+     * @param id             学生ID
      * @param dailyChallenge 每日挑战状态
      * @return 返回受影响的行数，通常成功更新时返回1
      */
@@ -138,6 +143,7 @@ public interface StudentMapper extends BaseMapper<Student> {
 
     /**
      * 重置所有学生的每日挑战状态为FALSE
+     *
      * @return 返回受影响的行数
      */
     @Update("UPDATE student SET daily_challenge = '0'")

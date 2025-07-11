@@ -28,17 +28,13 @@ public class StudentController {
 
     /**
      * 新增学生
-     * 
+     *
      * @param student 学生实体对象，从请求体中获取
      * @return 操作结果
      */
     @ApiOperation("新增学生")
     @PostMapping("/add") // 处理POST请求，路径为/api/student/add
-<<<<<<< HEAD
     public Result add(@ApiParam("学生信息") @RequestBody Student student) {
-=======
-    public Result add(@RequestBody Student student) {
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
         // 检查用户名是否已存在
         if (studentService.isUsernameExists(student.getUsername())) {
             return Result.error("400", "用户名已存在");
@@ -49,7 +45,7 @@ public class StudentController {
 
     /**
      * 根据ID查询学生信息
-     * 
+     *
      * @param id 学生ID，从URL路径中获取
      * @return 包含学生信息的操作结果
      */
@@ -62,17 +58,13 @@ public class StudentController {
 
     /**
      * 修改学生信息
-     * 
+     *
      * @param student 更新后的学生实体对象，从请求体中获取
      * @return 操作结果，成功或失败
      */
     @ApiOperation("修改学生信息")
     @PutMapping("/update") // 处理PUT请求，路径为/api/student/update
-<<<<<<< HEAD
     public Result update(@ApiParam("学生信息") @RequestBody Student student) {
-=======
-    public Result update(@RequestBody Student student) {
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
         // 获取原有学生信息
         Student existingStudent = studentService.getStudentById(student.getId());
         if (existingStudent == null) {
@@ -88,7 +80,7 @@ public class StudentController {
 
     /**
      * 删除学生
-     * 
+     *
      * @param id 要删除的学生ID，从URL路径中获取
      * @return 操作结果，成功或失败
      */
@@ -101,7 +93,7 @@ public class StudentController {
 
     /**
      * 查询所有学生信息
-     * 
+     *
      * @return 包含所有学生列表的操作结果
      */
     @ApiOperation("查询所有学生")
@@ -113,7 +105,7 @@ public class StudentController {
 
     /**
      * 上传学生头像
-     * 
+     *
      * @param file 上传的头像文件
      * @param id 学生ID
      * @return 包含头像URL的操作结果，成功或失败
@@ -133,7 +125,7 @@ public class StudentController {
 
     /**
      * 更新学生个人背景图片
-     * 
+     *
      * @param map 包含学生ID和背景图片URL的Map对象
      * @return 操作结果，成功或失败
      */
@@ -160,7 +152,7 @@ public class StudentController {
 
     /**
      * 增加学生的AC题目数
-     * 
+     *
      * @param id 学生ID
      * @return 操作结果
      */
@@ -178,7 +170,7 @@ public class StudentController {
 
     /**
      * 增加学生的提交次数
-     * 
+     *
      * @param id 学生ID
      * @return 操作结果
      */
@@ -196,7 +188,7 @@ public class StudentController {
 
     /**
      * 根据AC排名返回所有学生信息（分页）
-     * 
+     *
      * @param pageNum 当前页码
      * @param pageSize 每页显示数量
      * @return 返回分页后的、按AC数量降序排列的学生列表
@@ -210,14 +202,14 @@ public class StudentController {
         if (pageNum < 1 || pageSize < 1) {
             return Result.error("400", "页码和每页显示数量必须大于0");
         }
-        
+
         Map<String, Object> pageResult = studentService.getStudentsOrderByAc(pageNum, pageSize);
         return Result.success(pageResult);
     }
 
     /**
      * 根据用户名模糊查询学生信息
-     * 
+     *
      * @param username 用户名关键字
      * @return 包含匹配学生列表的操作结果
      */
@@ -234,7 +226,7 @@ public class StudentController {
 
     /**
      * 根据姓名模糊查询学生信息
-     * 
+     *
      * @param name 姓名关键字
      * @return 包含匹配学生列表的操作结果
      */
@@ -251,7 +243,7 @@ public class StudentController {
 
     /**
      * 根据创建时间的年份查询学生信息
-     * 
+     *
      * @param year 年份，如2023
      * @return 包含匹配学生列表的操作结果
      */
@@ -268,27 +260,22 @@ public class StudentController {
 
     /**
      * 找回密码
-     * 
+     *
      * @param map 包含用户名和邮箱的Map对象
      * @return 操作结果
      */
-<<<<<<< HEAD
     @ApiOperation("找回密码")
     @PostMapping("/resetPassword")
     public Result resetPassword(
-            @ApiParam(value = "重置信息", example = "{\"username\":\"user123\",\"email\":\"user@example.com\"}") 
+            @ApiParam(value = "重置信息", example = "{\"username\":\"user123\",\"email\":\"user@example.com\"}")
             @RequestBody Map<String, String> map) {
-=======
-    @PostMapping("/resetPassword")
-    public Result resetPassword(@RequestBody Map<String, String> map) {
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
         String username = map.get("username");
         String email = map.get("email");
-        
+
         if (username == null || email == null) {
             return Result.error("400", "用户名和邮箱不能为空");
         }
-        
+
         try {
             boolean success = studentService.resetPassword(username, email);
             return success ? Result.success() : Result.error("500", "密码找回失败");
@@ -299,19 +286,14 @@ public class StudentController {
 
     /**
      * 修改密码
-     * 
+     *
      * @param params 包含username、oldPassword和newPassword的Map
      * @return 修改结果
      */
-<<<<<<< HEAD
     @ApiOperation("修改密码")
     @PostMapping("/changePassword")
     public Result<?> changePassword(
             @ApiParam("密码修改信息") @RequestBody Map<String, String> params) {
-=======
-    @PostMapping("/changePassword")
-    public Result<?> changePassword(@RequestBody Map<String, String> params) {
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
         String username = params.get("username");
         String oldPassword = params.get("oldPassword");
         String newPassword = params.get("newPassword");
@@ -327,11 +309,10 @@ public class StudentController {
             return Result.error("500", e.getMessage());
         }
     }
-<<<<<<< HEAD
 
     /**
      * 更新学生的每日挑战状态
-     * 
+     *
      * @param map 包含学生ID和每日挑战状态的Map对象
      * @return 操作结果
      */
@@ -341,11 +322,11 @@ public class StudentController {
             @ApiParam("更新信息") @RequestBody Map<String, Object> map) {
         Integer id = (Integer) map.get("id");
         String dailyChallenge = (String) map.get("dailyChallenge");
-        
+
         if (id == null || dailyChallenge == null) {
             return Result.error("400", "参数错误");
         }
-        
+
         try {
             boolean updated = studentService.updateDailyChallenge(id, dailyChallenge);
             return updated ? Result.success() : Result.error("500", "更新失败");
@@ -353,7 +334,5 @@ public class StudentController {
             return Result.error("404", e.getMessage());
         }
     }
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 

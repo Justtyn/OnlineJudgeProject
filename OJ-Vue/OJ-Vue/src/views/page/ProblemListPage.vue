@@ -323,11 +323,7 @@ onMounted(() => {
       <template #header>
         <div class="card-header">
           <span class="title">问题列表</span>
-<<<<<<< HEAD
           <el-button type="primary" @click="handleAdd" :disabled="!isAdmin">
-=======
-          <el-button type="primary" @click="handleAdd" disabled>
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
             <el-icon>
               <Plus />
             </el-icon>
@@ -387,11 +383,7 @@ onMounted(() => {
             <el-button link type="primary" @click="$router.push(`/problem/${scope.row.id}`)">
               查看
             </el-button>
-<<<<<<< HEAD
             <el-button link type="primary" @click="handleEdit(scope.row)" :disabled="!isAdmin">
-=======
-            <el-button link type="primary" @click="handleEdit(scope.row)" disabled>
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
               编辑
             </el-button>
           </template>

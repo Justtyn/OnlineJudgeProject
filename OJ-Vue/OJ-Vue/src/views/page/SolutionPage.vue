@@ -591,7 +591,6 @@ const handleLike = async (id) => {
   padding: 20px;
   background-color: #f5f7fa;
   min-height: 100vh;
-<<<<<<< HEAD
   animation: fadeIn 0.5s ease-in-out;
 }
 
@@ -604,8 +603,6 @@ const handleLike = async (id) => {
     opacity: 1;
     transform: translateY(0);
   }
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 
 .title-card {
@@ -891,81 +888,6 @@ const handleLike = async (id) => {
 }
 
 /* 移动端适配样式保持不变 */
-@media screen and (max-width: 768px) {
-  .solution-container {
-    padding: 10px;
-  }
-  
-  .search-card {
-    margin-bottom: 15px;
-  }
-  
-  .card-header {
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .title {
-    font-size: 16px;
-  }
-  
-  :deep(.el-form) {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  :deep(.el-form-item) {
-    margin-right: 0;
-    width: 100%;
-  }
-  
-  :deep(.el-input) {
-    width: 100%;
-  }
-  
-  :deep(.el-table) {
-    font-size: 14px;
-  }
-  
-  :deep(.el-table__header) {
-    font-size: 14px;
-  }
-  
-  :deep(.el-table__body) {
-    font-size: 14px;
-  }
-  
-  :deep(.el-table .cell) {
-    padding-left: 5px;
-    padding-right: 5px;
-  }
-  
-  :deep(.el-pagination) {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-  }
-  
-  :deep(.el-dialog) {
-    width: 90% !important;
-    margin: 0 auto;
-  }
-  
-  :deep(.el-dialog__body) {
-    padding: 15px;
-  }
-  
-  :deep(.el-form-item__label) {
-    font-size: 14px;
-  }
-  
-  :deep(.el-input__inner) {
-    font-size: 14px;
-  }
-}
-
-/* 添加移动端适配样式 */
 @media screen and (max-width: 768px) {
   .solution-container {
     padding: 10px;

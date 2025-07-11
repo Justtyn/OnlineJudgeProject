@@ -198,7 +198,6 @@ onMounted(() => {
   width: 100%;
   overflow-x: hidden;
   box-sizing: border-box;
-<<<<<<< HEAD
   animation: fadeIn 0.5s ease-in-out;
 }
 
@@ -211,14 +210,11 @@ onMounted(() => {
     opacity: 1;
     transform: translateY(0);
   }
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 
 .header-card, .table-card {
   margin-bottom: 20px;
   width: 100%;
-<<<<<<< HEAD
   transition: all 0.3s ease;
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
@@ -226,8 +222,6 @@ onMounted(() => {
 
 .header-card:hover, .table-card:hover {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 
 .card-header {
@@ -274,7 +268,6 @@ onMounted(() => {
   margin-top: 10px;
   width: 100%;
   overflow-x: auto;
-<<<<<<< HEAD
   border-radius: 8px;
   transition: all 0.3s ease;
 }
@@ -286,8 +279,6 @@ onMounted(() => {
 :deep(.el-table__row:hover) {
   transform: translateX(5px);
   background-color: #f0f7ff !important;
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 
 .class-link {
@@ -302,7 +293,6 @@ onMounted(() => {
   color: #40a9ff;
 }
 
-<<<<<<< HEAD
 .class-link::after {
   content: '';
   position: absolute;
@@ -318,8 +308,6 @@ onMounted(() => {
   width: 100%;
 }
 
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 /* 卡片列表样式 */
 .class-list {
   display: flex;
@@ -356,10 +344,7 @@ onMounted(() => {
   font-size: 18px;
   font-weight: bold;
   word-break: break-word;
-<<<<<<< HEAD
   color: #1a1a1a;
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 
 .class-info {
@@ -379,14 +364,9 @@ onMounted(() => {
 
 .class-item {
   display: flex;
-<<<<<<< HEAD
   margin-bottom: 12px;
   flex-wrap: wrap;
   transition: all 0.3s ease;
-=======
-  margin-bottom: 8px;
-  flex-wrap: wrap;
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 
 .info-label {
@@ -398,10 +378,7 @@ onMounted(() => {
 .info-value {
   color: #303133;
   word-break: break-word;
-<<<<<<< HEAD
   font-weight: 500;
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 
 .class-actions {
@@ -446,11 +423,7 @@ onMounted(() => {
   }
 
   .title {
-<<<<<<< HEAD
     font-size: 18px;
-=======
-    font-size: 16px;
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
   }
 
   :deep(.el-table) {
@@ -465,18 +438,11 @@ onMounted(() => {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
-<<<<<<< HEAD
     padding: 12px 16px;
   }
 
   .class-title {
     font-size: 16px;
-=======
-  }
-
-  .class-title {
-    font-size: 14px;
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
   }
 
   .class-info {
@@ -484,11 +450,7 @@ onMounted(() => {
   }
 
   .class-content {
-<<<<<<< HEAD
     padding: 16px;
-=======
-    padding: 12px;
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
   }
 
   .info-label {
@@ -497,10 +459,7 @@ onMounted(() => {
 
   .class-actions {
     justify-content: center;
-<<<<<<< HEAD
     padding: 0 16px 16px;
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
   }
 
   :deep(.el-button) {

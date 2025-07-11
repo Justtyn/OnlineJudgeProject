@@ -161,11 +161,8 @@ import { ElMessage } from 'element-plus';
 import request from '@/utils/request.js';
 import router from '@/router/index.js';
 import ChangePassword from '@/components/ChangePassword.vue'
-<<<<<<< HEAD
 import 'animate.css';
 import particles from 'particles.js';
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 
 // 从 localStorage 中获取登录信息
 const localUser = localStorage.getItem('student-user') 
@@ -210,12 +207,8 @@ const studentInfo = reactive({
   background: '',
   school: '',
   createTime: '',
-<<<<<<< HEAD
   lastVisitTime: '',
   dailyChallenge: ''
-=======
-  lastVisitTime: ''
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 });
 
 const formatDateTime = (dateTimeStr) => {
@@ -251,10 +244,7 @@ const fetchStudentInfo = async () => {
     studentInfo.school = localUser.school || '';
     studentInfo.createTime = localUser.createTime || '';
     studentInfo.lastVisitTime = localUser.lastVisitTime || '';
-<<<<<<< HEAD
     studentInfo.dailyChallenge = localUser.dailyChallenge || '';
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
     return;
   }
 
@@ -279,11 +269,8 @@ const fetchStudentInfo = async () => {
       studentInfo.school = data.school || '';
       studentInfo.createTime = data.createTime || '';
       studentInfo.lastVisitTime = data.lastVisitTime || '';
-<<<<<<< HEAD
       studentInfo.dailyChallenge = data.dailyChallenge || '';
       console.log('成功更新用户信息:', studentInfo);
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
     } else {
       console.error('API返回错误:', res.data.msg);
       ElMessage.error(res.data.msg || '获取用户信息失败');

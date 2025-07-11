@@ -409,14 +409,11 @@ h2 {
   margin-bottom: 30px;
   flex-wrap: wrap;
   gap: 10px;
-<<<<<<< HEAD
 }
 
 .base64-switch {
   margin-top: 10px;
   width: 48%;
-=======
->>>>>>> 0ceb392b5528f01c6eb373985bf35281707ba359
 }
 
 .el-select {
