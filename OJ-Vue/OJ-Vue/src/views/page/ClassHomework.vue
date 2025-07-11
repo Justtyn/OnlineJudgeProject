@@ -250,8 +250,97 @@ onMounted(() => {
   overflow-x: hidden;
 }
 
+/* 添加动画关键帧 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .homework-container {
+    padding: 10px;
+  }
+  
+  .header-card {
+    margin-bottom: 15px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .header-left {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  .homework-card {
+    height: auto;
+    min-height: 150px;
+  }
+  
+  .homework-header {
+    padding: 10px;
+  }
+  
+  .homework-title {
+    font-size: 16px;
+  }
+  
+  .homework-content {
+    padding: 12px;
+  }
+  
+  .homework-item {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .info-label {
+    width: auto;
+  }
+  
+  :deep(.el-table) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__header) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__body) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-tag) {
+    font-size: 12px;
+  }
+}
+
 .header-card, .table-card {
   margin-bottom: 20px;
+  animation: fadeIn 0.5s ease-out;
 }
 
 .card-header {
@@ -278,18 +367,20 @@ onMounted(() => {
 }
 
 .refresh-btn:hover {
-  transform: rotate(180deg);
+  animation: rotate 1s linear infinite;
 }
 
 .homework-link {
   color: #1890ff;
   cursor: pointer;
   text-decoration: none;
+  transition: all 0.3s ease;
 }
 
 .homework-link:hover {
   color: #40a9ff;
   text-decoration: underline;
+  transform: scale(1.05);
 }
 
 /* 卡片列表样式 */
@@ -301,16 +392,19 @@ onMounted(() => {
 }
 
 .homework-card {
-  height: 200px; /* 设置每个列表的高度为200px */
+  height: 200px;
   margin-bottom: 0;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   width: 100%;
   cursor: pointer;
+  animation: fadeIn 0.5s ease-out;
+  transform-style: preserve-3d;
+  perspective: 1000px;
 }
 
 .homework-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px) rotateX(5deg);
 }
 
 .homework-header {
@@ -319,11 +413,17 @@ onMounted(() => {
   align-items: center;
   padding: 12px 16px;
   border-radius: 4px 4px 0 0;
+  transition: background-color 0.3s ease;
 }
 
 .homework-title {
   font-size: 16px;
   font-weight: bold;
+  transition: transform 0.3s ease;
+}
+
+.homework-card:hover .homework-title {
+  transform: scale(1.05);
 }
 
 .homework-info, .homework-status {
@@ -339,6 +439,11 @@ onMounted(() => {
 .homework-item {
   display: flex;
   margin-bottom: 8px;
+  transition: transform 0.3s ease;
+}
+
+.homework-item:hover {
+  transform: translateX(5px);
 }
 
 .info-label {
@@ -362,5 +467,38 @@ onMounted(() => {
 
 :deep(.el-card__body) {
   padding: 20px;
+}
+
+/* 添加状态标签动画 */
+:deep(.el-tag) {
+  transition: all 0.3s ease;
+}
+
+:deep(.el-tag:hover) {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 添加列表/卡片切换动画 */
+.table-card, .homework-list {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.table-card-enter-active, .homework-list-enter-active {
+  transition: all 0.3s ease;
+}
+
+.table-card-enter-from, .homework-list-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.table-card-leave-active, .homework-list-leave-active {
+  transition: all 0.3s ease;
+}
+
+.table-card-leave-to, .homework-list-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
 }
 </style>

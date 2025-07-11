@@ -11,8 +11,11 @@
       </div>
     </div>
 
+    <!-- 总体数据概览 -->
+    <overview-panel />
+
     <div class="charts-container">
-      <!-- 1. 用户注册趋势（折线图） -->
+      <!-- 1. 用户注册趋势 -->
       <div class="chart-card" :class="{ 'active': activeChart === 'registration' }" @click="setActiveChart('registration')">
         <div class="chart-header">
           <h3>用户注册趋势</h3>
@@ -27,7 +30,7 @@
         </div>
       </div>
 
-      <!-- 2. 班级分布（饼图） -->
+      <!-- 2. 班级分布 -->
       <div class="chart-card" :class="{ 'active': activeChart === 'class' }" @click="setActiveChart('class')">
         <div class="chart-header">
           <h3>班级学生分布</h3>
@@ -42,7 +45,7 @@
         </div>
       </div>
 
-      <!-- 3. 题目提交排行（柱状图） -->
+      <!-- 3. 题目提交排行 -->
       <div class="chart-card" :class="{ 'active': activeChart === 'submit' }" @click="setActiveChart('submit')">
         <div class="chart-header">
           <h3>题目提交排行</h3>
@@ -59,7 +62,7 @@
         </div>
       </div>
 
-      <!-- 4. 提交状态分布（饼图） -->
+      <!-- 4. 提交状态分布 -->
       <div class="chart-card" :class="{ 'active': activeChart === 'status' }" @click="setActiveChart('status')">
         <div class="chart-header">
           <h3>提交状态分布</h3>
@@ -73,6 +76,24 @@
           <canvas ref="statusDistChart"></canvas>
         </div>
       </div>
+
+      <!-- 5. 语言分布 -->
+      <language-chart />
+
+      <!-- 6. 讨论区活跃度 -->
+      <discussion-chart />
+
+      <!-- 7. 学生 AC 与提交分布 -->
+      <performance-chart />
+
+      <!-- 8. 活动统计 -->
+      <activity-chart />
+
+      <!-- 9. 题解质量指标 -->
+      <quality-radar />
+
+      <!-- 10. 提交状态分布 -->
+      <submission-chart />
     </div>
   </div>
 </template>
@@ -80,7 +101,14 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import Chart from 'chart.js/auto'
-import request from '@/utils/request.js'
+import request from '@/utils/request'
+import OverviewPanel from '@/views/admin/components/OverviewPanel.vue'
+import LanguageChart from '@/views/admin/components/LanguageChart.vue'
+import DiscussionChart from '@/views/admin/components/DiscussionChart.vue'
+import PerformanceChart from '@/views/admin/components/PerformanceChart.vue'
+import ActivityChart from '@/views/admin/components/ActivityChart.vue'
+import QualityRadar from '@/views/admin/components/QualityRadar.vue'
+import SubmissionChart from '@/views/admin/components/SubmissionChart.vue'
 
 // 参数
 const days = ref(30)
@@ -136,7 +164,6 @@ function initRegistrationTrend() {
       const labels = arr.map(item => item.date)
       const counts = arr.map(item => item.count)
       
-      // 创建新图表实例
       chartInstances.value.registration = new Chart(registrationChart.value.getContext('2d'), {
         type: 'line',
         data: {
@@ -197,7 +224,6 @@ function initClassDistribution() {
       const labels = arr.map(item => item.className || '未分班')
       const counts = arr.map(item => item.count)
       
-      // 创建新图表实例
       chartInstances.value.class = new Chart(classDistChart.value.getContext('2d'), {
         type: 'doughnut',
         data: {
@@ -244,7 +270,6 @@ function initTopSubmit() {
       const labels = arr.map(item => item.problemName)
       const counts = arr.map(item => item.submitCount)
       
-      // 创建新图表实例
       chartInstances.value.submit = new Chart(topSubmitChart.value.getContext('2d'), {
         type: 'bar',
         data: {
@@ -291,7 +316,6 @@ function initStatusDistribution() {
       const labels = arr.map(item => item.status)
       const counts = arr.map(item => item.count)
       
-      // 创建新图表实例
       chartInstances.value.status = new Chart(statusDistChart.value.getContext('2d'), {
         type: 'polarArea',
         data: {
@@ -346,7 +370,7 @@ onMounted(() => {
 <style scoped>
 .stats-dashboard {
   padding: 20px;
-  background: #f5f7fa;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
   min-height: 100vh;
 }
 
@@ -355,68 +379,156 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(10px);
 }
 
 .dashboard-header h2 {
-  font-size: 24px;
+  font-size: 28px;
   color: #2c3e50;
   margin: 0;
+  font-weight: 600;
+  background: linear-gradient(45deg, #2c3e50, #3498db);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .charts-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+  padding: 10px;
 }
 
 .chart-card {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.chart-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+}
+
+.chart-card:hover::before {
+  transform: translateX(100%);
 }
 
 .chart-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
 }
 
 .chart-card.active {
   border: 2px solid #409EFF;
+  box-shadow: 0 0 20px rgba(64, 158, 255, 0.2);
 }
 
 .chart-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .chart-header h3 {
   margin: 0;
-  font-size: 18px;
+  font-size: 20px;
   color: #2c3e50;
+  font-weight: 600;
 }
 
 .chart-content {
-  height: 300px;
+  height: 350px;
   position: relative;
+  transition: all 0.3s ease;
 }
 
 .chart-actions {
   display: flex;
-  gap: 10px;
+  gap: 12px;
 }
 
-@media (max-width: 768px) {
+.chart-actions .el-button {
+  transition: all 0.3s ease;
+}
+
+.chart-actions .el-button:hover {
+  transform: scale(1.1);
+}
+
+/* 加载动画 */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+/* 响应式优化 */
+@media (max-width: 1200px) {
   .charts-container {
     grid-template-columns: 1fr;
   }
-  
+}
+
+@media (max-width: 768px) {
+  .stats-dashboard {
+    padding: 10px;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+    padding: 15px;
+  }
+
+  .dashboard-header h2 {
+    font-size: 24px;
+  }
+
+  .charts-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
   .chart-card {
-    margin-bottom: 20px;
+    padding: 15px;
+  }
+
+  .chart-header h3 {
+    font-size: 18px;
+  }
+
+  .chart-content {
+    height: 300px;
   }
 }
 </style>

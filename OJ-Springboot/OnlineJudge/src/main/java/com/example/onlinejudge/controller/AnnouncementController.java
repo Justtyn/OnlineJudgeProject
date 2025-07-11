@@ -1,5 +1,8 @@
 package com.example.onlinejudge.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +17,7 @@ import com.example.onlinejudge.common.Result;
 import com.example.onlinejudge.entity.Announcement;
 import com.example.onlinejudge.service.AnnouncementService;
 
+@Api(tags = "公告管理接口")
 @RestController
 @RequestMapping("/announcement")
 public class AnnouncementController {
@@ -21,36 +25,36 @@ public class AnnouncementController {
     @Autowired
     private AnnouncementService announcementService;
 
-    // 添加状态
+    @ApiOperation("添加公告")
     @PostMapping
-    public Result<?> save(@RequestBody Announcement announcement) {
+    public Result<?> save(@ApiParam("公告信息") @RequestBody Announcement announcement) {
         announcementService.save(announcement);
         return Result.success();
     }
 
-    // 删除状态
+    @ApiOperation("删除公告")
     @DeleteMapping("/{id}")
-    public Result<?> delete(@PathVariable Integer id) {
+    public Result<?> delete(@ApiParam("公告ID") @PathVariable Integer id) {
         announcementService.removeById(id);
         return Result.success();
     }
 
-    // 不分页查询全部状态
+    @ApiOperation("查询所有公告")
     @GetMapping
     public Result<?> findAll() {
         return Result.success(announcementService.list());
     }
 
-    // 根据标题title查询
+    @ApiOperation("根据标题查询公告")
     @GetMapping("/title")
-    public Result<?> findByTitle(@RequestParam String title) {
+    public Result<?> findByTitle(@ApiParam("公告标题") @RequestParam String title) {
         Announcement announcement = announcementService.getByTitle(title);
         return Result.success(announcement);
     }
 
-    // 根据内容content查询
+    @ApiOperation("根据内容查询公告")
     @GetMapping("/content")
-    public Result<?> findByContent(@RequestParam String content) {
+    public Result<?> findByContent(@ApiParam("公告内容") @RequestParam String content) {
         Announcement announcement = announcementService.getByContent(content);
         return Result.success(announcement);
     }

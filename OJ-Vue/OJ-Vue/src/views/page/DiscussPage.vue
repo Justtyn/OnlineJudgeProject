@@ -483,10 +483,29 @@ onMounted(() => {
   min-height: 80vh;
   max-width: 1200px;
   margin: 0 auto;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .search-card {
   margin-bottom: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.search-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.15);
 }
 
 .card-header {
@@ -498,10 +517,30 @@ onMounted(() => {
 .title {
   font-size: 18px;
   font-weight: bold;
+  background: linear-gradient(45deg, #1890ff, #40a9ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: titleGlow 2s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(24, 144, 255, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(24, 144, 255, 0.5);
+  }
 }
 
 .table-card {
   margin-bottom: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.table-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.15);
 }
 
 .pagination {
@@ -512,6 +551,7 @@ onMounted(() => {
 
 :deep(.el-card__header) {
   padding: 15px 20px;
+  background: linear-gradient(to right, #f0f2f5, #ffffff);
 }
 
 :deep(.el-card__body) {
@@ -522,26 +562,71 @@ onMounted(() => {
   color: #1890ff;
   cursor: pointer;
   text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .discuss-link:hover {
-  text-decoration: underline;
+  color: #40a9ff;
+  text-decoration: none;
+}
+
+.discuss-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: #40a9ff;
+  transition: width 0.3s ease;
+}
+
+.discuss-link:hover::after {
+  width: 100%;
 }
 
 .problem-link {
   color: #1890ff;
   cursor: pointer;
-  text-decoration: underline;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .problem-link:hover {
   color: #40a9ff;
+  text-decoration: none;
+}
+
+.problem-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: #40a9ff;
+  transition: width 0.3s ease;
+}
+
+.problem-link:hover::after {
+  width: 100%;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
   gap: 20px;
+}
+
+.header-actions .el-button {
+  transition: all 0.3s ease;
+}
+
+.header-actions .el-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
 }
 
 .problem-select-wrapper {
@@ -557,11 +642,149 @@ onMounted(() => {
 
 .reset-button {
   flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.reset-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
 }
 
 .dialog-footer {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+}
+
+/* 表格行动画 */
+:deep(.el-table__row) {
+  transition: all 0.3s ease;
+}
+
+:deep(.el-table__row:hover) {
+  transform: scale(1.01);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 按钮波纹效果 */
+:deep(.el-button) {
+  position: relative;
+  overflow: hidden;
+}
+
+:deep(.el-button::after) {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%);
+  transform-origin: 50% 50%;
+}
+
+:deep(.el-button:active::after) {
+  animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(20, 20);
+    opacity: 0;
+  }
+}
+
+/* 加载动画 */
+:deep(.el-loading-spinner) {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .discuss-container {
+    padding: 10px;
+  }
+  
+  .search-card {
+    margin-bottom: 15px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  :deep(.el-form) {
+    padding: 10px 0;
+  }
+  
+  :deep(.el-form-item) {
+    margin-right: 0;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+  
+  :deep(.el-input) {
+    width: 100%;
+  }
+  
+  :deep(.el-table) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__header) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__body) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-pagination) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-dialog) {
+    width: 90% !important;
+    margin: 0 auto;
+  }
+  
+  :deep(.el-dialog__body) {
+    padding: 15px;
+  }
+  
+  .problem-select-wrapper {
+    flex-direction: column;
+  }
+  
+  .reset-button {
+    width: 100%;
+    margin-top: 10px;
+  }
 }
 </style>

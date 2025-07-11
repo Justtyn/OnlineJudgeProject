@@ -7,11 +7,14 @@ import request from "@/utils/request.js"
 const route = useRoute()
 const router = useRouter()
 const homeworkId = route.params.id
+
+// 初始化作业信息
 const homeworkInfo = ref({
   id: homeworkId,
   title: route.query.title || '作业详情',
   startTime: route.query.startTime || '-',
-  endTime: route.query.endTime || '-'
+  endTime: route.query.endTime || '-',
+  classId: route.query.classId || null
 })
 const problemList = ref([])
 const loading = ref(false)
@@ -19,6 +22,13 @@ const dialogVisible = ref(false)
 const selectedProblems = ref([])
 const problemOptions = ref([])
 const problemsLoading = ref(false)
+
+// 添加计算属性判断作业是否已结束
+const isHomeworkEnded = computed(() => {
+  const now = new Date()
+  const end = new Date(homeworkInfo.value.endTime)
+  return now > end
+})
 
 // 格式化日期时间
 const formatDateTime = (dateTimeStr) => {
@@ -80,50 +90,64 @@ const loadData = async () => {
   loading.value = true
   try {
     // 获取作业信息
-    console.log('homeworkId:', homeworkId)  
+    console.log('路由参数:', {
+      id: homeworkId,
+      title: route.query.title,
+      startTime: route.query.startTime,
+      endTime: route.query.endTime,
+      classId: route.query.classId
+    })
+    
     const homeworkResponse = await request.get(`/homework/class/${homeworkId}`)
-    console.log('原始作业数据:', homeworkResponse)
+    console.log('API响应数据:', homeworkResponse)
 
     if (homeworkResponse.data) {
       // 处理不同的响应格式
       let homeworkData = null
       
       if (Array.isArray(homeworkResponse.data) && homeworkResponse.data.length > 0) {
-        // 数组格式的响应
         homeworkData = homeworkResponse.data[0]
       } else if (homeworkResponse.data.data && Array.isArray(homeworkResponse.data.data) && homeworkResponse.data.data.length > 0) {
-        // 标准响应格式 {code: 200, data: [{...}], msg: 'success'}
         homeworkData = homeworkResponse.data.data[0]
       } else if (homeworkResponse.data.data) {
-        // 标准响应格式 {code: 200, data: {...}, msg: 'success'}
         homeworkData = homeworkResponse.data.data
       } else if (homeworkResponse.data.id) {
-        // 直接返回数据对象格式
         homeworkData = homeworkResponse.data
       }
       
+      console.log('解析后的作业数据:', homeworkData)
+      
       // 如果成功获取到数据，更新 homeworkInfo
       if (homeworkData) {
-        const formattedStartTime = formatDateTime(homeworkData.startTime)
-        const formattedEndTime = formatDateTime(homeworkData.endTime)
-        
         homeworkInfo.value = {
           id: homeworkData.id,
           title: homeworkData.title || route.query.title || '作业详情',
-          startTime: formattedStartTime,
-          endTime: formattedEndTime
+          startTime: homeworkData.startTime || route.query.startTime || '-',
+          endTime: homeworkData.endTime || route.query.endTime || '-',
+          classId: homeworkData.classId || route.query.classId || null
         }
       } else {
         // 如果没有获取到有效数据，使用路由参数
         homeworkInfo.value = {
           id: homeworkId,
           title: route.query.title || '作业详情',
-          startTime: formatDateTime(route.query.startTime) || '-',
-          endTime: formatDateTime(route.query.endTime) || '-'
+          startTime: route.query.startTime || '-',
+          endTime: route.query.endTime || '-',
+          classId: route.query.classId || null
         }
       }
       
-      console.log('处理后的作业数据:', homeworkInfo.value)
+      console.log('最终设置的作业信息:', homeworkInfo.value)
+    } else {
+      console.warn('API响应中没有数据')
+      // 使用路由参数作为回退
+      homeworkInfo.value = {
+        id: homeworkId,
+        title: route.query.title || '作业详情',
+        startTime: route.query.startTime || '-',
+        endTime: route.query.endTime || '-',
+        classId: route.query.classId || null
+      }
     }
     
     // 获取作业问题列表 - 使用正确的API端点
@@ -252,7 +276,43 @@ const handleAddProblems = async () => {
   }
 }
 
+// 处理问题链接点击
+const handleProblemClick = (problemId) => {
+  if (isHomeworkEnded.value) {
+    ElMessage.warning('该作业已结束，无法查看问题详情')
+    return
+  }
+  goToProblemDetail(problemId)
+}
+
+// 处理提交按钮点击
+const handleSubmitClick = (problem) => {
+  if (isHomeworkEnded.value) {
+    ElMessage.warning('该作业已结束，无法提交代码')
+    return
+  }
+  goToSubmitPage(problem)
+}
+
+// 处理添加题目按钮点击
+const handleAddButtonClick = () => {
+  if (isHomeworkEnded.value) {
+    ElMessage.warning('该作业已结束，无法添加题目')
+    return
+  }
+  dialogVisible.value = true
+}
+
+// 添加计算属性
+const formattedStartTime = computed(() => formatDateTime(homeworkInfo.value.startTime))
+const formattedEndTime = computed(() => formatDateTime(homeworkInfo.value.endTime))
+
 onMounted(() => {
+  console.log('HomeworkProblem 组件挂载，路由参数:', {
+    params: route.params,
+    query: route.query
+  })
+  console.log('初始化的作业信息:', homeworkInfo.value)
   loadData()
 })
 </script>
@@ -265,7 +325,11 @@ onMounted(() => {
         <div class="card-header">
           <span class="title">{{ homeworkInfo.title || '作业详情' }}</span>
           <div class="header-buttons">
-            <el-button type="primary" @click="dialogVisible = true">
+            <el-button 
+              type="primary" 
+              @click="handleAddButtonClick"
+              :disabled="isHomeworkEnded"
+            >
               <el-icon><Plus /></el-icon>
               添加题目
             </el-button>
@@ -281,11 +345,11 @@ onMounted(() => {
       <div class="homework-info">
         <div class="info-item">
           <span class="info-label">开始时间：</span>
-          <span class="info-value">{{ homeworkInfo.startTime }}</span>
+          <span class="info-value">{{ formattedStartTime }}</span>
         </div>
         <div class="info-item">
           <span class="info-label">结束时间：</span>
-          <span class="info-value">{{ homeworkInfo.endTime }}</span>
+          <span class="info-value">{{ formattedEndTime }}</span>
         </div>
         <div class="info-item">
           <span class="info-label">状态：</span>
@@ -306,7 +370,11 @@ onMounted(() => {
         <el-table-column type="index" label="序号" width="80" align="center" />
         <el-table-column label="问题" min-width="200" show-overflow-tooltip>
           <template #default="scope">
-            <a @click="goToProblemDetail(scope.row.id)" class="problem-link">
+            <a 
+              @click="handleProblemClick(scope.row.id)" 
+              class="problem-link"
+              :class="{ 'disabled-link': isHomeworkEnded }"
+            >
               {{ scope.row.name }}
             </a>
           </template>
@@ -324,10 +392,20 @@ onMounted(() => {
         </el-table-column>
         <el-table-column label="操作" width="200" align="center" fixed="right">
           <template #default="scope">
-            <el-button link type="primary" @click="goToProblemDetail(scope.row.id)">
+            <el-button 
+              link 
+              type="primary" 
+              @click="handleProblemClick(scope.row.id)"
+              :disabled="isHomeworkEnded"
+            >
               查看详情
             </el-button>
-            <el-button link type="primary" @click="goToSubmitPage(scope.row)">
+            <el-button 
+              link 
+              type="primary" 
+              @click="handleSubmitClick(scope.row)"
+              :disabled="isHomeworkEnded"
+            >
               提交代码
             </el-button>
           </template>
@@ -381,6 +459,69 @@ onMounted(() => {
   overflow-x: hidden;
 }
 
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .homework-problem-container {
+    padding: 10px;
+  }
+  
+  .header-card {
+    margin-bottom: 15px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  .header-buttons {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .homework-info {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .info-item {
+    width: 100%;
+  }
+  
+  :deep(.el-table) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__header) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__body) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-tag) {
+    font-size: 12px;
+  }
+  
+  :deep(.el-dialog) {
+    width: 90% !important;
+    margin: 0 auto;
+  }
+  
+  :deep(.el-dialog__body) {
+    padding: 15px;
+  }
+  
+  :deep(.el-select) {
+    width: 100%;
+  }
+}
+
 .header-card, .table-card {
   margin-bottom: 20px;
 }
@@ -427,6 +568,22 @@ onMounted(() => {
 .problem-link:hover {
   color: #40a9ff;
   text-decoration: underline;
+}
+
+.problem-link.disabled-link {
+  color: #c0c4cc;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.problem-link.disabled-link:hover {
+  color: #c0c4cc;
+  text-decoration: none;
+}
+
+:deep(.el-button.is-disabled) {
+  color: #c0c4cc;
+  cursor: not-allowed;
 }
 
 :deep(.el-card__header) {

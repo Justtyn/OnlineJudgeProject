@@ -29,8 +29,8 @@
             <el-form-item prop="role">
               <el-select style="width: 100%" v-model="userRegisterData.form.role">
                 <el-option value="STUDENT" label="学生"></el-option>
-                <el-option value="TEACHER" label="教师"></el-option>
-                <el-option value="ADMIN" label="管理员"></el-option>
+                <el-option value="TEACHER" label="教师" disabled></el-option>
+                <el-option value="ADMIN" label="管理员" disabled></el-option>
               </el-select>
             </el-form-item>
           </template>
@@ -130,8 +130,10 @@ const formRef = ref();
 const active = ref(0);
 // 性别下拉选项
 const options = reactive([
-  { label: "男", value: "M" },
-  { label: "女", value: "F" }
+  { label: "男", value: "男" },
+  { label: "女", value: "女" },
+  { label: "沃尔玛购物袋", value: "沃尔玛购物袋" },
+  { label: "武装直升机", value: "武装直升机" }
 ]);
 
 // 用户注册数据
@@ -191,9 +193,11 @@ const handleRegister = async () => {
       await router.push("/login");
     } else {
       ElMessage.error(res.data.msg || "注册失败");
+      active.value = 1; // 注册失败时返回到账户信息步骤
     }
   } catch (error) {
     ElMessage.error("注册过程中发生错误");
+    active.value = 1; // 发生错误时返回到账户信息步骤
   }
 };
 </script>
@@ -248,5 +252,55 @@ html, body {
 /* —— 多步骤注册表单样式 —— */
 .step-wrapper {
   margin: 20px 0;
+}
+
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .login-box {
+    padding: 20px;
+    margin-bottom: 100px;
+  }
+  
+  .login-form {
+    padding: 0 20px;
+  }
+  
+  .login-text {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .welcome-text {
+    height: 60px;
+    margin-bottom: 20px;
+  }
+  
+  .step-wrapper {
+    margin: 15px 0;
+  }
+  
+  :deep(.el-steps) {
+    padding: 0 10px;
+  }
+  
+  :deep(.el-step__title) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-step__description) {
+    font-size: 12px;
+  }
+  
+  :deep(.el-form-item) {
+    margin-bottom: 15px;
+  }
+  
+  :deep(.el-input__wrapper) {
+    padding: 0 10px;
+  }
+  
+  :deep(.el-button) {
+    width: 100%;
+  }
 }
 </style>

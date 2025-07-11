@@ -54,28 +54,93 @@ export default {
       const data = this.generateTimeSeriesData()
       const option = {
         title: {
-          text: '时间序列数据趋势'
+          text: '时间序列数据趋势',
+          textStyle: {
+            fontSize: 18,
+            fontWeight: 'bold',
+            color: '#333'
+          }
         },
         tooltip: {
-          trigger: 'axis'
+          trigger: 'axis',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: '#ccc',
+          borderWidth: 1,
+          textStyle: {
+            color: '#333'
+          }
         },
         xAxis: {
           type: 'time',
-          boundaryGap: false
+          boundaryGap: false,
+          axisLine: {
+            lineStyle: {
+              color: '#666'
+            }
+          }
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          axisLine: {
+            lineStyle: {
+              color: '#666'
+            }
+          }
         },
         series: [{
           name: '数据1',
           type: 'line',
           smooth: true,
-          data: data.series1
+          data: data.series1,
+          symbol: 'circle',
+          symbolSize: 8,
+          itemStyle: {
+            color: '#5470c6'
+          },
+          lineStyle: {
+            width: 3,
+            shadowColor: 'rgba(0,0,0,0.3)',
+            shadowBlur: 10,
+            shadowOffsetY: 8
+          },
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              offset: 0,
+              color: 'rgba(84,112,198,0.5)'
+            }, {
+              offset: 1,
+              color: 'rgba(84,112,198,0.1)'
+            }])
+          },
+          animationDuration: 2000,
+          animationEasing: 'cubicInOut'
         }, {
           name: '数据2',
           type: 'line',
           smooth: true,
-          data: data.series2
+          data: data.series2,
+          symbol: 'circle',
+          symbolSize: 8,
+          itemStyle: {
+            color: '#91cc75'
+          },
+          lineStyle: {
+            width: 3,
+            shadowColor: 'rgba(0,0,0,0.3)',
+            shadowBlur: 10,
+            shadowOffsetY: 8
+          },
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              offset: 0,
+              color: 'rgba(145,204,117,0.5)'
+            }, {
+              offset: 1,
+              color: 'rgba(145,204,117,0.1)'
+            }])
+          },
+          animationDuration: 2000,
+          animationEasing: 'cubicInOut'
         }]
       }
       chart.setOption(option)
@@ -86,37 +151,117 @@ export default {
       const data = this.generateBarData()
       const option = {
         title: {
-          text: '多维度柱状图'
+          text: '多维度柱状图',
+          textStyle: {
+            fontSize: 18,
+            fontWeight: 'bold',
+            color: '#333'
+          }
         },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
             type: 'shadow'
-          }
+          },
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: '#ccc',
+          borderWidth: 1
         },
         legend: {
-          data: ['类别1', '类别2', '类别3']
+          data: ['类别1', '类别2', '类别3'],
+          textStyle: {
+            color: '#666'
+          }
         },
         xAxis: {
           type: 'category',
-          data: data.categories
+          data: data.categories,
+          axisLine: {
+            lineStyle: {
+              color: '#666'
+            }
+          }
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          axisLine: {
+            lineStyle: {
+              color: '#666'
+            }
+          }
         },
         series: [{
           name: '类别1',
           type: 'bar',
-          data: data.values1
+          data: data.values1,
+          itemStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: '#83bff6' },
+              { offset: 0.5, color: '#188df0' },
+              { offset: 1, color: '#188df0' }
+            ])
+          },
+          emphasis: {
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: '#2378f7' },
+                { offset: 0.7, color: '#2378f7' },
+                { offset: 1, color: '#83bff6' }
+              ])
+            }
+          },
+          animationDelay: function (idx) {
+            return idx * 100;
+          }
         }, {
           name: '类别2',
           type: 'bar',
-          data: data.values2
+          data: data.values2,
+          itemStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: '#91cc75' },
+              { offset: 0.5, color: '#5ab34f' },
+              { offset: 1, color: '#5ab34f' }
+            ])
+          },
+          emphasis: {
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: '#4ab34f' },
+                { offset: 0.7, color: '#4ab34f' },
+                { offset: 1, color: '#91cc75' }
+              ])
+            }
+          },
+          animationDelay: function (idx) {
+            return idx * 100 + 100;
+          }
         }, {
           name: '类别3',
           type: 'bar',
-          data: data.values3
-        }]
+          data: data.values3,
+          itemStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: '#fac858' },
+              { offset: 0.5, color: '#f5a623' },
+              { offset: 1, color: '#f5a623' }
+            ])
+          },
+          emphasis: {
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: '#f5a623' },
+                { offset: 0.7, color: '#f5a623' },
+                { offset: 1, color: '#fac858' }
+              ])
+            }
+          },
+          animationDelay: function (idx) {
+            return idx * 100 + 200;
+          }
+        }],
+        animationDuration: 2000,
+        animationEasing: 'elasticOut'
       }
       chart.setOption(option)
       this.charts.barChart = chart
@@ -126,14 +271,25 @@ export default {
       const data = this.generatePieData()
       const option = {
         title: {
-          text: '环形图展示'
+          text: '环形图展示',
+          textStyle: {
+            fontSize: 18,
+            fontWeight: 'bold',
+            color: '#333'
+          }
         },
         tooltip: {
-          trigger: 'item'
+          trigger: 'item',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: '#ccc',
+          borderWidth: 1
         },
         legend: {
           orient: 'vertical',
-          left: 'left'
+          left: 'left',
+          textStyle: {
+            color: '#666'
+          }
         },
         series: [{
           name: '数据分布',
@@ -154,12 +310,22 @@ export default {
               show: true,
               fontSize: '20',
               fontWeight: 'bold'
+            },
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
             }
           },
           labelLine: {
             show: false
           },
-          data: data
+          data: data,
+          animationType: 'scale',
+          animationEasing: 'elasticOut',
+          animationDelay: function (idx) {
+            return Math.random() * 200;
+          }
         }]
       }
       chart.setOption(option)
@@ -350,6 +516,34 @@ export default {
 .charts-container {
   padding: 20px;
   background-color: #f5f5f5;
+}
+
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .charts-container {
+    padding: 10px;
+  }
+  
+  .chart-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .chart-item {
+    width: 100%;
+  }
+  
+  .chart {
+    height: 300px;
+  }
+  
+  :deep(.echarts-tooltip) {
+    font-size: 12px;
+  }
+  
+  :deep(.echarts-title) {
+    font-size: 14px;
+  }
 }
 
 .chart-row {

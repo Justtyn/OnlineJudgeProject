@@ -23,6 +23,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     /**
      * 添加资源处理器
      * 配置静态资源的访问路径映射，包括上传文件目录和前端静态资源
+     *
      * @param registry 资源处理器注册表
      */
     @Override
@@ -30,8 +31,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // 映射上传的文件目录：将所有 /uploads/** 的请求转发到工作目录下的 uploads 文件夹
         // 例如：请求 /uploads/image.jpg 会访问服务器上 {工作目录}/uploads/image.jpg 文件
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/");
-
+                .addResourceLocations(
+                        "file:" + System.getProperty("user.dir") + "/uploads/",
+                        "classpath:/static/uploads/"
+                );
         // 保留原有的静态资源映射
         // 将所有其他请求映射到 classpath:/static/ 目录下
         // 并添加自定义的资源解析器，用于支持前端单页应用的路由
@@ -56,10 +59,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         /**
          * 解析资源
          * 根据请求路径解析对应的资源
-         * @param request 当前HTTP请求
+         *
+         * @param request     当前HTTP请求
          * @param requestPath 请求路径
-         * @param locations 资源位置列表
-         * @param chain 资源解析器链
+         * @param locations   资源位置列表
+         * @param chain       资源解析器链
          * @return 解析后的资源，如果找不到则返回 index.html
          */
         @Override
@@ -70,9 +74,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         /**
          * 解析URL路径
          * 将资源路径解析为URL路径
+         *
          * @param resourcePath 资源路径
-         * @param locations 资源位置列表
-         * @param chain 资源解析器链
+         * @param locations    资源位置列表
+         * @param chain        资源解析器链
          * @return 解析后的URL路径
          */
         @Override
@@ -91,8 +96,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
         /**
          * 核心解析逻辑
          * 根据请求路径和资源位置列表解析资源
+         *
          * @param requestPath 请求路径
-         * @param locations 资源位置列表
+         * @param locations   资源位置列表
          * @return 解析后的资源
          */
         private Resource resolve(String requestPath, List<? extends Resource> locations) {
@@ -115,7 +121,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         /**
          * 创建相对资源
          * 根据基础资源和相对路径创建新的资源
-         * @param resource 基础资源
+         *
+         * @param resource     基础资源
          * @param relativePath 相对路径
          * @return 创建的相对资源
          */
@@ -130,16 +137,19 @@ public class WebMvcConfig implements WebMvcConfigurer {
         /**
          * 判断路径是否被忽略
          * 检查请求路径是否以忽略列表中的前缀开头
+         *
          * @param path 请求路径
          * @return 是否被忽略
          */
         private boolean isIgnored(String path) {
-            return ignoredPaths.stream().anyMatch(path::startsWith);
+            return ignoredPaths.stream().anyMatch(path::startsWith)
+                    || path.startsWith("uploads/");  // 额外忽略 uploads 前缀
         }
 
         /**
          * 判断路径是否为需要处理的静态资源
          * 根据文件扩展名判断
+         *
          * @param path 请求路径
          * @return 是否为需要处理的静态资源
          */
@@ -150,6 +160,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         /**
          * 获取路径的文件扩展名
+         *
          * @param path 请求路径
          * @return 文件扩展名
          */

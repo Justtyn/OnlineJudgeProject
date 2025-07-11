@@ -1,8 +1,18 @@
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import request from "@/utils/request.js";
 
+// 获取用户信息并检查是否是管理员
+const isAdmin = computed(() => {
+  const localUser = localStorage.getItem('student-user')
+    ? JSON.parse(localStorage.getItem('student-user'))
+    : localStorage.getItem('admin-user')
+      ? JSON.parse(localStorage.getItem('admin-user'))
+      : null;
+  
+  return localUser && localUser.role === 'ADMIN';
+});
 
 // 格式化日期时间
 const formatDateTime = (dateTimeStr) => {
@@ -118,13 +128,15 @@ const loadData = async () => {
       }
     } else if (queryForm.name) {
       // 按名称查询
-      response = await request.get('/problem/name', {
+      response = await request.get('/problem/search', {
         params: {
-          ...baseParams,
-          name: queryForm.name
+          keyword: queryForm.name
         }
       });
-      handleResponse(response);
+      if (response.data.code === '200') {
+        tableData.value = response.data.data;
+        total.value = response.data.data.length;
+      }
     } else if (queryForm.setter) {
       // 按出题人查询
       response = await request.get('/problem/setter', {
@@ -151,8 +163,21 @@ const loadData = async () => {
 const handleResponse = (response) => {
   const res = response.data;
   if (res.code === '200') {
-    tableData.value = res.data.list;
-    total.value = res.data.total;
+    // 检查是否包含records（针对模糊查询）还是list（针对分页查询）
+    if (res.data.records) {
+      tableData.value = res.data.records;
+      total.value = res.data.total;
+    } else if (res.data.list) {
+      tableData.value = res.data.list;
+      total.value = res.data.total;
+    } else if (Array.isArray(res.data)) {
+      // 处理直接返回数组的情况
+      tableData.value = res.data;
+      total.value = res.data.length;
+    } else {
+      tableData.value = [];
+      total.value = 0;
+    }
     console.log('成功获取数据:', tableData.value);
   } else {
     console.error('请求失败:', res.msg);
@@ -298,7 +323,7 @@ onMounted(() => {
       <template #header>
         <div class="card-header">
           <span class="title">问题列表</span>
-          <el-button type="primary" @click="handleAdd">
+          <el-button type="primary" @click="handleAdd" :disabled="!isAdmin">
             <el-icon>
               <Plus />
             </el-icon>
@@ -331,7 +356,7 @@ onMounted(() => {
         <!-- <el-table-column prop="name" label="问题" min-width="120" show-overflow-tooltip /> -->
         <el-table-column label="问题" min-width="120" show-overflow-tooltip>
           <template #default="scope">
-            <a @click="$router.push(`/problem/${scope.row.id}`)" class="problem-link">
+            <a @click="$router.push(`problem/${scope.row.id}`)" class="problem-link">
               {{ scope.row.name }}
             </a>
           </template>
@@ -358,7 +383,7 @@ onMounted(() => {
             <el-button link type="primary" @click="$router.push(`/problem/${scope.row.id}`)">
               查看
             </el-button>
-            <el-button link type="primary" @click="handleEdit(scope.row)">
+            <el-button link type="primary" @click="handleEdit(scope.row)" :disabled="!isAdmin">
               编辑
             </el-button>
           </template>
@@ -456,6 +481,12 @@ onMounted(() => {
 
 .search-card {
   margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.search-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .card-header {
@@ -467,10 +498,34 @@ onMounted(() => {
 .title {
   font-size: 18px;
   font-weight: bold;
+  background: linear-gradient(45deg, #1890ff, #40a9ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: titleGlow 2s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
 }
 
 .table-card {
   margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.table-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+:deep(.el-table__row) {
+  transition: all 0.3s ease;
+}
+
+:deep(.el-table__row:hover) {
+  transform: scale(1.01);
+  background-color: #f0f7ff !important;
 }
 
 .pagination {
@@ -490,10 +545,73 @@ onMounted(() => {
 .problem-link {
   color: #1890ff;
   cursor: pointer;
-  text-decoration: underline;
+  text-decoration: none;
+  position: relative;
+  transition: all 0.3s ease;
 }
+
+.problem-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background: linear-gradient(45deg, #1890ff, #40a9ff);
+  transition: width 0.3s ease;
+}
+
 .problem-link:hover {
   color: #40a9ff;
 }
 
+.problem-link:hover::after {
+  width: 100%;
+}
+
+:deep(.el-button) {
+  transition: all 0.3s ease;
+}
+
+:deep(.el-button:hover) {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
+}
+
+:deep(.el-pagination) {
+  transition: all 0.3s ease;
+}
+
+:deep(.el-pagination .el-pager li) {
+  transition: all 0.3s ease;
+}
+
+:deep(.el-pagination .el-pager li:hover) {
+  transform: scale(1.1);
+}
+
+:deep(.el-dialog) {
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+:deep(.el-dialog__header) {
+  background: linear-gradient(45deg, #1890ff, #40a9ff);
+  margin: 0;
+  padding: 20px;
+}
+
+:deep(.el-dialog__title) {
+  color: white !important;
+}
+
+:deep(.el-input__inner) {
+  transition: all 0.3s ease;
+}
+
+:deep(.el-input__inner:focus) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
+}
 </style>

@@ -1,17 +1,25 @@
 <template>
-  <div class="profile-page">
+  <div class="profile-page" :class="{ 'golden-mode': studentInfo.dailyChallenge === 'TRUE' }">
     <!-- 顶部背景图 -->
     <div class="profile-header"
       :style="{ backgroundImage: 'url(' + (studentInfo.background || defaultBackground) + ')' }">
-
+      <div id="particles-js" class="particles-container"></div>
       <!-- 头像+用户名 -->
       <div class="avatar-section">
         <!-- 头像，改为方形圆角，点击可预览 -->
-        <el-avatar v-model="avatarSize" :src="studentInfo.avatar || defaultAvatar" class="profile-avatar"
-          @click="avatarPreviewVisible = true" />
+        <div class="avatar-wrapper">
+          <el-avatar v-model="avatarSize" :src="studentInfo.avatar || defaultAvatar" class="profile-avatar animate__animated animate__fadeIn"
+            @click="avatarPreviewVisible = true" />
+          <div v-if="studentInfo.dailyChallenge === 'TRUE'" class="crown animate__animated animate__bounceIn">
+            👑
+          </div>
+        </div>
         <!-- 用户名在头像右侧 -->
         <div class="avatar-info">
-          <h2 class="username">{{ studentInfo.name || studentInfo.username }}</h2>
+          <h2 class="username animate__animated animate__fadeIn">{{ studentInfo.name || studentInfo.username }}</h2>
+          <div v-if="studentInfo.dailyChallenge === 'TRUE'" class="golden-badge animate__animated animate__fadeInUp">
+            完成每日挑战
+          </div>
         </div>
       </div>
     </div>
@@ -46,6 +54,18 @@
               <span class="info-label">邮箱：</span>
               <span class="info-value">{{ studentInfo.email }}</span>
             </div>
+            <div class="info-item">
+              <span class="info-label">学校：</span>
+              <span class="info-value">{{ studentInfo.school }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">创建时间：</span>
+              <span class="info-value">{{ studentInfo.createTime }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">最后访问：</span>
+              <span class="info-value">{{ studentInfo.lastVisitTime }}</span>
+            </div>
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -69,6 +89,8 @@ import { ElMessage } from 'element-plus';
 import request from '@/utils/request.js';
 import router from '@/router/index.js';
 import { useRoute } from 'vue-router';
+import 'animate.css';
+import particles from 'particles.js';
 
 // 获取路由参数
 const route = useRoute();
@@ -89,7 +111,7 @@ if (!localUser) {
 }
 
 // 默认头像和背景图
-const defaultAvatar = 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG';
+const defaultAvatar = 'http://localhost8:9090/uploads/1743236403200_IMG_0748.JPG';
 const defaultBackground = 'http://localhost:9090/uploads/ocean-8032698_1920.jpg';
 
 // 学生信息响应式对象
@@ -102,7 +124,11 @@ const studentInfo = reactive({
   phone: '',
   email: '',
   avatar: '',
-  background: ''
+  background: '',
+  school: '',
+  createTime: '',
+  lastVisitTime: '',
+  dailyChallenge: ''
 });
 
 const formatDateTime = (dateTimeStr) => {
@@ -135,6 +161,10 @@ const fetchStudentInfo = async () => {
       studentInfo.email = data.email || '';
       studentInfo.avatar = data.avatar || '';
       studentInfo.background = data.background || defaultBackground;
+      studentInfo.school = data.school || '';
+      studentInfo.createTime = data.createTime || '';
+      studentInfo.lastVisitTime = data.lastVisitTime || '';
+      studentInfo.dailyChallenge = data.dailyChallenge || '';
     } else {
       ElMessage.error(res.data.msg || '获取用户信息失败');
     }
@@ -146,6 +176,65 @@ const fetchStudentInfo = async () => {
 
 onMounted(() => {
   fetchStudentInfo();
+  // 初始化 particles.js
+  if (studentInfo.dailyChallenge === 'TRUE') {
+    particlesJS('particles-js', {
+      particles: {
+        number: {
+          value: 80,
+          density: {
+            enable: true,
+            value_area: 800
+          }
+        },
+        color: {
+          value: '#FFD700'
+        },
+        shape: {
+          type: 'circle'
+        },
+        opacity: {
+          value: 0.5,
+          random: true
+        },
+        size: {
+          value: 3,
+          random: true
+        },
+        line_linked: {
+          enable: true,
+          distance: 150,
+          color: '#FFD700',
+          opacity: 0.4,
+          width: 1
+        },
+        move: {
+          enable: true,
+          speed: 2,
+          direction: 'none',
+          random: true,
+          straight: false,
+          out_mode: 'out',
+          bounce: false
+        }
+      },
+      interactivity: {
+        detect_on: 'canvas',
+        events: {
+          onhover: {
+            enable: true,
+            mode: 'grab'
+          },
+          onclick: {
+            enable: true,
+            mode: 'push'
+          },
+          resize: true
+        }
+      },
+      retina_detect: true
+    });
+  }
 });
 
 // Tabs
@@ -168,15 +257,18 @@ const avatarSize = ref('large');
   background-color: #fff;
   height: 80vh;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* 顶部背景图 */
 .profile-header {
   position: relative;
-  height: 260px; /* 或根据需要调整高度 */
-  background-size: 100% auto; /* 宽度铺满，自动计算高度 */
+  height: 360px;
+  background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
+  width: 100%;
 }
 
 /* 头像+用户名 */
@@ -184,8 +276,10 @@ const avatarSize = ref('large');
   display: flex;
   align-items: center;
   position: absolute;
-  bottom: -60px;
+  top: 50%;
+  transform: translateY(-50%);
   left: 40px;
+  z-index: 10;
 }
 
 /* 自定义头像尺寸 */
@@ -207,19 +301,56 @@ const avatarSize = ref('large');
   font-weight: bold;
   margin: 0;
   color: #333;
+  word-break: break-word;
 }
 
 /* 主体下方 Tab */
 .profile-tabs {
-  margin-top: 80px;
+  margin-top: 0;
   padding: 20px 40px;
+  position: relative;
+  z-index: 1;
 }
 
 /* 信息栏 */
-.info-container p {
-  font-size: 15px;
-  margin: 6px 0;
-  color: #555;
+.info-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.info-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.info-label {
+  width: 100px;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #333;
+  flex: 1;
+  word-break: break-word;
 }
 
 /* 头像预览弹窗 */
@@ -236,21 +367,275 @@ const avatarSize = ref('large');
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-.info-item {
-  display: flex;
+/* 移动端适配 */
+@media screen and (max-width: 768px) {
+  .profile-page {
+    height: auto;
+    min-height: 80vh;
+  }
+
+  .profile-header {
+    height: 200px;
+  }
+
+  .avatar-section {
+    left: 20px;
+    bottom: -40px;
+  }
+
+  .profile-avatar {
+    width: 80px !important;
+    height: 80px !important;
+  }
+
+  .username {
+    font-size: 18px;
+  }
+
+  .profile-tabs {
+    margin-top: 60px;
+    padding: 15px;
+  }
+
+  .info-label {
+    width: 100px;
+    font-size: 14px;
+  }
+
+  .info-value {
+    font-size: 14px;
+  }
+
+  .avatar-preview-img {
+    width: 150px;
+    height: 150px;
+  }
+
+  :deep(.el-tabs__nav) {
+    width: 100%;
+  }
+
+  :deep(.el-tabs__item) {
+    font-size: 14px;
+  }
+}
+
+/* 金色传说模式样式 */
+.golden-mode {
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+  position: relative;
+  overflow: visible;
+}
+
+.particles-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.golden-mode .profile-header {
+  position: relative;
+  overflow: visible;
+}
+
+.golden-mode .profile-header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 0L61 39H100L69 63L80 100L50 77L20 100L31 63L0 39H39L50 0Z' fill='%23FFD700' fill-opacity='0.1'/%3E%3C/svg%3E");
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.avatar-section {
+  position: relative;
+  z-index: 3;
+}
+
+.avatar-wrapper {
+  position: relative;
+  z-index: 10;
+}
+
+.crown {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 32px;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+  animation: crownFloat 3s ease-in-out infinite;
+  z-index: 11;
+}
+
+.crown::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: crownGlow 2s ease-in-out infinite;
+}
+
+.golden-badge {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: #fff;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 8px;
+  box-shadow: 
+    0 2px 8px rgba(255, 215, 0, 0.3),
+    0 0 20px rgba(255, 215, 0, 0.2);
+  animation: badgeGlow 2s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
   align-items: center;
-  margin-bottom: 8px;
+  gap: 8px;
 }
 
-.info-label {
-  width: 120px;
-  /* 固定宽度，根据需要调整 */
-  font-size: 15px;
-  color: #888;
+.golden-badge::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  animation: badgeShine 3s linear infinite;
 }
 
-.info-value {
-  font-size: 15px;
-  color: #555;
+.golden-badge::after {
+  content: '👑';
+  font-size: 16px;
+  animation: checkmarkPulse 1s ease-in-out infinite;
+}
+
+@keyframes checkmarkPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes goldenShine {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes headerShine {
+  0%, 100% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+}
+
+@keyframes crownFloat {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-8px) rotate(5deg);
+  }
+}
+
+@keyframes crownGlow {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.2);
+  }
+}
+
+.golden-mode .profile-avatar {
+  border: 3px solid #FFD700;
+  box-shadow: 
+    0 0 15px rgba(255, 215, 0, 0.3),
+    0 0 30px rgba(255, 215, 0, 0.2);
+  animation: avatarGlow 3s ease-in-out infinite;
+}
+
+@keyframes avatarGlow {
+  0%, 100% {
+    box-shadow: 
+      0 0 15px rgba(255, 215, 0, 0.3),
+      0 0 30px rgba(255, 215, 0, 0.2);
+  }
+  50% {
+    box-shadow: 
+      0 0 20px rgba(255, 215, 0, 0.4),
+      0 0 40px rgba(255, 215, 0, 0.3);
+  }
+}
+
+.golden-mode .username {
+  color: #B8860B;
+  text-shadow: 
+    0 1px 2px rgba(255, 215, 0, 0.2),
+    0 2px 4px rgba(255, 215, 0, 0.1);
+  animation: textGlow 3s ease-in-out infinite;
+}
+
+@keyframes textGlow {
+  0%, 100% {
+    text-shadow: 
+      0 1px 2px rgba(255, 215, 0, 0.2),
+      0 2px 4px rgba(255, 215, 0, 0.1);
+  }
+  50% {
+    text-shadow: 
+      0 1px 3px rgba(255, 215, 0, 0.3),
+      0 3px 6px rgba(255, 215, 0, 0.2);
+  }
+}
+
+.golden-mode .info-label {
+  color: #B8860B;
+  text-shadow: 0 1px 1px rgba(255, 215, 0, 0.1);
+}
+
+.golden-mode .info-value {
+  color: #8B4513;
+  text-shadow: 0 1px 1px rgba(255, 215, 0, 0.1);
+}
+
+.golden-mode .el-tabs__item.is-active {
+  color: #B8860B;
+}
+
+.golden-mode .el-tabs__active-bar {
+  background-color: #FFD700;
+}
+
+.golden-mode .el-tabs__item:hover {
+  color: #FFD700;
 }
 </style>

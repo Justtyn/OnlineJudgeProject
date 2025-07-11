@@ -45,3 +45,10 @@ mybatis-plus:
 logging:
   level:
     com.example.onlinejudge: debug
+
+# Swagger配置
+springfox:
+  documentation:
+    swagger-ui:
+      enabled: true
+    enabled: true

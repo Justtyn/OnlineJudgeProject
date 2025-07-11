@@ -20,12 +20,14 @@ const service = axios.create({
  * 例如：添加token、修改请求参数等
  */
 service.interceptors.request.use(config => {
-    // 这里可以添加token验证等逻辑
-    // 例如: config.headers['Authorization'] = 'Bearer ' + token
-    return config // 返回处理后的配置
+    // 从localStorage获取token
+    const token = localStorage.getItem('token')
+    if (token) {
+        config.headers['Authorization'] = 'Bearer ' + token
+    }
+    return config
 }, error => {
-    // 请求错误处理
-    return Promise.reject(error) // 返回错误，进入catch
+    return Promise.reject(error)
 });
 
 /**
@@ -35,17 +37,25 @@ service.interceptors.request.use(config => {
  */
 service.interceptors.response.use(
     response => {
-        // 响应数据处理
-        // 可以在这里统一处理响应状态码、提取响应数据等
-        return response // 返回响应数据
+        return response
     },
     error => {
-        // 响应错误处理
-        ElMessage.error(error.message || '请求失败') // 显示错误消息提示
-        // 可以在这里根据错误状态码做不同处理
-        // 例如：401未授权可以跳转到登录页
-        return Promise.reject(error) // 返回错误，进入catch
+        if (error.response) {
+            switch (error.response.status) {
+                case 401:
+                    // token失效，清除本地token并跳转到登录页
+                    localStorage.removeItem('token')
+                    ElMessage.error('登录已过期，请重新登录')
+                    router.push('/login')
+                    break
+                default:
+                    ElMessage.error(error.response.data.message || '请求失败')
+            }
+        } else {
+            ElMessage.error('网络错误，请稍后重试')
+        }
+        return Promise.reject(error)
     }
 )
 
-export default service // 导出axios实例，供其他模块使用
+export default service

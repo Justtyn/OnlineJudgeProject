@@ -6,13 +6,18 @@ import com.example.onlinejudge.common.Result;
 import com.example.onlinejudge.common.RoleEnum;
 import com.example.onlinejudge.entity.Account;
 import com.example.onlinejudge.entity.Admin;
+import com.example.onlinejudge.entity.Student;
 import com.example.onlinejudge.service.AdminService;
 import com.example.onlinejudge.service.MailService;
 import com.example.onlinejudge.service.StudentService;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 import javax.annotation.Resource;
 
+@Api(tags = "Web基础接口")
 @RestController
 //@RequestMapping("")
 public class WebController {
@@ -29,25 +34,16 @@ public class WebController {
     @Resource
     private MailService mailService;
 
-    /**
-     * 默认请求接口，响应基本的成功状态
-     *
-     * @return Result.success() 返回一个成功的响应结果
-     */
+    @ApiOperation("默认接口")
     @GetMapping("/")
     public Result hello() {
         // 直接返回成功响应，通常用于测试接口或健康检查
         return Result.success();
     }
 
-    /**
-     * 登录接口，根据传入的账号信息进行角色验证，进行登录操作
-     *
-     * @param account 用户的账号信息
-     * @return 登录成功返回用户信息，失败则返回错误信息
-     */
+    @ApiOperation("用户登录")
     @PostMapping("/login")
-    public Result login(@RequestBody Account account) {
+    public Result login(@ApiParam("账号信息") @RequestBody Account account) {
         Account dbAccount;
 
         // 根据角色来判断登录身份，分别处理管理员和学生的登录逻辑
@@ -64,14 +60,9 @@ public class WebController {
         return Result.success(dbAccount);
     }
 
-    /**
-     * 注册接口，处理用户的注册请求
-     *
-     * @param account 用户的账号信息
-     * @return 根据不同角色返回注册结果
-     */
+    @ApiOperation("用户注册")
     @PostMapping("/register")
-    public Result register(@RequestBody Account account) {
+    public Result register(@ApiParam("账号信息") @RequestBody Account account) {
         // 检查账号或密码是否为空
         if (ObjectUtil.isEmpty(account.getUsername()) || ObjectUtil.isEmpty(account.getPassword())) {
             return Result.error("400", "账号或密码必填");  // 返回错误，提示账号或密码不能为空
@@ -81,6 +72,32 @@ public class WebController {
         if (RoleEnum.ADMIN.name().equals(account.getRole())) {
             // 如果是管理员角色，调用管理员注册服务
             adminService.register(account);
+            // 发送管理员注册通知邮件
+            String adminSubject = "新管理员注册通知";
+            String adminContent = "<html>" +
+                    "<head>" +
+                    "<style>" +
+                    "  body { font-family: Arial, sans-serif; background-color: #f4f7fa; color: #333; padding: 20px; }" +
+                    "  h1 { color: #2196F3; }" +
+                    "  .message { background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }" +
+                    "  p { font-size: 16px; line-height: 1.6; }" +
+                    "  .highlight { color: #2196F3; font-weight: bold; }" +
+                    "  .footer { font-size: 14px; color: #777; margin-top: 20px; }" +
+                    "</style>" +
+                    "</head>" +
+                    "<body>" +
+                    "<div class='message'>" +
+                    "<h1>新管理员注册通知</h1>" +
+                    "<p>系统通知：有一位新的管理员已成功注册。</p>" +
+                    "<p>注册账号：<span class='highlight'>" + account.getUsername() + "</span></p>" +
+                    "<p>注册时间：" + java.time.LocalDateTime.now() + "</p>" +
+                    "<div class='footer'>" +
+                    "<p>此邮件由系统自动发送，请勿回复。</p>" +
+                    "</div>" +
+                    "</div>" +
+                    "</body>" +
+                    "</html>";
+            mailService.sendHtmlMail("1046220903@qq.com", adminSubject, adminContent);
             return Result.success("注册成功");
         } else if (RoleEnum.STUDENT.name().equals(account.getRole())) {  // 如果是学生角色
             // 调用学生注册服务
@@ -125,6 +142,32 @@ public class WebController {
                 // 发送 HTML 邮件
                 mailService.sendHtmlMail(account.getEmail(), subject, content);
             }
+            // 发送学生注册通知邮件
+            String studentSubject = "新学生注册通知";
+            String studentContent = "<html>" +
+                    "<head>" +
+                    "<style>" +
+                    "  body { font-family: Arial, sans-serif; background-color: #f4f7fa; color: #333; padding: 20px; }" +
+                    "  h1 { color: #4CAF50; }" +
+                    "  .message { background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }" +
+                    "  p { font-size: 16px; line-height: 1.6; }" +
+                    "  .highlight { color: #4CAF50; font-weight: bold; }" +
+                    "  .footer { font-size: 14px; color: #777; margin-top: 20px; }" +
+                    "</style>" +
+                    "</head>" +
+                    "<body>" +
+                    "<div class='message'>" +
+                    "<h1>新学生注册通知</h1>" +
+                    "<p>系统通知：有一位新的学生已成功注册。</p>" +
+                    "<p>注册账号：<span class='highlight'>" + account.getUsername() + "</span></p>" +
+                    "<p>注册时间：" + java.time.LocalDateTime.now() + "</p>" +
+                    "<div class='footer'>" +
+                    "<p>此邮件由系统自动发送，请勿回复。</p>" +
+                    "</div>" +
+                    "</div>" +
+                    "</body>" +
+                    "</html>";
+            mailService.sendHtmlMail("1046220903@qq.com", studentSubject, studentContent);
             return Result.success("注册成功");
         }
 
@@ -132,14 +175,9 @@ public class WebController {
         return Result.error("400", "注册错误");
     }
 
-    /**
-     * 根据ID查询管理员信息
-     *
-     * @param id 管理员ID
-     * @return 返回管理员信息
-     */
+    @ApiOperation("根据ID查询管理员信息")
     @GetMapping("/admin/{id}")
-    public Result getAdminById(@PathVariable Integer id) {
+    public Result getAdminById(@ApiParam("管理员ID") @PathVariable Integer id) {
         Admin admin = adminService.getById(id);
         return Result.success(admin);
     }

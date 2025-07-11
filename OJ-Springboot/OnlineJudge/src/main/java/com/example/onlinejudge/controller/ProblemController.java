@@ -4,11 +4,15 @@ import com.example.onlinejudge.common.Result;
 import com.example.onlinejudge.entity.Problem;
 import com.example.onlinejudge.service.ProblemService;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
+@Api(tags = "问题管理接口")
 @RestController
 @RequestMapping("/problem")
 public class ProblemController {
@@ -16,141 +20,103 @@ public class ProblemController {
     @Resource
     private ProblemService problemService;
     
-    /**
-     * 分页查询所有问题
-     * 通过分页参数获取问题列表
-     * @param pageNum 页码，默认为 1
-     * @param pageSize 每页数量，默认为 10
-     * @return 返回查询结果，封装在 Result 对象中
-     */
+    @ApiOperation("分页查询所有问题")
     @GetMapping("/page")
-    public Result page(@RequestParam(defaultValue = "1") Integer pageNum,
-                       @RequestParam(defaultValue = "10") Integer pageSize) {
+    public Result page(
+            @ApiParam(value = "页码", defaultValue = "1") @RequestParam(defaultValue = "1") Integer pageNum,
+            @ApiParam(value = "每页数量", defaultValue = "10") @RequestParam(defaultValue = "10") Integer pageSize) {
         Map<String, Object> resultMap = problemService.selectPage(pageNum, pageSize);
         return Result.success(resultMap);
     }
     
-    /**
-     * 根据ID查询问题详情
-     * 根据问题的唯一 ID 查询具体问题信息
-     * @param id 问题的唯一标识符
-     * @return 返回查询的单个问题，封装在 Result 对象中
-     */
+    @ApiOperation("根据ID查询问题详情")
     @GetMapping("/{id}")
-    public Result getById(@PathVariable Integer id) {
+    public Result getById(@ApiParam(value = "问题ID", required = true) @PathVariable Integer id) {
         Problem problem = problemService.selectById(id);
         return Result.success(problem);
     }
     
-    /**
-     * 根据名称查询问题
-     * 根据问题名称查询相关问题，支持分页
-     * @param name 问题的名称
-     * @param pageNum 页码，默认为 1
-     * @param pageSize 每页数量，默认为 10
-     * @return 返回查询结果，封装在 Result 对象中
-     */
+    @ApiOperation("根据名称查询问题")
     @GetMapping("/name")
-    public Result getByName(@RequestParam String name,
-                            @RequestParam(defaultValue = "1") Integer pageNum,
-                            @RequestParam(defaultValue = "10") Integer pageSize) {
+    public Result getByName(
+            @ApiParam(value = "问题名称", required = true) @RequestParam String name,
+            @ApiParam(value = "页码", defaultValue = "1") @RequestParam(defaultValue = "1") Integer pageNum,
+            @ApiParam(value = "每页数量", defaultValue = "10") @RequestParam(defaultValue = "10") Integer pageSize) {
         Map<String, Object> resultMap = problemService.selectByName(name, pageNum, pageSize);
         return Result.success(resultMap);
     }
     
-    /**
-     * 根据出题人查询问题
-     * 根据出题人名称查询相关问题，支持分页
-     * @param setter 出题人的名称
-     * @param pageNum 页码，默认为 1
-     * @param pageSize 每页数量，默认为 10
-     * @return 返回查询结果，封装在 Result 对象中
-     */
+    @ApiOperation("根据出题人查询问题")
     @GetMapping("/setter")
-    public Result getBySetter(@RequestParam String setter,
-                              @RequestParam(defaultValue = "1") Integer pageNum,
-                              @RequestParam(defaultValue = "10") Integer pageSize) {
+    public Result getBySetter(
+            @ApiParam(value = "出题人名称", required = true) @RequestParam String setter,
+            @ApiParam(value = "页码", defaultValue = "1") @RequestParam(defaultValue = "1") Integer pageNum,
+            @ApiParam(value = "每页数量", defaultValue = "10") @RequestParam(defaultValue = "10") Integer pageSize) {
         Map<String, Object> resultMap = problemService.selectBySetter(setter, pageNum, pageSize);
         return Result.success(resultMap);
     }
     
-    /**
-     * 添加问题
-     * 用于添加新的问题到数据库
-     * @param problem 请求体中的问题对象
-     * @return 返回添加成功的结果
-     */
+    @ApiOperation("添加问题")
     @PostMapping
-    public Result add(@RequestBody Problem problem) {
+    public Result add(@ApiParam(value = "问题对象", required = true) @RequestBody Problem problem) {
         problemService.add(problem);
         return Result.success("添加成功");
     }
     
-    /**
-     * 修改问题
-     * 用于修改已存在的问题
-     * @param problem 请求体中的问题对象，包含修改后的数据
-     * @return 返回修改成功的结果
-     */
+    @ApiOperation("修改问题")
     @PutMapping
-    public Result update(@RequestBody Problem problem) {
+    public Result update(@ApiParam(value = "问题对象", required = true) @RequestBody Problem problem) {
         problemService.update(problem);
         return Result.success("修改成功");
     }
     
-    /**
-     * 删除问题
-     * 根据问题的 ID 删除问题
-     * @param id 问题的唯一标识符
-     * @return 返回删除成功的结果
-     */
+    @ApiOperation("删除问题")
     @DeleteMapping("/{id}")
-    public Result delete(@PathVariable Integer id) {
+    public Result delete(@ApiParam(value = "问题ID", required = true) @PathVariable Integer id) {
         problemService.deleteById(id);
         return Result.success("删除成功");
     }
     
-    /**
-     * 增加问题提交次数
-     * @param id 问题的唯一标识符
-     * @return 返回更新成功的结果
-     */
+    @ApiOperation("增加问题提交次数")
     @PutMapping("/{id}/submit")
-    public Result incrementSubmitCount(@PathVariable Integer id) {
+    public Result incrementSubmitCount(@ApiParam(value = "问题ID", required = true) @PathVariable Integer id) {
         problemService.incrementSubmitCount(id);
         return Result.success("提交次数更新成功");
     }
     
-    /**
-     * 增加问题通过次数
-     * @param id 问题的唯一标识符
-     * @return 返回更新成功的结果
-     */
+    @ApiOperation("增加问题通过次数")
     @PutMapping("/{id}/ac")
-    public Result incrementAcCount(@PathVariable Integer id) {
+    public Result incrementAcCount(@ApiParam(value = "问题ID", required = true) @PathVariable Integer id) {
         problemService.incrementAcCount(id);
         return Result.success("通过次数更新成功");
     }
     
-    /**
-     * 查询所有问题
-     * 获取所有问题的列表，不进行分页
-     * @return 返回所有问题的列表，封装在 Result 对象中
-     */
+    @ApiOperation("查询所有问题")
     @GetMapping("/all")
     public Result getAllProblems() {
         List<Problem> problems = problemService.selectAll();
         return Result.success(problems);
     }
     
-    /**
-     * 查询所有问题的简要信息(仅id和name)
-     * 获取所有问题的id和name列表，不进行分页
-     * @return 返回所有问题的id和name列表，封装在 Result 对象中
-     */
+    @ApiOperation("查询所有问题的简要信息")
     @GetMapping("/simple")
     public Result getAllProblemsSimple() {
         List<Problem> problems = problemService.selectAllSimple();
+        return Result.success(problems);
+    }
+    
+    @ApiOperation("获取每日挑战题目")
+    @GetMapping("/daily-challenge")
+    public Result getDailyChallenge() {
+        List<Problem> problems = problemService.getDailyChallenge();
+        return Result.success(problems);
+    }
+    
+    @ApiOperation("根据关键词搜索题目名称和内容")
+    @GetMapping("/search")
+    public Result searchByKeyword(
+            @ApiParam(value = "搜索关键词", required = true) @RequestParam String keyword) {
+        List<Problem> problems = problemService.searchByKeyword(keyword);
         return Result.success(problems);
     }
 } 

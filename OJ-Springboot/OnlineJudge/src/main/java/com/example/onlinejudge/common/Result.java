@@ -13,12 +13,12 @@ public class Result<T> {
      * 例如：200 表示成功，500 表示错误
      */
     private String code;
-    
+
     /**
      * 消息，对处理结果的文字描述
      */
     private String msg;
-    
+
     /**
      * 数据，请求返回的实际数据内容
      */
@@ -26,6 +26,7 @@ public class Result<T> {
 
     /**
      * 带数据的构造方法
+     *
      * @param data 响应数据
      */
     private Result(T data) {
@@ -40,6 +41,7 @@ public class Result<T> {
 
     /**
      * 创建成功响应（无数据）
+     *
      * @return 包含成功状态码和消息的 Result 对象
      */
     public static <T> Result<T> success() {
@@ -51,6 +53,7 @@ public class Result<T> {
 
     /**
      * 创建带数据的成功响应
+     *
      * @param data 需要返回的数据
      * @return 包含成功状态码、消息和数据的 Result 对象
      */
@@ -64,6 +67,7 @@ public class Result<T> {
 
     /**
      * 创建错误响应（使用默认错误消息）
+     *
      * @return 包含错误状态码和默认错误消息的 Result 对象
      */
     public static <T> Result<T> error() {
@@ -75,6 +79,7 @@ public class Result<T> {
 
     /**
      * 创建带自定义错误消息的错误响应
+     *
      * @param msg 自定义错误消息
      * @return 包含错误状态码和自定义错误消息的 Result 对象
      */
@@ -87,6 +92,7 @@ public class Result<T> {
 
     /**
      * 获取状态码
+     *
      * @return 状态码
      */
     public String getCode() {
@@ -95,6 +101,7 @@ public class Result<T> {
 
     /**
      * 设置状态码
+     *
      * @param code 状态码
      */
     public void setCode(String code) {
@@ -103,6 +110,7 @@ public class Result<T> {
 
     /**
      * 获取消息
+     *
      * @return 消息内容
      */
     public String getMsg() {
@@ -111,6 +119,7 @@ public class Result<T> {
 
     /**
      * 设置消息
+     *
      * @param msg 消息内容
      */
     public void setMsg(String msg) {
@@ -119,6 +128,7 @@ public class Result<T> {
 
     /**
      * 获取数据
+     *
      * @return 响应数据
      */
     public T getData() {
@@ -127,6 +137,7 @@ public class Result<T> {
 
     /**
      * 设置数据
+     *
      * @param data 响应数据
      */
     public void setData(T data) {

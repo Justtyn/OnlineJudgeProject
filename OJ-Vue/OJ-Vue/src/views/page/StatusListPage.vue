@@ -6,8 +6,8 @@
         <div class="card-header">
           <span class="title">状态列表</span>
           <!-- 刷新按钮：点击时重新加载数据 -->
-          <el-button type="primary" size="small" circle @click="loadData" title="刷新数据">
-            <el-icon><Refresh /></el-icon>
+          <el-button type="primary" size="small" circle @click="loadData" class="refresh-btn" title="刷新数据">
+            <el-icon class="refresh-icon"><Refresh /></el-icon>
           </el-button>
         </div>
       </template>
@@ -314,11 +314,23 @@ onBeforeUnmount(() => {
   padding: 20px;
   background-color: #f5f7fa;
   height: 80vh;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
 }
 
 /* 搜索卡片样式 */
 .search-card {
   margin-bottom: 20px;
+  width: 100%;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
+}
+
+.search-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.1);
 }
 
 /* 卡片头部样式 */
@@ -326,117 +338,287 @@ onBeforeUnmount(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 /* 标题样式 */
 .title {
   font-size: 18px;
   font-weight: bold;
+  background: linear-gradient(45deg, #409eff, #36cfc9);
+  -webkit-background-clip: text;
+  color: transparent;
+  transition: all 0.3s ease;
 }
 
 /* 表格卡片样式 */
 .table-card {
   margin-bottom: 20px;
+  width: 100%;
+  overflow-x: auto;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
 }
 
-/* 表格头部样式 */
-.table-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 10px;
+.table-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.1);
 }
 
-/* 表格标题样式 */
-.table-title {
-  font-size: 16px;
+/* 表格样式优化 */
+:deep(.el-table) {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+:deep(.el-table th) {
+  background-color: #f5f7fa !important;
   font-weight: bold;
+  color: #606266;
 }
 
-/* 表格行高样式 */
-:deep(.el-table .el-table__row) {
-  height: 40px;
+:deep(.el-table td) {
+  padding: 12px 0;
 }
 
-/* 分页容器样式 */
-.pagination {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
+:deep(.el-table--striped .el-table__body tr.el-table__row--striped td) {
+  background: #fafafa;
 }
 
-/* Element Plus 卡片样式覆盖 */
-:deep(.el-card__header) {
-  padding: 15px 20px;
-}
-
-:deep(.el-card__body) {
-  padding: 20px;
+:deep(.el-table__body tr:hover > td) {
+  background-color: #f0f9ff !important;
 }
 
 /* 题目链接样式 */
 .problem-link {
   color: #1890ff;
   cursor: pointer;
-  text-decoration: underline;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.problem-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: #1890ff;
+  transition: width 0.3s ease;
 }
 
 .problem-link:hover {
   color: #40a9ff;
 }
 
-/* 不同状态的样式定义 */
+.problem-link:hover::after {
+  width: 100%;
+}
+
+/* 状态标签样式优化 */
 .status-success {
   display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  background-color: #f0f9eb;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #f0f9eb, #e1f3d8);
   color: #67c23a;
   border: 1px solid #c2e7b0;
   font-weight: bold;
   width: 100%;
+  transition: all 0.3s ease;
+  text-align: center;
 }
 
 .status-error {
   display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  background-color: #fef0f0;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #fef0f0, #fde2e2);
   color: #f56c6c;
   border: 1px solid #fbc4c4;
   font-weight: bold;
   width: 100%;
+  transition: all 0.3s ease;
+  text-align: center;
 }
 
 .status-warning {
   display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  background-color: #fdf6ec;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #fdf6ec, #faecd8);
   color: #e6a23c;
   border: 1px solid #f5dab1;
   font-weight: bold;
   width: 100%;
+  transition: all 0.3s ease;
+  text-align: center;
 }
 
 .status-pending {
   display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  background-color: #f0f2f5;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #f0f2f5, #e4e7ed);
   color: #909399;
   border: 1px solid #d3d4d6;
   font-weight: bold;
   width: 100%;
+  transition: all 0.3s ease;
+  text-align: center;
 }
 
 .status-unknown {
   display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  background-color: #f5f7fa;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #f5f7fa, #e4e7ed);
   color: #909399;
   border: 1px solid #e4e7ed;
   width: 100%;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+/* 刷新按钮样式优化 */
+.refresh-btn {
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #409eff, #36cfc9);
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.refresh-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.refresh-btn:hover::before {
+  left: 100%;
+}
+
+.refresh-btn:hover {
+  transform: rotate(180deg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.refresh-icon {
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+/* 分页样式优化 */
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 10px 0;
+}
+
+:deep(.el-pagination.is-background .el-pager li:not(.is-disabled).is-active) {
+  background-color: #409eff;
+  box-shadow: 0 2px 6px rgba(64, 158, 255, 0.3);
+}
+
+:deep(.el-pagination.is-background .el-pager li:not(.is-disabled):hover) {
+  color: #409eff;
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+/* 移动端适配优化 */
+@media screen and (max-width: 768px) {
+  .status-container {
+    padding: 10px;
+    height: auto;
+  }
+
+  .card-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  :deep(.el-table) {
+    font-size: 14px;
+  }
+
+  :deep(.el-table .el-table__row) {
+    height: auto;
+  }
+
+  :deep(.el-table__cell) {
+    padding: 8px !important;
+  }
+
+  :deep(.el-pagination) {
+    font-size: 14px;
+  }
+
+  :deep(.el-pagination .el-pagination__sizes) {
+    display: none;
+  }
+
+  :deep(.el-pagination .el-pagination__jump) {
+    display: none;
+  }
+
+  :deep(.el-form-item) {
+    margin-bottom: 10px;
+  }
+
+  :deep(.el-input) {
+    width: 100%;
+  }
+
+  :deep(.el-button) {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .refresh-btn {
+    width: auto !important;
+    margin-top: 0 !important;
+    padding: 8px !important;
+    min-height: 32px !important;
+  }
+
+  .refresh-icon {
+    font-size: 14px;
+  }
+
+  .status-success,
+  .status-error,
+  .status-warning,
+  .status-pending,
+  .status-unknown {
+    width: auto !important;
+    display: inline-block;
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+    border-radius: 4px !important;
+  }
 }
 </style>

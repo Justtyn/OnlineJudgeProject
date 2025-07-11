@@ -1,16 +1,19 @@
 package com.example.onlinejudge.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.onlinejudge.entity.Problem;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * ProblemMapper 接口
  * 负责处理与题目(Problem)相关的数据库操作
  * 使用 MyBatis 注解方式定义 SQL 语句
  */
-public interface ProblemMapper {
+@Mapper
+public interface ProblemMapper extends BaseMapper<Problem> {
 
     /**
      * 分页查询所有题目
@@ -88,7 +91,7 @@ public interface ProblemMapper {
     @Insert("INSERT INTO oj_problem(name, setter, create_time, ac_count, submit_count, `desc`, desc_input, desc_output, sample_input, sample_output, hint) " +
             "VALUES(#{name}, #{setter}, #{createTime}, #{acCount}, #{submitCount}, #{desc}, #{descInput}, #{descOutput}, #{sampleInput}, #{sampleOutput}, #{hint})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    void insert(Problem problem);
+    int insert(Problem problem);
 
     /**
      * 更新题目信息
@@ -139,4 +142,67 @@ public interface ProblemMapper {
      */
     @Select("SELECT id, name FROM oj_problem ORDER BY id")
     List<Problem> selectAllSimple();
+
+    /**
+     * 获取每日挑战题目
+     * @return 返回10道随机题目
+     */
+    @Select("SELECT * FROM oj_problem WHERE daily_challenge = 'FALSE' ORDER BY RAND() LIMIT 10")
+    List<Problem> selectDailyChallenge();
+
+    /**
+     * 更新题目的每日挑战状态
+     * @param id 题目ID
+     * @param dailyChallenge 是否为每日挑战题，"TRUE"或"FALSE"
+     */
+    @Update("UPDATE oj_problem SET daily_challenge = #{dailyChallenge} WHERE id = #{id}")
+    void updateDailyChallengeStatus(@Param("id") Integer id, @Param("dailyChallenge") String dailyChallenge);
+
+    /**
+     * 重置所有题目的每日挑战状态为FALSE
+     */
+    @Update("UPDATE oj_problem SET daily_challenge = 'FALSE'")
+    void resetDailyChallengeStatus();
+
+    /**
+     * 获取当前选中的每日挑战题目
+     * @return 返回当前选中的题目列表
+     */
+    @Select("SELECT * FROM oj_problem WHERE daily_challenge = 'TRUE'")
+    List<Problem> selectCurrentDailyChallenge();
+
+    @Select("SELECT difficulty, COUNT(*) as count " +
+            "FROM oj_problem " +
+            "GROUP BY difficulty")
+    Map<String, Long> selectDifficultyDistribution();
+
+    @Select("SELECT difficulty, " +
+            "ROUND(AVG(CASE WHEN submit_count > 0 " +
+            "THEN (ac_count * 100.0 / submit_count) ELSE 0 END), 2) as avg_pass_rate " +
+            "FROM oj_problem " +
+            "GROUP BY difficulty")
+    Map<String, Double> selectAvgPassRateByDifficulty();
+
+    @Select("SELECT id, title, difficulty, " +
+            "submit_count, ac_count, " +
+            "CASE WHEN submit_count > 0 " +
+            "THEN ROUND(ac_count * 100.0 / submit_count, 2) " +
+            "ELSE 0 END as pass_rate " +
+            "FROM oj_problem " +
+            "WHERE submit_count >= 10 " +  // 至少有10次提交才统计
+            "ORDER BY pass_rate ASC " +
+            "LIMIT #{limit}")
+    List<Map<String, Object>> selectHardestProblems(int limit);
+
+    @Select("SELECT * FROM oj_problem WHERE name LIKE CONCAT('%', #{name}, '%') ORDER BY id")
+    List<Problem> selectAllByName(@Param("name") String name);
+    
+    /**
+     * 根据题目名称和内容进行模糊查询
+     * 
+     * @param keyword 查询关键词(支持模糊查询)
+     * @return 返回符合条件的题目列表
+     */
+    @Select("SELECT * FROM oj_problem WHERE name LIKE CONCAT('%', #{keyword}, '%') OR `desc` LIKE CONCAT('%', #{keyword}, '%') ORDER BY id")
+    List<Problem> selectByKeyword(@Param("keyword") String keyword);
 } 

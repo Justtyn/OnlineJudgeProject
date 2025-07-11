@@ -196,23 +196,47 @@ onMounted(() => {
   background-color: #f5f7fa;
   min-height: 80vh;
   width: 100%;
-  overflow-x: hidden; /* 防止横向滚动条 */
+  overflow-x: hidden;
+  box-sizing: border-box;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .header-card, .table-card {
   margin-bottom: 20px;
+  width: 100%;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.header-card:hover, .table-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .header-left {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .header-right {
@@ -221,28 +245,70 @@ onMounted(() => {
 }
 
 .title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
   margin-right: 8px;
+  background: linear-gradient(45deg, #1890ff, #36cfc9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: titleGlow 2s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(24, 144, 255, 0.2);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(24, 144, 255, 0.4);
+  }
 }
 
 /* 表格样式 */
 :deep(.el-table) {
   margin-top: 10px;
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+:deep(.el-table__row) {
+  transition: all 0.3s ease;
+}
+
+:deep(.el-table__row:hover) {
+  transform: translateX(5px);
+  background-color: #f0f7ff !important;
 }
 
 .class-link {
   color: #1890ff;
   cursor: pointer;
   text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .class-link:hover {
   color: #40a9ff;
-  text-decoration: underline;
 }
 
-/* 卡片列表样式（备选方案） */
+.class-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: #40a9ff;
+  transition: width 0.3s ease;
+}
+
+.class-link:hover::after {
+  width: 100%;
+}
+
+/* 卡片列表样式 */
 .class-list {
   display: flex;
   flex-direction: column;
@@ -252,63 +318,152 @@ onMounted(() => {
 
 .class-card {
   margin-bottom: 0;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
   width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .class-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
 }
 
 .class-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
-  border-radius: 4px 4px 0 0;
+  padding: 16px 20px;
+  border-radius: 12px 12px 0 0;
+  transition: all 0.3s ease;
 }
 
 .class-title {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
+  word-break: break-word;
+  color: #1a1a1a;
 }
 
 .class-info {
   font-size: 14px;
   color: #606266;
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  backdrop-filter: blur(4px);
 }
 
 .class-content {
-  padding: 16px;
+  padding: 20px;
   min-height: 80px;
+  background: #fff;
 }
 
 .class-item {
   display: flex;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  transition: all 0.3s ease;
 }
 
 .info-label {
   width: 100px;
   color: #909399;
+  font-weight: 500;
 }
 
 .info-value {
   color: #303133;
+  word-break: break-word;
+  font-weight: 500;
 }
 
 .class-actions {
   display: flex;
   justify-content: flex-end;
-  padding: 0 16px 16px;
+  padding: 0 20px 20px;
+}
+
+:deep(.el-button) {
+  transition: all 0.3s ease;
+  border-radius: 6px;
+}
+
+:deep(.el-button:hover) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
 }
 
 :deep(.el-card__header) {
   padding: 15px 20px;
+  border-bottom: 1px solid #ebeef5;
 }
 
 :deep(.el-card__body) {
   padding: 20px;
+}
+
+/* 移动端适配 */
+@media screen and (max-width: 768px) {
+  .class-container {
+    padding: 10px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-left {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  :deep(.el-table) {
+    font-size: 14px;
+  }
+
+  :deep(.el-table .el-table__row) {
+    height: auto;
+  }
+
+  .class-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px 16px;
+  }
+
+  .class-title {
+    font-size: 16px;
+  }
+
+  .class-info {
+    font-size: 12px;
+  }
+
+  .class-content {
+    padding: 16px;
+  }
+
+  .info-label {
+    width: 80px;
+  }
+
+  .class-actions {
+    justify-content: center;
+    padding: 0 16px 16px;
+  }
+
+  :deep(.el-button) {
+    width: 100%;
+  }
 }
 </style>

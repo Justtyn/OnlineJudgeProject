@@ -81,6 +81,7 @@ const getAuthInfo = () => {
 const selectedLanguage = ref('cpp')  // 默认使用 C++
 const selectedTheme = ref('vs-light') // 默认使用 'vs-light' 主题
 const code = ref('') // 存储编辑器中的代码
+const useBase64 = ref(false) // 是否使用base64编码提交
 
 // 支持的编程语言和主题选项
 const languages = [
@@ -204,8 +205,77 @@ const submitStatus = async (judgeResult) => {
   }
 }
 
-// 提交代码的函数，验证代码是否为空
+// 工具函数：将字符串转换为base64
+const toBase64 = (str) => {
+  return btoa(unescape(encodeURIComponent(str)))
+}
+
+// 工具函数：将base64转换为字符串
+const fromBase64 = (str) => {
+  return decodeURIComponent(escape(atob(str)))
+}
+
+// 处理base64编码的提交
+const submitCodeWithBase64 = async () => {
+  if (!code.value.trim()) {
+    ElMessage.error('代码不能为空')
+    return
+  }
+
+  const loading = ElLoading.service({
+    lock: true,
+    text: '代码提交中...',
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
+
+  isSubmitting.value = true
+
+  try {
+    const sampleInput = decodeURIComponent(route.params.sampleInput)
+    const sampleOutput = decodeURIComponent(route.params.sampleOutput)
+
+    const submitData = {
+      source_code: toBase64(code.value),
+      language_id: languageIdMap[selectedLanguage.value],
+      stdin: toBase64(sampleInput),
+      expected_output: toBase64(sampleOutput)
+    }
+
+    const response = await request.post('http://106.53.51.77:2358/submissions?wait=true&base64_encoded=true', submitData)
+    
+    // 处理返回结果中的base64编码
+    const result = {
+      ...response.data,
+      stdout: response.data.stdout ? fromBase64(response.data.stdout) : null,
+      stderr: response.data.stderr ? fromBase64(response.data.stderr) : null,
+      compile_output: response.data.compile_output ? fromBase64(response.data.compile_output) : null,
+      message: response.data.message ? fromBase64(response.data.message) : null
+    }
+    
+    submissionResult.value = result
+    await submitStatus(result)
+
+    if (result.status && result.status.description === 'Accepted') {
+      ElMessage.success('代码提交成功')
+    } else {
+      ElMessage.error(result.status?.description || '提交失败')
+    }
+  } catch (error) {
+    console.error('提交代码失败:', error)
+    ElMessage.error('提交代码失败')
+  } finally {
+    loading.close()
+    isSubmitting.value = false
+  }
+}
+
+// 修改原有的submitCode函数
 const submitCode = async () => {
+  if (useBase64.value) {
+    await submitCodeWithBase64()
+    return
+  }
+  
   if (!code.value.trim()) {
     ElMessage.error('代码不能为空')
     return
@@ -231,7 +301,7 @@ const submitCode = async () => {
       expected_output: sampleOutput
     }
 
-    const response = await request.post('http://localhost:2358/submissions?wait=true', submitData)
+    const response = await request.post('http://106.53.51.77:2358/submissions?wait=true', submitData)
     submissionResult.value = response.data
 
     // 如果判题请求成功（不论结果如何），提交状态记录
@@ -321,6 +391,15 @@ watch(selectedTheme, (newTheme) => {
         <el-option v-for="theme in themes" :key="theme.value" :label="theme.label" :value="theme.value">
         </el-option>
       </el-select>
+
+      <!-- Base64编码切换开关 -->
+      <el-switch
+        v-model="useBase64"
+        active-text="使用Base64编码"
+        inactive-text="普通提交"
+        :disabled="isSubmitting"
+        class="base64-switch"
+      />
     </div>
 
     <!-- Monaco 编辑器容器 -->
@@ -344,6 +423,51 @@ watch(selectedTheme, (newTheme) => {
   height: 80vh;
 }
 
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .submit-code-container {
+    padding: 10px;
+    height: auto;
+    min-height: 80vh;
+  }
+  
+  h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .settings {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .select {
+    width: 100%;
+  }
+  
+  .code-editor-container {
+    height: 400px;
+    margin-bottom: 15px;
+  }
+  
+  :deep(.monaco-editor) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-button) {
+    font-size: 14px;
+    padding: 8px;
+  }
+  
+  :deep(.el-select) {
+    width: 100%;
+  }
+  
+  :deep(.el-input__inner) {
+    font-size: 14px;
+  }
+}
+
 h2 {
   font-size: 28px;
   font-weight: 600;
@@ -356,6 +480,13 @@ h2 {
   display: flex;
   justify-content: space-between;
   margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.base64-switch {
+  margin-top: 10px;
+  width: 48%;
 }
 
 .el-select {

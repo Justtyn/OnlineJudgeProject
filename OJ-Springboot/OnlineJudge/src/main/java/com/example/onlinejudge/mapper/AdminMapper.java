@@ -1,7 +1,8 @@
 package com.example.onlinejudge.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.onlinejudge.entity.Admin;
-import com.example.onlinejudge.entity.Student;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 
@@ -10,7 +11,8 @@ import org.apache.ibatis.annotations.Select;
  * 该接口负责处理与管理员(Admin)相关的数据库操作
  * 使用MyBatis注解方式定义SQL语句
  */
-public interface AdminMapper {
+@Mapper
+public interface AdminMapper extends BaseMapper<Admin> {
     /**
      * 根据用户名查询管理员信息
      * 主要用于管理员登录验证
@@ -35,10 +37,11 @@ public interface AdminMapper {
      *              - email: 电子邮箱
      *              - avatar: 头像路径
      *              - role: 角色权限
+     * @return 返回受影响的行数
      */
     @Insert("insert into admin (username,password,name,sex,birth,phone,email,avatar,role) " +
-            "value (#{username},#{password},#{name},#{sex},#{birth},#{phone},#{email},#{avatar},#{role})")
-    void insert(Admin admin);
+            "values (#{username},#{password},#{name},#{sex},#{birth},#{phone},#{email},#{avatar},#{role})")
+    int insert(Admin admin);
 
     /**
      * 根据ID查询管理员信息

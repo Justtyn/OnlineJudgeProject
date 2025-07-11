@@ -119,8 +119,11 @@ const resetForm = () => {
   problemForm.submitCount = 0
 }
 
+const loading = ref(false)
+
 // 加载数据
 const loadData = async () => {
+  loading.value = true
   try {
     let response;
     const baseParams = {
@@ -135,7 +138,6 @@ const loadData = async () => {
 
     // 根据查询条件选择对应的API接口
     if (queryForm.username) {
-      // 按用户名查询
       response = await request.get('/api/student/searchByUsername', {
         ...requestConfig,
         params: {
@@ -145,7 +147,6 @@ const loadData = async () => {
       });
       handleResponse(response);
     } else if (queryForm.name) {
-      // 按姓名查询
       response = await request.get('/api/student/searchByName', {
         ...requestConfig,
         params: {
@@ -155,7 +156,6 @@ const loadData = async () => {
       });
       handleResponse(response);
     } else if (queryForm.year) {
-      // 按注册年份查询
       response = await request.get('/api/student/searchByYear', {
         ...requestConfig,
         params: {
@@ -165,13 +165,14 @@ const loadData = async () => {
       });
       handleResponse(response);
     } else {
-      // 无查询条件，获取所有数据
       response = await request.get('/api/student/rankByAc', requestConfig);
       handleResponse(response);
     }
   } catch (error) {
     console.error('请求异常:', error);
     ElMessage.error('获取数据失败：' + (error.message || '未知错误'));
+  } finally {
+    loading.value = false
   }
 }
 
@@ -249,60 +250,60 @@ const handleRowClick = (row) => {
 <template>
   <div class="problem-container">
     <!-- 搜索区域 -->
-    <el-card class="search-card">
+    <el-card class="search-card animate__animated animate__fadeIn">
       <template #header>
         <div class="card-header">
           <span class="title">Rating 排名</span>
         </div>
       </template>
 
-      <el-form :model="queryForm" inline>
+      <el-form :model="queryForm" inline class="search-form">
         <el-form-item>
-          <el-input v-model="queryForm.username" placeholder="按账号查询" clearable />
+          <el-input v-model="queryForm.username" placeholder="按账号查询" clearable class="animate__animated animate__fadeInLeft" />
         </el-form-item>
         <el-form-item>
-          <el-input v-model="queryForm.name" placeholder="按姓名查询" clearable />
+          <el-input v-model="queryForm.name" placeholder="按姓名查询" clearable class="animate__animated animate__fadeInLeft animate__delay-1s" />
         </el-form-item>
         <el-form-item>
-          <el-select v-model="queryForm.year" placeholder="请选择年份" clearable style="width: 160px;">
+          <el-select v-model="queryForm.year" placeholder="请选择年份" clearable style="width: 160px;" class="animate__animated animate__fadeInLeft animate__delay-2s">
             <el-option v-for="item in yearOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleQuery">查询</el-button>
-          <el-button @click="handleRefresh">重置</el-button>
+          <el-button type="primary" @click="handleQuery" class="animate__animated animate__fadeInLeft animate__delay-3s">查询</el-button>
+          <el-button @click="handleRefresh" class="animate__animated animate__fadeInLeft animate__delay-3s">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
 
     <!-- 表格区域 -->
-    <el-card class="table-card">
-      <el-table :data="tableData" style="width: 100%" border stripe highlight-current-row @row-click="handleRowClick">
+    <el-card class="table-card animate__animated animate__fadeIn animate__delay-1s">
+      <el-table v-loading="loading" :data="tableData" style="width: 100%" border stripe highlight-current-row @row-click="handleRowClick">
         <el-table-column type="index" label="#" width="60" align="center">
           <template #default="scope">
-            <span :class="['rank-number', `rank-${scope.$index + 1}`]">{{ scope.$index + 1 }}</span>
+            <span :class="['rank-number', `rank-${scope.$index + 1}`, 'animate__animated animate__bounceIn']">{{ scope.$index + 1 }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="username" label="账号" min-width="120" show-overflow-tooltip />
         <el-table-column prop="name" label="姓名" width="150" align="center" />
         <el-table-column prop="score" label="Rating" width="100" align="center">
           <template #default="scope">
-            {{ scope.row.score || 0 }}
+            <span class="score-value">{{ scope.row.score || 0 }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="ac" label="AC" width="80" align="center">
           <template #default="scope">
-            {{ scope.row.ac || 0 }}
+            <span class="ac-value">{{ scope.row.ac || 0 }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="submit" label="Submit" width="80" align="center">
           <template #default="scope">
-            {{ scope.row.submit || 0 }}
+            <span class="submit-value">{{ scope.row.submit || 0 }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="lastVisitTime" label="Last Visit Time" width="180" align="center">
           <template #default="scope">
-            {{ formatDateTime(scope.row.lastVisitTime) }}
+            <span class="time-value">{{ formatDateTime(scope.row.lastVisitTime) }}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -319,52 +320,29 @@ const handleRowClick = (row) => {
 </template>
 
 <style scoped>
+@import 'animate.css';
+
 .problem-container {
   padding: 20px;
   background-color: #f5f7fa;
   height: 80vh;
+  perspective: 1000px;
 }
 
-.search-card {
-  margin-bottom: 20px;
+.search-card, .table-card {
+  transition: all 0.3s ease;
+  transform-style: preserve-3d;
 }
 
-.card-header {
+.search-card:hover, .table-card:hover {
+  transform: translateY(-5px) rotateX(2deg);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.search-form {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.title {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.table-card {
-  margin-bottom: 20px;
-}
-
-.pagination {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-}
-
-:deep(.el-card__header) {
-  padding: 15px 20px;
-}
-
-:deep(.el-card__body) {
-  padding: 20px;
-}
-
-.problem-link {
-  color: #1890ff;
-  cursor: pointer;
-  text-decoration: underline;
-}
-.problem-link:hover {
-  color: #40a9ff;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .rank-number {
@@ -375,42 +353,142 @@ const handleRowClick = (row) => {
   text-align: center;
   border-radius: 50%;
   font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.rank-number:hover {
+  transform: scale(1.2);
 }
 
 .rank-1 {
-  background-color: #FFD700;
+  background: linear-gradient(45deg, #FFD700, #FFA500);
   color: #fff;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 .rank-2 {
-  background-color: #C0C0C0;
+  background: linear-gradient(45deg, #C0C0C0, #A9A9A9);
   color: #fff;
+  box-shadow: 0 0 10px rgba(192, 192, 192, 0.5);
 }
 
 .rank-3 {
-  background-color: #CD7F32;
+  background: linear-gradient(45deg, #CD7F32, #8B4513);
   color: #fff;
+  box-shadow: 0 0 10px rgba(205, 127, 50, 0.5);
+}
+
+.score-value, .ac-value, .submit-value, .time-value {
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.score-value:hover, .ac-value:hover, .submit-value:hover, .time-value:hover {
+  transform: scale(1.1);
+  color: #409EFF;
 }
 
 :deep(.el-table__row) {
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+}
+
+:deep(.el-table__row:hover) {
+  transform: translateX(5px);
+  background-color: rgba(64, 158, 255, 0.1) !important;
 }
 
 :deep(.el-table__row:nth-child(1)) {
-  background-color: rgba(255, 215, 0, 0.1) !important;
+  background: linear-gradient(to right, rgba(255, 215, 0, 0.1), transparent) !important;
 }
 
 :deep(.el-table__row:nth-child(2)) {
-  background-color: rgba(192, 192, 192, 0.1) !important;
+  background: linear-gradient(to right, rgba(192, 192, 192, 0.1), transparent) !important;
 }
 
 :deep(.el-table__row:nth-child(3)) {
-  background-color: rgba(205, 127, 50, 0.1) !important;
+  background: linear-gradient(to right, rgba(205, 127, 50, 0.1), transparent) !important;
 }
 
-:deep(.el-table__row:nth-child(1):hover),
-:deep(.el-table__row:nth-child(2):hover),
-:deep(.el-table__row:nth-child(3):hover) {
-  background-color: rgba(64, 158, 255, 0.1) !important;
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .problem-container {
+    padding: 10px;
+  }
+  
+  .search-card {
+    margin-bottom: 15px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  :deep(.el-form) {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  :deep(.el-form-item) {
+    margin-right: 0;
+    width: 100%;
+  }
+  
+  :deep(.el-input) {
+    width: 100%;
+  }
+  
+  :deep(.el-table) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__header) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__body) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table .cell) {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  
+  :deep(.el-pagination) {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .rank-number {
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 12px;
+  }
 }
 </style>

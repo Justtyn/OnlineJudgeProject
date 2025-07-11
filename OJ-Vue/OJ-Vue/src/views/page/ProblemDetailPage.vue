@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 // 导入 Vue 的核心功能
 import { ref, onMounted } from 'vue'
 // 导入路由相关功能，用于获取路由参数和页面跳转
@@ -7,6 +7,8 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 // 导入自定义的请求工具
 import request from "@/utils/request.js"
+import BackButton from '@/components/BackButton.vue'
+import PageLayout from '@/components/layout/PageLayout.vue'
 
 // 获取当前路由实例，用于访问路由参数
 const route = useRoute()
@@ -90,89 +92,167 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- 题目详情页面的主容器 -->
-  <div class="problem-detail-container">
-    <!-- 使用Element Plus的卡片组件展示题目信息 -->
-    <el-card class="problem-card">
-      <!-- 卡片头部，显示题目标题和元信息 -->
-      <template #header>
-        <div class="card-header">
-          <!-- 题目标题：ID + 名称 -->
-          <span class="problem-title">{{ problem.id }}. {{ problem.name }}</span>
-          <!-- 题目元信息区域 -->
-          <div class="problem-meta">
-            <!-- 出题人信息标签 -->
-            <el-tag size="small">出题人: {{ problem.setter }}</el-tag>
-            <!-- 通过次数标签 -->
-            <el-tag size="small" type="success">通过: {{ problem.acCount }}</el-tag>
-            <!-- 提交次数标签 -->
-            <el-tag size="small" type="info">提交: {{ problem.submitCount }}</el-tag>
-            <!-- 创建时间标签 -->
-            <el-tag size="small" type="warning">创建时间: {{ formatDateTime(problem.createTime) }}</el-tag>
-            <!-- 提交代码按钮 -->
-            <el-button size="small" type="primary" @click="goToSubmitPage">提交代码</el-button>
+  <page-layout 
+    title="题目详情" 
+    :show-back="true"
+    fallback-path="/problemListPage"
+  >
+    <!-- 页面内容 -->
+    <div class="problem-detail">
+      <div class="problem-detail-container">
+        <!-- 使用Element Plus的卡片组件展示题目信息 -->
+        <el-card class="problem-card animate__animated animate__fadeIn">
+          <!-- 卡片头部，显示题目标题和元信息 -->
+          <template #header>
+            <div class="card-header">
+              <div class="header-top">
+                <span class="problem-title animate__animated animate__fadeInDown">{{ problem.id }}. {{ problem.name }}</span>
+              </div>
+              <!-- 题目元信息区域 -->
+              <div class="problem-meta">
+                <!-- 出题人信息标签 -->
+                <el-tag size="small" class="animate__animated animate__fadeInLeft" style="animation-delay: 0.2s">出题人: {{ problem.setter }}</el-tag>
+                <!-- 通过次数标签 -->
+                <el-tag size="small" type="success" class="animate__animated animate__fadeInLeft" style="animation-delay: 0.3s">通过: {{ problem.acCount }}</el-tag>
+                <!-- 提交次数标签 -->
+                <el-tag size="small" type="info" class="animate__animated animate__fadeInLeft" style="animation-delay: 0.4s">提交: {{ problem.submitCount }}</el-tag>
+                <!-- 创建时间标签 -->
+                <el-tag size="small" type="warning" class="animate__animated animate__fadeInLeft" style="animation-delay: 0.5s">创建时间: {{ formatDateTime(problem.createTime) }}</el-tag>
+                <!-- 提交按钮 -->
+                <el-button type="primary" class="submit-btn animate__animated animate__fadeInLeft" style="animation-delay: 0.6s" @click="goToSubmitPage">提交代码</el-button>
+              </div>
+            </div>
+          </template>
+
+          <!-- 题目内容主体部分 -->
+          <div class="problem-content">
+            <!-- 题目描述部分 -->
+            <div class="section animate__animated animate__fadeInUp" style="animation-delay: 0.7s">
+              <h3>题目描述</h3>
+              <div class="content">{{ problem.desc }}</div>
+            </div>
+
+            <!-- 输入描述部分 -->
+            <div class="section animate__animated animate__fadeInUp" style="animation-delay: 0.8s">
+              <h3>输入描述</h3>
+              <div class="content">{{ problem.descInput }}</div>
+            </div>
+
+            <!-- 输出描述部分 -->
+            <div class="section animate__animated animate__fadeInUp" style="animation-delay: 0.9s">
+              <h3>输出描述</h3>
+              <div class="content">{{ problem.descOutput }}</div>
+            </div>
+
+            <!-- 输入样例部分 -->
+            <div class="section animate__animated animate__fadeInUp" style="animation-delay: 1s">
+              <h3>输入样例</h3>
+              <el-card class="sample-card">
+                <pre>{{ problem.sampleInput }}</pre>
+              </el-card>
+            </div>
+
+            <!-- 输出样例部分 -->
+            <div class="section animate__animated animate__fadeInUp" style="animation-delay: 1.1s">
+              <h3>输出样例</h3>
+              <el-card class="sample-card">
+                <pre>{{ problem.sampleOutput }}</pre>
+              </el-card>
+            </div>
+
+            <!-- 提示说明部分，仅当hint存在时显示 -->
+            <div v-if="problem.hint" class="section animate__animated animate__fadeInUp" style="animation-delay: 1.2s">
+              <h3>提示说明</h3>
+              <div class="content">{{ problem.hint }}</div>
+            </div>
           </div>
-        </div>
-      </template>
-
-      <!-- 题目内容主体部分 -->
-      <div class="problem-content">
-        <!-- 题目描述部分 -->
-        <div class="section">
-          <h3>题目描述</h3>
-          <div class="content">{{ problem.desc }}</div>
-        </div>
-
-        <!-- 输入描述部分 -->
-        <div class="section">
-          <h3>输入描述</h3>
-          <div class="content">{{ problem.descInput }}</div>
-        </div>
-
-        <!-- 输出描述部分 -->
-        <div class="section">
-          <h3>输出描述</h3>
-          <div class="content">{{ problem.descOutput }}</div>
-        </div>
-
-        <!-- 输入样例部分 -->
-        <div class="section">
-          <h3>输入样例</h3>
-          <el-card class="sample-card">
-            <pre>{{ problem.sampleInput }}</pre>
-          </el-card>
-        </div>
-
-        <!-- 输出样例部分 -->
-        <div class="section">
-          <h3>输出样例</h3>
-          <el-card class="sample-card">
-            <pre>{{ problem.sampleOutput }}</pre>
-          </el-card>
-        </div>
-
-        <!-- 提示说明部分，仅当hint存在时显示 -->
-        <div v-if="problem.hint" class="section">
-          <h3>提示说明</h3>
-          <div class="content">{{ problem.hint }}</div>
-        </div>
+        </el-card>
       </div>
-    </el-card>
-  </div>
+    </div>
+  </page-layout>
 </template>
 
 <style scoped>
+/* 导入动画库 */
+@import 'animate.css';
+
 /* 题目详情页面的主容器样式 */
 .problem-detail-container {
   padding: 20px;
   background-color: #f5f7fa;  /* 浅灰色背景 */
   min-height: 100vh;  /* 最小高度为视口高度，确保内容少时也能填满屏幕 */
+  perspective: 1000px;
+}
+
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .problem-detail-container {
+    padding: 10px;
+  }
+  
+  .problem-card {
+    margin: 0;
+  }
+  
+  .card-header {
+    gap: 8px;
+  }
+  
+  .problem-title {
+    font-size: 20px;
+  }
+  
+  .problem-meta {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  :deep(.el-tag) {
+    font-size: 12px;
+  }
+  
+  .section h3 {
+    font-size: 16px;
+  }
+  
+  .content {
+    font-size: 14px;
+  }
+  
+  .sample-card {
+    margin: 10px 0;
+  }
+  
+  .sample-card pre {
+    font-size: 12px;
+    padding: 8px;
+  }
+  
+  :deep(.el-card__header) {
+    padding: 10px;
+  }
+  
+  :deep(.el-card__body) {
+    padding: 15px;
+  }
+  
+  :deep(.el-button) {
+    font-size: 14px;
+    padding: 8px;
+  }
 }
 
 /* 题目卡片样式 */
 .problem-card {
   max-width: 1200px;  /* 限制最大宽度，提高可读性 */
   margin: 0 auto;  /* 水平居中 */
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.problem-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 /* 卡片头部样式 */
@@ -182,11 +262,20 @@ onMounted(() => {
   gap: 10px;  /* 元素间距 */
 }
 
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
+}
+
 /* 题目标题样式 */
 .problem-title {
   font-size: 24px;
   font-weight: bold;
   color: #303133;  /* 深色文字 */
+  line-height: 1.2;
 }
 
 /* 题目元信息区域样式 */
@@ -194,6 +283,8 @@ onMounted(() => {
   display: flex;
   gap: 10px;  /* 标签间距 */
   flex-wrap: wrap;  /* 允许换行，适应小屏幕 */
+  align-items: center;  /* 垂直居中对齐 */
+  justify-content: space-between;  /* 标签靠左，按钮靠右 */
 }
 
 /* 题目内容区域样式 */
@@ -204,6 +295,20 @@ onMounted(() => {
 /* 各个内容部分的样式 */
 .section {
   margin-bottom: 30px;  /* 部分之间的间距 */
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* 部分标题样式 */
@@ -221,11 +326,18 @@ onMounted(() => {
   line-height: 1.6;  /* 行高，提高可读性 */
   color: #606266;  /* 中等深度的文字颜色 */
   white-space: pre-wrap;  /* 保留空白符和换行符 */
+  transition: all 0.3s ease;
 }
 
 /* 样例卡片样式 */
 .sample-card {
   background-color: #fafafa;  /* 浅色背景，区分样例 */
+  transition: all 0.3s ease;
+}
+
+.sample-card:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* 样例代码样式 */
@@ -244,5 +356,50 @@ onMounted(() => {
 
 :deep(.el-card__body) {
   padding: 20px;  /* 调整卡片主体内边距 */
+}
+
+/* 提交按钮样式 */
+.submit-btn {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  font-size: 14px;
+  padding: 8px 16px;
+  height: auto;
+  margin-left: auto;  /* 将按钮推到最右边 */
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(64, 158, 255, 0.3);
+}
+
+.submit-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.submit-btn:hover::after {
+  width: 200%;
+  height: 200%;
+}
+
+/* 标签样式 */
+:deep(.el-tag) {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+:deep(.el-tag:hover) {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 </style> 

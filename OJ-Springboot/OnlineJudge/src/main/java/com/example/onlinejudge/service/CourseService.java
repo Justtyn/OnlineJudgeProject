@@ -1,10 +1,12 @@
 package com.example.onlinejudge.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.onlinejudge.entity.Course;
 import java.util.List;
+import java.util.Map;
 
-public interface CourseService {
+public interface CourseService extends IService<Course> {
     
     /**
      * 添加课程
@@ -40,4 +42,16 @@ public interface CourseService {
      * @return 所有课程列表
      */
     List<Course> listAllCourses();
+
+    // 获取课程总数
+    long count();
+
+    /** 课程学生数区间分布 */
+    Map<String, Long> getStudentCountDistribution();
+
+    /** 课程作业数区间分布 */
+    Map<String, Long> getHomeworkCountDistribution();
+
+    /** 最活跃课程 */
+    List<Map<String, Object>> getMostActiveCourses(int limit);
 }

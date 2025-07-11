@@ -96,6 +96,13 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- 添加Swagger依赖 -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>3.0.0</version>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -135,7 +142,7 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.example.onlinejudge.OnlineJudgeApplication</mainClass>
-                    <skip>true</skip>
+                    <skip>false</skip>
 
                 </configuration>
                 <executions>

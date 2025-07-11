@@ -296,6 +296,75 @@ onMounted(async () => {
   min-height: 100vh;
 }
 
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .discuss-container {
+    padding: 10px;
+  }
+  
+  .table-card {
+    margin-bottom: 15px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  :deep(.el-descriptions__label) {
+    width: 100px;
+    font-size: 14px;
+  }
+  
+  :deep(.el-descriptions__content) {
+    font-size: 14px;
+  }
+  
+  .content-section {
+    padding: 15px;
+    margin: 15px 0;
+  }
+  
+  .discuss-title {
+    font-size: 20px;
+  }
+  
+  .discuss-content {
+    font-size: 14px;
+  }
+  
+  .comments-section {
+    margin-bottom: 80px;
+  }
+  
+  .section-title {
+    font-size: 16px;
+  }
+  
+  .comment-form {
+    padding: 15px;
+  }
+  
+  .comment-form .el-button {
+    font-size: 14px;
+    padding: 8px;
+  }
+  
+  .reply-info {
+    font-size: 14px;
+    padding: 6px;
+  }
+  
+  :deep(.el-dialog) {
+    width: 90% !important;
+    margin: 0 auto;
+  }
+}
+
 .table-card {
   margin-bottom: 20px;
 }

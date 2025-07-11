@@ -2,6 +2,9 @@
 import { ref, onMounted, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import request from "@/utils/request.js"
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 // 作业列表数据
 const homeworkList = ref([])
@@ -208,6 +211,32 @@ const toggleDisplayMode = () => {
   displayMode.value = displayMode.value === 'list' ? 'card' : 'list'
 }
 
+// 处理标题点击
+const handleTitleClick = (row) => {
+  console.log('标题点击的完整数据:', JSON.stringify(row, null, 2))
+  router.push({
+    path: `/homework/${row.id}`,
+    query: {
+      title: row.title,
+      startTime: row.startTime,
+      endTime: row.endTime
+    }
+  })
+}
+
+// 处理详情点击
+const handleDetailClick = (row) => {
+  console.log('详情点击的完整数据:', JSON.stringify(row, null, 2))
+  router.push({
+    path: `/homework/${row.id}`,
+    query: {
+      title: row.title,
+      startTime: row.startTime,
+      endTime: row.endTime
+    }
+  })
+}
+
 onMounted(() => {
   loadData()
   getClassList()
@@ -246,14 +275,7 @@ onMounted(() => {
         <el-table-column type="index" label="序号" width="80" align="center" />
         <el-table-column label="作业标题" min-width="200" show-overflow-tooltip>
           <template #default="scope">
-            <a @click="$router.push({
-              path: `/homework/${scope.row.id}`,
-              query: {
-                title: scope.row.title,
-                startTime: scope.row.startTime,
-                endTime: scope.row.endTime
-              }
-            })" class="homework-link">
+            <a @click="handleTitleClick(scope.row)" class="homework-link">
               {{ scope.row.title }}
             </a>
           </template>
@@ -279,15 +301,7 @@ onMounted(() => {
         </el-table-column>
         <el-table-column label="操作" width="150" align="center" fixed="right">
           <template #default="scope">
-            <el-button link type="primary" 
-              @click="$router.push({
-                path: `/homework/${scope.row.id}`,
-                query: {
-                  title: scope.row.title,
-                  startTime: scope.row.startTime,
-                  endTime: scope.row.endTime
-                }
-              })">
+            <el-button link type="primary" @click="handleDetailClick(scope.row)">
               查看详情
             </el-button>
           </template>
@@ -439,6 +453,94 @@ onMounted(() => {
   min-height: 80vh;
   width: 100%;
   overflow-x: hidden;
+}
+
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .homework-container {
+    padding: 10px;
+  }
+  
+  .header-card {
+    margin-bottom: 15px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .header-left {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .header-right {
+    width: 100%;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  :deep(.el-table) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__header) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__body) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-tag) {
+    font-size: 12px;
+  }
+  
+  .homework-card {
+    height: auto;
+    min-height: 150px;
+  }
+  
+  .homework-header {
+    padding: 10px;
+  }
+  
+  .homework-title {
+    font-size: 16px;
+  }
+  
+  .homework-content {
+    padding: 12px;
+  }
+  
+  .homework-item {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .info-label {
+    width: auto;
+  }
+  
+  :deep(.el-dialog) {
+    width: 90% !important;
+    margin: 0 auto;
+  }
+  
+  :deep(.el-dialog__body) {
+    padding: 15px;
+  }
+  
+  :deep(.el-form-item__label) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-input__inner) {
+    font-size: 14px;
+  }
 }
 
 .header-card, .table-card {

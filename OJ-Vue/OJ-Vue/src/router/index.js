@@ -1,12 +1,12 @@
 // src/router/index.js
 
 // 引入 Vue Router 库用于路由管理
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 // 创建路由实例
 const router = createRouter({
     // 使用 hash 模式的历史记录，导入环境变量中的 BASE_URL 配置
-    history: createWebHashHistory(
+    history: createWebHistory(
         import.meta.env.BASE_URL),
 
     // 配置路由规则
@@ -77,10 +77,10 @@ const router = createRouter({
                         import ('@/views/page/RankPage.vue') // 懒加载组件 AnnouncementPage.vue
                 },
                 {
-                    path: 'userProfile/:id', // 用户个人资料页面路径
-                    name: 'UserProfile', // 用户个人资料页面路由名称
+                    path: 'userProfile/:id',
+                    name: 'UserProfile',
                     component: () =>
-                        import ('@/views/page/UserProfilePage.vue') // 懒加载组件 UserProfilePage.vue
+                        import ('@/views/page/UserProfilePage.vue')
                 },
                 {
                     path: 'userClass', // 用户班级页面路径
@@ -159,6 +159,106 @@ const router = createRouter({
                     name: 'Charts',
                     component: () =>
                         import ('@/views/page/Charts.vue')
+                },
+                {
+                    path: 'dailyChallenge',
+                    name: 'DailyChallenge',
+                    component: () =>
+                        import ('@/views/page/DailyChallenge.vue')
+                }
+            ]
+        },
+        // 管理系统作为独立路由
+        {
+            path: '/admin',
+            name: 'AdminLayout',
+            component: () =>
+                import ('@/views/admin/AdminLayout.vue'),
+            meta: { requiresAuth: true, requiresAdmin: true },
+            redirect: '/admin/dashboard',
+            children: [{
+                    path: 'dashboard',
+                    name: 'AdminDashboard',
+                    component: () =>
+                        import ('@/views/admin/Dashboard.vue'),
+                    meta: { title: '仪表盘' }
+                },
+                {
+                    path: 'users',
+                    name: 'UserManagement',
+                    component: () =>
+                        import ('@/views/admin/Users.vue'),
+                    meta: { title: '用户管理' }
+                },
+                {
+                    path: 'problems',
+                    name: 'ProblemManagement',
+                    component: () =>
+                        import ('@/views/admin/Problems.vue'),
+                    meta: { title: '题目管理' }
+                },
+                {
+                    path: 'problem/add',
+                    name: 'ProblemAdd',
+                    component: () =>
+                        import ('@/views/admin/ProblemEdit.vue'),
+                    meta: { title: '新增题目' }
+                },
+                {
+                    path: 'problem/edit/:id',
+                    name: 'ProblemEdit',
+                    component: () =>
+                        import ('@/views/admin/ProblemEdit.vue'),
+                    meta: { title: '编辑题目' }
+                },
+                {
+                    path: 'homework',
+                    name: 'HomeworkManagement',
+                    component: () =>
+                        import ('@/views/admin/Homework.vue'),
+                    meta: { title: '作业管理' }
+                },
+                {
+                    path: 'discussions',
+                    name: 'DiscussionManagement',
+                    component: () =>
+                        import ('@/views/admin/Discussions.vue'),
+                    meta: { title: '讨论管理' }
+                },
+                {
+                    path: 'announcements',
+                    name: 'AnnouncementManagement',
+                    component: () =>
+                        import ('@/views/admin/Announcements.vue'),
+                    meta: { title: '公告管理' }
+                },
+                {
+                    path: 'solutions',
+                    name: 'SolutionManagement',
+                    component: () =>
+                        import ('@/views/admin/Solutions.vue'),
+                    meta: { title: '题解管理' }
+                },
+                {
+                    path: 'classes',
+                    name: 'ClassManagement',
+                    component: () =>
+                        import ('@/views/admin/Classes.vue'),
+                    meta: { title: '课程管理' }
+                },
+                {
+                    path: 'statistics',
+                    name: 'Statistics',
+                    component: () =>
+                        import ('@/views/admin/Statistics.vue'),
+                    meta: { title: '数据统计' }
+                },
+                {
+                    path: 'status',
+                    name: 'StatusManagement',
+                    component: () =>
+                        import ('@/views/admin/Status.vue'),
+                    meta: { title: '提交状态管理' }
                 }
             ]
         },
@@ -174,7 +274,21 @@ const router = createRouter({
             component: () =>
                 import ('@/views/login/Register.vue'), // 懒加载组件 Register.vue
         },
+        {
+            path: '/403',
+            name: '403',
+            component: () =>
+                import ('@/views/error/403.vue')
+        }
     ],
+    // 添加滚动行为
+    scrollBehavior(to, from, savedPosition) {
+        if (savedPosition) {
+            return savedPosition
+        } else {
+            return { top: 0 }
+        }
+    }
 })
 
 // 导出创建好的路由实例
@@ -182,24 +296,34 @@ export default router
 
 // 路由守卫：在每次路由跳转之前执行
 router.beforeEach((to, from, next) => {
-    // 从 localStorage 中获取存储的用户信息
     const userStr = localStorage.getItem('student-user');
     const user = userStr ? JSON.parse(userStr) : null;
-    const token = user ? user.token : null; // 获取 token
+    const token = user ? user.token : null;
 
-    // 如果目标路由不是登录页和注册页，且没有 token，则重定向到登录页
+    // 检查是否需要管理员权限
+    if (to.matched.some(record => record.meta.requiresAdmin)) {
+        if (!user || user.role !== 'ADMIN') {
+            console.log('需要管理员权限');
+            return next('/403');
+        }
+    }
+
+    // 原有的登录检查逻辑
     if (to.name !== 'Login' && to.name !== 'Register' && !token) {
         console.log('用户未登录，重定向到登录页');
-        localStorage.removeItem('student-user'); // 清除存储的用户信息
-        return next({ name: 'Login' }); // 跳转到登录页
+        localStorage.removeItem('student-user');
+        return next({ name: 'Login' });
     }
 
-    // 如果用户已登录且尝试访问登录页或注册页，则重定向到主页
     if ((to.name === 'Login' || to.name === 'Register') && token) {
-        return next({ path: '/' }); // 跳转到主页
+        // 如果是管理员，重定向到管理系统
+        if (user.role === 'ADMIN') {
+            return next('/admin/dashboard');
+        }
+        return next({ path: '/' });
     }
 
-    next(); // 如果没有问题，继续路由跳转
+    next();
 })
 
 // 检查 token 是否过期的函数

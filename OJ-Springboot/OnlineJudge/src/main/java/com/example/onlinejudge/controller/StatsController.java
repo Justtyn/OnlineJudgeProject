@@ -2,6 +2,10 @@ package com.example.onlinejudge.controller;
 
 import com.example.onlinejudge.common.Result;
 import com.example.onlinejudge.service.StatsService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -11,6 +15,7 @@ import java.util.Map;
 /**
  * 统计数据 REST 接口
  */
+@Api(tags = "统计数据管理接口")
 @RestController
 @RequestMapping("/stats")
 public class StatsController {
@@ -18,7 +23,10 @@ public class StatsController {
     @Resource
     private StatsService statsService;
 
-    /** 1. 用户注册趋势（折线图数据） */
+    @ApiOperation("获取用户注册趋势")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "days", value = "统计天数", defaultValue = "30", dataType = "int")
+    })
     @GetMapping("/user/registration-trend")
     public Result registrationTrend(
             @RequestParam(defaultValue = "30") int days) {
@@ -27,7 +35,7 @@ public class StatsController {
         return Result.success(data);
     }
 
-    /** 2. 班级分布（饼图/柱状图数据） */
+    @ApiOperation("获取班级分布统计")
     @GetMapping("/user/class-distribution")
     public Result classDistribution() {
         List<Map<String, Object>> data =
@@ -35,7 +43,10 @@ public class StatsController {
         return Result.success(data);
     }
 
-    /** 3. 题目提交排行（柱状图数据） */
+    @ApiOperation("获取题目提交排行")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "limit", value = "获取数量", defaultValue = "10", dataType = "int")
+    })
     @GetMapping("/problem/top-submit")
     public Result topProblemSubmit(
             @RequestParam(defaultValue = "10") int limit) {
@@ -44,7 +55,7 @@ public class StatsController {
         return Result.success(data);
     }
 
-    /** 4. 提交状态分布（饼图数据） */
+    @ApiOperation("获取提交状态分布")
     @GetMapping("/status/distribution")
     public Result statusDistribution() {
         List<Map<String, Object>> data =

@@ -93,7 +93,7 @@ onMounted(() => {
   <!-- 题目详情页面的主容器 -->
   <div class="problem-detail-container">
     <!-- 使用Element Plus的卡片组件展示题目信息 -->
-    <el-card class="problem-card">
+    <el-card class="problem-card animate__animated animate__fadeIn">
       <!-- 卡片头部，显示题目标题和元信息 -->
       <template #header>
         <div class="card-header">
@@ -162,11 +162,189 @@ onMounted(() => {
 </template>
 
 <style scoped>
+/* 导入动画库 */
+@import 'animate.css';
+
 /* 题目详情页面的主容器样式 */
 .problem-detail-container {
   padding: 20px;
-  background-color: #f5f7fa;  /* 浅灰色背景 */
-  min-height: 100vh;  /* 最小高度为视口高度，确保内容少时也能填满屏幕 */
+  background-color: #f5f7fa;
+  min-height: 100vh;
+  animation: gradientBG 15s ease infinite;
+  background: linear-gradient(-45deg, #f5f7fa, #e4e7eb, #f0f2f5, #e8eaf6);
+  background-size: 400% 400%;
+}
+
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 题目卡片样式 */
+.problem-card {
+  max-width: 1200px;
+  margin: 0 auto;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.problem-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 卡片头部样式 */
+.card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 题目标题样式 */
+.problem-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #303133;
+  transition: color 0.3s ease;
+}
+
+.problem-title:hover {
+  color: #409EFF;
+}
+
+/* 题目元信息区域样式 */
+.problem-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* 标签动画效果 */
+:deep(.el-tag) {
+  transition: all 0.3s ease;
+}
+
+:deep(.el-tag:hover) {
+  transform: scale(1.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 提交按钮动画效果 */
+:deep(.el-button) {
+  transition: all 0.3s ease;
+}
+
+:deep(.el-button:hover) {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(64, 158, 255, 0.3);
+}
+
+/* 内容区域动画效果 */
+.section {
+  margin-bottom: 30px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 为每个section添加延迟动画 */
+.section:nth-child(1) { animation-delay: 0.1s; }
+.section:nth-child(2) { animation-delay: 0.2s; }
+.section:nth-child(3) { animation-delay: 0.3s; }
+.section:nth-child(4) { animation-delay: 0.4s; }
+.section:nth-child(5) { animation-delay: 0.5s; }
+.section:nth-child(6) { animation-delay: 0.6s; }
+
+/* 样例卡片样式 */
+.sample-card {
+  background-color: #fafafa;
+  transition: all 0.3s ease;
+}
+
+.sample-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 样例代码样式 */
+.sample-card pre {
+  margin: 0;
+  padding: 10px;
+  font-family: 'Fira Code', monospace;
+  white-space: pre-wrap;
+  word-break: break-all;
+  transition: all 0.3s ease;
+}
+
+.sample-card:hover pre {
+  background-color: #f0f2f5;
+}
+
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .problem-detail-container {
+    padding: 10px;
+  }
+  
+  .problem-card {
+    margin: 0;
+  }
+  
+  .card-header {
+    gap: 8px;
+  }
+  
+  .problem-title {
+    font-size: 20px;
+  }
+  
+  .problem-meta {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  :deep(.el-tag) {
+    font-size: 12px;
+  }
+  
+  .section h3 {
+    font-size: 16px;
+  }
+  
+  .content {
+    font-size: 14px;
+  }
+  
+  .sample-card {
+    margin: 10px 0;
+  }
+  
+  .sample-card pre {
+    font-size: 12px;
+    padding: 8px;
+  }
+  
+  :deep(.el-card__header) {
+    padding: 10px;
+  }
+  
+  :deep(.el-card__body) {
+    padding: 15px;
+  }
 }
 
 /* 题目卡片样式 */

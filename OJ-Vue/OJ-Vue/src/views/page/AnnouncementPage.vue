@@ -299,7 +299,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-
 body {
   margin: 0;
   padding: 0;
@@ -312,9 +311,201 @@ body {
   background-color: #f5f7fa;
   min-height: 80vh;
   width: 100%;
-  max-width: 1200px; /* 添加最大宽度限制 */
-  margin: 0 auto; /* 居中显示 */
-  overflow-x: hidden; /* 防止横向滚动条 */
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow-x: hidden;
+}
+
+/* 添加卡片加载动画 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.announcement-card {
+  margin-bottom: 0;
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.5s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.announcement-card:nth-child(1) { animation-delay: 0.1s; }
+.announcement-card:nth-child(2) { animation-delay: 0.2s; }
+.announcement-card:nth-child(3) { animation-delay: 0.3s; }
+.announcement-card:nth-child(4) { animation-delay: 0.4s; }
+.announcement-card:nth-child(5) { animation-delay: 0.5s; }
+
+.announcement-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+}
+
+/* 添加标题动画效果 */
+.announcement-title {
+  font-size: 16px;
+  font-weight: bold;
+  position: relative;
+  display: inline-block;
+}
+
+.announcement-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #409EFF, #67C23A);
+  transition: width 0.3s ease;
+}
+
+.announcement-card:hover .announcement-title::after {
+  width: 100%;
+}
+
+/* 添加内容区域的渐变效果 */
+.announcement-content {
+  padding: 16px;
+  min-height: 80px;
+  white-space: pre-line;
+  line-height: 1.6;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.02));
+  transition: all 0.3s ease;
+}
+
+.announcement-card:hover .announcement-content {
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.04));
+}
+
+/* 添加时间图标的动画效果 */
+.announcement-time .el-icon {
+  margin-right: 5px;
+  transition: transform 0.3s ease;
+}
+
+.announcement-card:hover .announcement-time .el-icon {
+  transform: rotate(360deg);
+}
+
+/* 添加搜索框的动画效果 */
+:deep(.el-input__inner) {
+  transition: all 0.3s ease;
+}
+
+:deep(.el-input__inner:focus) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 添加按钮的动画效果 */
+:deep(.el-button) {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+:deep(.el-button::after) {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%);
+  transform-origin: 50% 50%;
+}
+
+:deep(.el-button:active::after) {
+  animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(20, 20);
+    opacity: 0;
+  }
+}
+
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .announcement-container {
+    padding: 10px;
+  }
+  
+  .search-card {
+    margin-bottom: 15px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  :deep(.el-form) {
+    padding: 10px 0;
+  }
+  
+  :deep(.el-form-item) {
+    margin-right: 0;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+  
+  :deep(.el-input) {
+    width: 100%;
+  }
+  
+  .announcement-card {
+    margin-bottom: 15px;
+  }
+  
+  .announcement-header {
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+  }
+  
+  .announcement-title {
+    font-size: 16px;
+  }
+  
+  .announcement-time {
+    font-size: 12px;
+  }
+  
+  .announcement-content {
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  :deep(.el-dialog) {
+    width: 90% !important;
+    margin: 0 auto;
+  }
+  
+  :deep(.el-dialog__body) {
+    padding: 15px;
+  }
 }
 
 .search-card {
@@ -352,17 +543,6 @@ body {
   width: 100%; /* 确保不会超出容器宽度 */
 }
 
-.announcement-card {
-  margin-bottom: 0;
-  transition: all 0.3s;
-  width: 100%; /* 确保卡片不会超出容器宽度 */
-}
-
-.announcement-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
-}
-
 .announcement-header {
   display: flex;
   justify-content: space-between;
@@ -371,29 +551,11 @@ body {
   border-radius: 4px 4px 0 0;
 }
 
-.announcement-title {
-  font-size: 16px;
-  font-weight: bold;
-}
-
 .announcement-time {
   font-size: 14px;
   color: #606266;
   display: flex;
   align-items: center;
-}
-
-.announcement-time .el-icon {
-  margin-right: 5px;
-}
-
-.announcement-content {
-  padding: 16px;
-  min-height: 80px;
-  white-space: pre-line;
-  line-height: 1.6;
-  font-weight: 500;
-  letter-spacing: 0.5px;
 }
 
 .announcement-actions {

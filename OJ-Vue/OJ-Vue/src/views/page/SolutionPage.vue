@@ -590,11 +590,30 @@ const handleLike = async (id) => {
 .solution-container {
   padding: 20px;
   background-color: #f5f7fa;
-  height: 80vh;
+  min-height: 100vh;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .title-card {
   margin-bottom: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.title-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .card-header {
@@ -606,10 +625,42 @@ const handleLike = async (id) => {
 .title {
   font-size: 18px;
   font-weight: bold;
+  background: linear-gradient(45deg, #1890ff, #40a9ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientText 3s ease infinite;
+}
+
+@keyframes gradientText {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .table-card {
   margin-bottom: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.table-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+:deep(.el-table__row) {
+  transition: all 0.3s ease;
+}
+
+:deep(.el-table__row:hover) {
+  transform: scale(1.01);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
 .pagination {
@@ -620,6 +671,8 @@ const handleLike = async (id) => {
 
 :deep(.el-card__header) {
   padding: 15px 20px;
+  background: linear-gradient(to right, #f0f9ff, #e6f7ff);
+  border-bottom: 2px solid #1890ff;
 }
 
 :deep(.el-card__body) {
@@ -629,19 +682,41 @@ const handleLike = async (id) => {
 .problem-link {
   color: #1890ff;
   cursor: pointer;
-  text-decoration: underline;
+  text-decoration: none;
+  position: relative;
+  transition: all 0.3s ease;
 }
 
-.problem-link:hover {
-  color: #40a9ff;
+.problem-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: #1890ff;
+  transition: width 0.3s ease;
+}
+
+.problem-link:hover::after {
+  width: 100%;
 }
 
 .solution-count {
   font-size: 14px;
   color: #606266;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: linear-gradient(45deg, #f0f9ff, #e6f7ff);
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.1);
+  transition: all 0.3s ease;
 }
 
-/* 用户信息样式 */
+.solution-count:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
+}
+
 .user-info {
   display: flex;
   align-items: center;
@@ -649,22 +724,45 @@ const handleLike = async (id) => {
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 4px;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.user-info::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.user-info:hover::before {
+  left: 100%;
 }
 
 .user-info:hover {
   background-color: #f0f9ff;
+  transform: translateY(-2px);
 }
 
 .user-avatar {
   border: 2px solid #fff;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   border-radius: 6px;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
 }
 
 .user-info:hover .user-avatar {
-  transform: scale(1.05);
+  transform: scale(1.1) rotate(5deg);
   box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
 }
 
@@ -673,17 +771,27 @@ const handleLike = async (id) => {
   font-size: 14px;
   font-weight: bold;
   color: #333;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
 }
 
 .user-info:hover .user-name {
   color: #1890ff;
+  transform: translateX(5px);
 }
 
 .header-actions {
   display: flex;
   align-items: center;
   gap: 20px;
+}
+
+:deep(.el-button) {
+  transition: all 0.3s ease;
+}
+
+:deep(.el-button:hover) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
 }
 
 .code-editor-wrapper {
@@ -697,46 +805,13 @@ const handleLike = async (id) => {
   border: 1px solid #dcdfe6;
   border-radius: 4px;
   margin-bottom: 20px;
-  overflow: hidden; /* 防止内容溢出 */
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
-/* 确保表单项占满宽度 */
-:deep(.el-form-item__content) {
-  width: calc(100% - 100px); /* 减去label宽度 */
-}
-
-.dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-.problem-select-wrapper {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 10px;
-}
-
-.problem-select-wrapper .el-select {
-  flex: 1;
-}
-
-.reset-button {
-  flex-shrink: 0;
-}
-
-.loaded-all-text {
-  color: #67c23a;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-}
-
-.problem-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.code-editor-container:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #1890ff;
 }
 
 .like-container {
@@ -748,11 +823,142 @@ const handleLike = async (id) => {
 
 .like-button {
   padding: 4px;
-  font-size: 20px; /* 增大图标尺寸 */
+  font-size: 20px;
+  transition: all 0.3s ease;
 }
 
 .like-button:hover {
   color: #e6a23c;
-  transform: scale(1.15);
+  transform: scale(1.2) rotate(15deg);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(15deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* 添加表格行动画 */
+:deep(.el-table__row) {
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 添加分页按钮动画 */
+:deep(.el-pagination .el-pager li) {
+  transition: all 0.3s ease;
+}
+
+:deep(.el-pagination .el-pager li:hover) {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
+}
+
+/* 对话框动画 */
+:deep(.el-dialog) {
+  animation: dialogFadeIn 0.3s ease-out;
+}
+
+@keyframes dialogFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 移动端适配样式保持不变 */
+@media screen and (max-width: 768px) {
+  .solution-container {
+    padding: 10px;
+  }
+  
+  .search-card {
+    margin-bottom: 15px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  :deep(.el-form) {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  :deep(.el-form-item) {
+    margin-right: 0;
+    width: 100%;
+  }
+  
+  :deep(.el-input) {
+    width: 100%;
+  }
+  
+  :deep(.el-table) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__header) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table__body) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-table .cell) {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  
+  :deep(.el-pagination) {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  :deep(.el-dialog) {
+    width: 90% !important;
+    margin: 0 auto;
+  }
+  
+  :deep(.el-dialog__body) {
+    padding: 15px;
+  }
+  
+  :deep(.el-form-item__label) {
+    font-size: 14px;
+  }
+  
+  :deep(.el-input__inner) {
+    font-size: 14px;
+  }
 }
 </style>

@@ -90,4 +90,17 @@ onMounted(() => {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
+
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .typewriter-container {
+    font-size: 24px;
+  }
+  
+  .cursor {
+    width: 5px;
+    height: 20px;
+    margin-left: 3px;
+  }
+}
 </style>

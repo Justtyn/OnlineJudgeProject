@@ -6,10 +6,14 @@ import com.example.onlinejudge.service.SolutionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Api(tags = "题解管理接口")
 @RestController
 @RequestMapping("/solution")
 public class SolutionController {
@@ -17,11 +21,9 @@ public class SolutionController {
     @Autowired
     private SolutionService solutionService;
     
-    /**
-     * 添加题解
-     */
+    @ApiOperation("添加题解")
     @PostMapping("/add")
-    public ResponseEntity<Map<String, Object>> addSolution(@RequestBody Solution solution) {
+    public ResponseEntity<Map<String, Object>> addSolution(@ApiParam("题解信息") @RequestBody Solution solution) {
         Map<String, Object> result = new HashMap<>();
         boolean success = solutionService.addSolution(solution);
         
@@ -37,11 +39,9 @@ public class SolutionController {
         return ResponseEntity.ok(result);
     }
     
-    /**
-     * 删除题解
-     */
+    @ApiOperation("删除题解")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Map<String, Object>> deleteSolution(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, Object>> deleteSolution(@ApiParam("题解ID") @PathVariable Integer id) {
         Map<String, Object> result = new HashMap<>();
         boolean success = solutionService.deleteSolution(id);
         
@@ -56,13 +56,11 @@ public class SolutionController {
         return ResponseEntity.ok(result);
     }
     
-    /**
-     * 分页查询题解
-     */
+    @ApiOperation("分页查询题解")
     @GetMapping("/page")
     public ResponseEntity<Map<String, Object>> getSolutionPage(
-            @RequestParam(defaultValue = "1") Integer current,
-            @RequestParam(defaultValue = "10") Integer size) {
+            @ApiParam("当前页码") @RequestParam(defaultValue = "1") Integer current,
+            @ApiParam("每页大小") @RequestParam(defaultValue = "10") Integer size) {
         Map<String, Object> result = new HashMap<>();
         Page<Solution> page = solutionService.getSolutionPage(current, size);
         
@@ -77,11 +75,9 @@ public class SolutionController {
         return ResponseEntity.ok(result);
     }
     
-    /**
-     * 根据ID查询题解
-     */
+    @ApiOperation("根据ID查询题解")
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> getSolutionById(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, Object>> getSolutionById(@ApiParam("题解ID") @PathVariable Integer id) {
         Map<String, Object> result = new HashMap<>();
         Solution solution = solutionService.getSolutionById(id);
         
@@ -97,11 +93,9 @@ public class SolutionController {
         return ResponseEntity.ok(result);
     }
     
-    /**
-     * 增加题解点赞数
-     */
+    @ApiOperation("增加题解点赞数")
     @PutMapping("/like/{id}")
-    public ResponseEntity<Map<String, Object>> increaseLike(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, Object>> increaseLike(@ApiParam("题解ID") @PathVariable Integer id) {
         Map<String, Object> result = new HashMap<>();
         boolean success = solutionService.increaseLike(id);
         
@@ -119,14 +113,12 @@ public class SolutionController {
         return ResponseEntity.ok(result);
     }
     
-    /**
-     * 根据用户ID分页查询题解
-     */
+    @ApiOperation("根据用户ID查询题解")
     @GetMapping("/user/{userId}")
     public ResponseEntity<Map<String, Object>> getSolutionsByUserId(
-            @PathVariable Integer userId,
-            @RequestParam(defaultValue = "1") Integer current,
-            @RequestParam(defaultValue = "10") Integer size) {
+            @ApiParam("用户ID") @PathVariable Integer userId,
+            @ApiParam("当前页码") @RequestParam(defaultValue = "1") Integer current,
+            @ApiParam("每页大小") @RequestParam(defaultValue = "10") Integer size) {
         Map<String, Object> result = new HashMap<>();
         Page<Solution> page = solutionService.getSolutionsByUserId(userId, current, size);
         
@@ -141,9 +133,7 @@ public class SolutionController {
         return ResponseEntity.ok(result);
     }
     
-    /**
-     * 获取题解总数量
-     */
+    @ApiOperation("获取题解总数")
     @GetMapping("/count")
     public ResponseEntity<Map<String, Object>> getSolutionCount() {
         Map<String, Object> result = new HashMap<>();
