@@ -171,7 +171,7 @@ onMounted(() => {
   background-color: #f5f7fa;
   min-height: 100vh;
   animation: gradientBG 15s ease infinite;
-  background: linear-gradient(-45deg, #f5f7fa, #e4e7eb, #f0f2f5, #e8eaf6);
+  background: linear-gradient(-45deg, #f5f7fa, #e4e7eb, var(--bg-color-mute), #e8eaf6);
   background-size: 400% 400%;
 }
 
@@ -271,7 +271,7 @@ onMounted(() => {
 
 /* 样例卡片样式 */
 .sample-card {
-  background-color: #fafafa;
+  background-color: var(--bg-color-soft);
   transition: all 0.3s ease;
 }
 
@@ -291,7 +291,7 @@ onMounted(() => {
 }
 
 .sample-card:hover pre {
-  background-color: #f0f2f5;
+  background-color: var(--bg-color-mute);
 }
 
 /* 添加移动端适配样式 */
@@ -390,7 +390,7 @@ onMounted(() => {
   color: #303133;
   margin-bottom: 15px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #ebeef5;  /* 底部分隔线 */
+  border-bottom: 1px solid var(--border-color);  /* 底部分隔线 */
 }
 
 /* 内容文本样式 */
@@ -403,7 +403,7 @@ onMounted(() => {
 
 /* 样例卡片样式 */
 .sample-card {
-  background-color: #fafafa;  /* 浅色背景，区分样例 */
+  background-color: var(--bg-color-soft);  /* 浅色背景，区分样例 */
 }
 
 /* 样例代码样式 */

@@ -4,6 +4,17 @@ import { ElMessage } from 'element-plus'
 import request from "@/utils/request.js"
 import { useRouter } from 'vue-router'
 
+// 获取用户信息并检查是否是管理员
+const isAdmin = computed(() => {
+  const localUser = localStorage.getItem('student-user')
+    ? JSON.parse(localStorage.getItem('student-user'))
+    : localStorage.getItem('admin-user')
+      ? JSON.parse(localStorage.getItem('admin-user'))
+      : null;
+  
+  return localUser && localUser.role === 'ADMIN';
+});
+
 const router = useRouter()
 
 // 作业列表数据
@@ -160,9 +171,9 @@ const loadData = async () => {
       }
     })
     
-    if (response.data) {
-      homeworkList.value = response.data.records || []
-      total.value = response.data.total || 0
+    if (response.data && response.data.data) {
+      homeworkList.value = response.data.data.records || []
+      total.value = response.data.data.total || 0
       console.log('成功获取作业数据:', homeworkList.value)
     } else {
       homeworkList.value = []
@@ -201,7 +212,7 @@ const handleRefresh = () => {
 // 随机生成背景颜色
 const getRandomColor = (index) => {
   const colors = [
-    '#e6f7ff', '#f6ffed', '#fff7e6', '#fff0f6', '#f9f0ff', '#e6fffb'
+    'var(--bg-color-soft)', 'var(--bg-color-soft)', 'var(--color-background)7e6', 'var(--color-background)0f6', 'var(--bg-color-soft)', 'var(--bg-color-soft)'
   ]
   return colors[index % colors.length]
 }
@@ -255,7 +266,7 @@ onMounted(() => {
               <el-icon><Refresh /></el-icon>
               刷新
             </el-button>
-            <el-button type="success" @click="openAddDialog" size="small">
+            <el-button type="success" @click="openAddDialog" size="small" :disabled="!isAdmin">
               <el-icon><Plus /></el-icon>
               添加作业
             </el-button>

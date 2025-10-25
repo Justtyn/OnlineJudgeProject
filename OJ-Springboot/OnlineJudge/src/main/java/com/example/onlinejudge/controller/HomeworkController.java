@@ -35,10 +35,14 @@ public class HomeworkController {
     
     @ApiOperation("分页查询作业")
     @GetMapping("/page")
-    public Page<Homework> listHomeworkByPage(
+    public Result<Page<Homework>> listHomeworkByPage(
             @ApiParam("当前页码") @RequestParam(defaultValue = "1") Integer current,
-            @ApiParam("每页大小") @RequestParam(defaultValue = "10") Integer size) {
-        return homeworkService.listHomeworkByPage(current, size);
+            @ApiParam("每页大小") @RequestParam(defaultValue = "10") Integer size,
+            @ApiParam("搜索标题") @RequestParam(required = false) String title,
+            @ApiParam("班级ID") @RequestParam(required = false) Integer classId,
+            @ApiParam("状态筛选") @RequestParam(required = false) String status) {
+        Page<Homework> page = homeworkService.listHomeworkByPage(current, size, title, classId, status);
+        return Result.success(page);
     }
     
     @ApiOperation("查询班级作业列表")

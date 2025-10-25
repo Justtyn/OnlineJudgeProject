@@ -241,7 +241,7 @@ const submitCodeWithBase64 = async () => {
       expected_output: toBase64(sampleOutput)
     }
 
-    const response = await request.post('http://106.53.51.77:2358/submissions?wait=true&base64_encoded=true', submitData)
+    const response = await request.post('http://localhost:2358/submissions?wait=true&base64_encoded=true', submitData)
     
     // 处理返回结果中的base64编码
     const result = {
@@ -301,7 +301,7 @@ const submitCode = async () => {
       expected_output: sampleOutput
     }
 
-    const response = await request.post('http://106.53.51.77:2358/submissions?wait=true', submitData)
+    const response = await request.post('http://localhost:2358/submissions?wait=true', submitData)
     submissionResult.value = response.data
 
     // 如果判题请求成功（不论结果如何），提交状态记录
@@ -417,7 +417,7 @@ watch(selectedTheme, (newTheme) => {
   padding: 20px;
   max-width: 1200px;
   margin: 10px auto;
-  background-color: #ffffff;
+  background-color: var(--color-background);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   height: 80vh;
@@ -472,7 +472,7 @@ h2 {
   font-size: 28px;
   font-weight: 600;
   margin-bottom: 10px;
-  color: #333333;
+  color: var(--color-heading);
   text-align: center;
 }
 
@@ -503,7 +503,7 @@ h2 {
   width: 100%;
   background-color: #409EFF;
   border-color: #409EFF;
-  color: #fff;
+  color: var(--color-background);
   font-size: 16px;
   padding: 12px;
   border-radius: 6px;
@@ -517,9 +517,9 @@ h2 {
 
 .code-editor-container {
   margin-bottom: 20px;
-  border: 1px solid #dcdfe6;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
-  background-color: #f5f5f5;
+  background-color: var(--bg-color-mute);
   position: relative;
   height: 550px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -527,7 +527,7 @@ h2 {
 
 h1,
 h2 {
-  color: #333333;
+  color: var(--color-heading);
 }
 
 .el-select .el-input__inner {

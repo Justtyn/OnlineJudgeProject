@@ -41,19 +41,28 @@
               <span>仪表盘</span>
             </el-menu-item>
             
-            <el-menu-item index="/admin/users">
-              <el-icon><User /></el-icon>
-              <span>用户管理</span>
-            </el-menu-item>
+            <!-- 管理员专用菜单 -->
+            <template v-if="userRole === 'ADMIN'">
+              <el-menu-item index="/admin/users">
+                <el-icon><User /></el-icon>
+                <span>用户管理</span>
+              </el-menu-item>
+              
+              <el-menu-item index="/admin/teachers">
+                <el-icon><Avatar /></el-icon>
+                <span>教师管理</span>
+              </el-menu-item>
+              
+              <el-menu-item index="/admin/problems">
+                <el-icon><Document /></el-icon>
+                <span>题目管理</span>
+              </el-menu-item>
+            </template>
             
-            <el-menu-item index="/admin/problems">
-              <el-icon><Document /></el-icon>
-              <span>题目管理</span>
-            </el-menu-item>
-
+            <!-- 管理员和教师都可以访问的菜单 -->
             <el-menu-item index="/admin/classes">
               <el-icon><Reading /></el-icon>
-              <span>课程管理</span>
+              <span>班级管理</span>
             </el-menu-item>
 
             <el-sub-menu index="1">
@@ -64,29 +73,32 @@
               <el-menu-item index="/admin/homework">作业列表</el-menu-item>
             </el-sub-menu>
 
-            <el-sub-menu index="2">
-              <template #title>
-                <el-icon><ChatDotRound /></el-icon>
-                <span>讨论管理</span>
-              </template>
-              <el-menu-item index="/admin/discussions">讨论列表</el-menu-item>
-            </el-sub-menu>
+            <!-- 管理员专用菜单 -->
+            <template v-if="userRole === 'ADMIN'">
+              <el-sub-menu index="2">
+                <template #title>
+                  <el-icon><ChatDotRound /></el-icon>
+                  <span>讨论管理</span>
+                </template>
+                <el-menu-item index="/admin/discussions">讨论列表</el-menu-item>
+              </el-sub-menu>
 
-            <el-sub-menu index="3">
-              <template #title>
-                <el-icon><Bell /></el-icon>
-                <span>公告管理</span>
-              </template>
-              <el-menu-item index="/admin/announcements">公告列表</el-menu-item>
-            </el-sub-menu>
+              <el-sub-menu index="3">
+                <template #title>
+                  <el-icon><Bell /></el-icon>
+                  <span>公告管理</span>
+                </template>
+                <el-menu-item index="/admin/announcements">公告列表</el-menu-item>
+              </el-sub-menu>
 
-            <el-sub-menu index="4">
-              <template #title>
-                <el-icon><Collection /></el-icon>
-                <span>题解管理</span>
-              </template>
-              <el-menu-item index="/admin/solutions">题解列表</el-menu-item>
-            </el-sub-menu>
+              <el-sub-menu index="4">
+                <template #title>
+                  <el-icon><Collection /></el-icon>
+                  <span>题解管理</span>
+                </template>
+                <el-menu-item index="/admin/solutions">题解列表</el-menu-item>
+              </el-sub-menu>
+            </template>
           </el-menu>
         </el-scrollbar>
       </el-aside>
@@ -103,6 +115,7 @@
           </div>
           <div class="header-right">
             <el-button 
+              v-if="userRole === 'ADMIN'"
               type="primary" 
               link 
               @click="goToHome"
@@ -157,7 +170,10 @@ import {
   House,
   Fold,
   Expand,
-  Menu
+  Menu,
+  Avatar,
+  School,
+  Edit
 } from '@element-plus/icons-vue'
 import BackButton from '@/components/BackButton.vue'
 import { ElMessage } from 'element-plus'
@@ -184,6 +200,10 @@ const activeMenu = ref(route.path)
 const adminUser = computed(() => {
   const userStr = localStorage.getItem('student-user')
   return userStr ? JSON.parse(userStr) : {}
+})
+
+const userRole = computed(() => {
+  return adminUser.value.role || 'STUDENT'
 })
 
 const currentPath = computed(() => {
@@ -214,7 +234,7 @@ const handleCommand = (command: string) => {
 }
 
 const goToHome = () => {
-  window.location.href = '/'  // 或者你的 OJ 主页路径
+  router.push('/')  // 使用Vue Router进行页面跳转
 }
 
 const toggleCollapse = () => {

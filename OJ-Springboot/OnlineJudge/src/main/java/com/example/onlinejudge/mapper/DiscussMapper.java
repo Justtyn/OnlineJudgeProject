@@ -52,6 +52,10 @@ public interface DiscussMapper extends BaseMapper<Discuss> {
         @Select("SELECT * FROM discuss WHERE title LIKE CONCAT('%', #{title}, '%') ORDER BY create_time DESC")
         List<Discuss> selectByTitle(String title);
 
+        /** 根据题目ID查询讨论 */
+        @Select("SELECT * FROM discuss WHERE problem_id = #{problemId} ORDER BY create_time DESC")
+        List<Discuss> selectByProblemId(Integer problemId);
+
         @Select("SELECT topic, COUNT(*) as count FROM discuss GROUP BY topic")
         List<Map<String, Object>> selectTopicDistribution();
 

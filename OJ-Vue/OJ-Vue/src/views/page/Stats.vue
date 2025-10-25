@@ -7,6 +7,8 @@
           <el-option label="最近7天" :value="7" />
           <el-option label="最近30天" :value="30" />
           <el-option label="最近90天" :value="90" />
+          <el-option label="最近一年" :value="365" />
+          <el-option label="全部" :value="3000" />
         </el-select>
       </div>
     </div>
@@ -111,7 +113,7 @@ import QualityRadar from '@/views/admin/components/QualityRadar.vue'
 import SubmissionChart from '@/views/admin/components/SubmissionChart.vue'
 
 // 参数
-const days = ref(30)
+const days = ref(3000)
 const limit = ref(10)
 const activeChart = ref(null)
 
@@ -205,9 +207,9 @@ function initRegistrationTrend() {
               mode: 'index',
               intersect: false,
               backgroundColor: 'rgba(255, 255, 255, 0.9)',
-              titleColor: '#333',
-              bodyColor: '#666',
-              borderColor: '#ddd',
+              titleColor: 'var(--color-heading)',
+              bodyColor: 'var(--color-text)',
+              borderColor: 'var(--color-text)',
               borderWidth: 1
             }
           }
@@ -486,7 +488,7 @@ onMounted(() => {
 }
 
 .loading {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, var(--bg-color-mute) 25%, var(--border-color) 50%, var(--bg-color-mute) 75%);
   background-size: 1000px 100%;
   animation: shimmer 2s infinite linear;
 }

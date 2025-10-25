@@ -32,6 +32,11 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     }
     
     @Override
+    public boolean updateCourse(Course course) {
+        return updateById(course);
+    }
+    
+    @Override
     public Page<Course> listCourses(Integer current, Integer size) {
         Page<Course> page = new Page<>(current, size);
         return page(page);

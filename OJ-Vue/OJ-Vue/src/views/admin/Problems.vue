@@ -300,25 +300,25 @@ onMounted(() => {
 <style scoped>
 .problems-container {
   padding: 24px;
-  background: #f0f2f5;
+  background: var(--bg-color-mute);
 }
 
 .search-bar {
   margin-bottom: 16px;
-  background: #fff;
+  background: var(--color-background);
   padding: 16px;
   border-radius: 4px;
 }
 
 .operation-bar {
   margin-bottom: 16px;
-  background: #fff;
+  background: var(--color-background);
   padding: 16px;
   border-radius: 4px;
 }
 
 :deep(.ant-table-wrapper) {
-  background: #fff;
+  background: var(--color-background);
   padding: 16px;
   border-radius: 4px;
 }
@@ -329,7 +329,7 @@ onMounted(() => {
 }
 
 :deep(.ant-table-row:hover) {
-  background: #f5f5f5;
+  background: var(--bg-color-mute);
 }
 
 :deep(.ant-form-item) {

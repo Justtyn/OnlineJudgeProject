@@ -33,5 +33,11 @@ export default defineConfig({
                 // rewrite: (path) => path.replace(/^\/api/, '')
             }
         }
+    },
+    preview: {
+        allowedHosts: [
+            'c6d5f828.natappfree.cc'  // ← 把你的 natapp 域名放这里
+        ],
+        port: 4173 // 可保持默认或改为你的预览端口
     }
 })

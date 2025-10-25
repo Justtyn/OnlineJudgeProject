@@ -70,6 +70,7 @@
         <router-link to="/register" class="register-link">注册</router-link>
         <span class="divider">|</span>
         <a href="javascript:;" class="reset-link" @click="showResetDialog">忘记密码？</a>
+        <br>测试账号 & 密码：student &nbsp;&nbsp;&nbsp;
       </div>
     </div>
 
@@ -225,7 +226,15 @@ const login = async () => {
       );
       ElMessage.success(res.data.msg || "登录成功");
       try {
-        await router.push("/");
+        // 根据用户角色决定跳转页面
+        const userData = res.data.data;
+        if (userData.role === 'ADMIN') {
+          await router.push("/admin/dashboard");
+        } else if (userData.role === 'TEACHER') {
+          await router.push("/admin/dashboard");
+        } else {
+          await router.push("/");
+        }
       } catch (err) {
         ElMessage.error("页面跳转失败，请刷新重试");
       }
@@ -363,7 +372,7 @@ body {
   width: 100px;
   height: 38px;
   cursor: pointer;
-  border: 1px solid #dcdfe6;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
 }
 .captcha-img:hover {
@@ -376,36 +385,36 @@ body {
     padding: 20px;
     margin-bottom: 100px;
   }
-  
+
   .login-form {
     padding: 0 20px;
   }
-  
+
   .login-text {
     font-size: 24px;
     margin-bottom: 20px;
   }
-  
+
   .welcome-text {
     height: 60px;
     margin-bottom: 20px;
   }
-  
+
   .register-text {
     margin-top: 20px;
     font-size: 14px;
   }
-  
+
   .captcha-wrapper {
     display: flex;
     align-items: center;
     gap: 10px;
   }
-  
+
   .captcha-input {
     margin-right: 0;
   }
-  
+
   .captcha-img {
     width: 80px;
     height: 32px;
@@ -414,7 +423,7 @@ body {
 
 .divider {
   margin: 0 10px;
-  color: #999;
+  color: var(--color-text);
 }
 
 .reset-link {

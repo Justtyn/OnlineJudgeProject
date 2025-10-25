@@ -81,6 +81,14 @@ public interface SolutionService extends IService<Solution> {
      * @return 最受欢迎的题解列表
      */
     List<Map<String, Object>> getMostLikedSolutions(int limit);
+    
+    /**
+     * 编辑题解内容
+     * @param id 题解ID
+     * @param content 新的题解内容
+     * @return 是否编辑成功
+     */
+    boolean editSolution(Integer id, String content);
 
     /**
      * 获取题解语言分布

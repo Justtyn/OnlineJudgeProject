@@ -280,7 +280,7 @@ onUnmounted(() => {
   position: relative;
   z-index: 2;
   transition: all 0.3s ease;
-  background: #ffffff;
+  background: var(--color-background);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   overflow: hidden;
@@ -318,7 +318,7 @@ onUnmounted(() => {
 .problem-card {
   cursor: pointer;
   transition: all 0.3s ease;
-  background: #ffffff;
+  background: var(--color-background);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   position: relative;
@@ -367,7 +367,7 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
-  background: #f8f9fa;
+  background: var(--bg-color-soft);
   border-radius: 12px 12px 0 0;
   position: relative;
   overflow: hidden;
@@ -418,7 +418,7 @@ onUnmounted(() => {
   color: #6c757d;
   font-weight: 500;
   padding: 8px 16px;
-  background: #ffffff;
+  background: var(--color-background);
   border-radius: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;

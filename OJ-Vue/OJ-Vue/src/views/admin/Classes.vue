@@ -1,7 +1,7 @@
 <template>
-  <page-layout 
-    title="课程管理" 
-    :show-back="false"
+  <page-layout
+      title="班级管理"
+      :show-back="false"
   >
     <div class="classes-container">
       <!-- 统计卡片 -->
@@ -10,10 +10,12 @@
           <el-card shadow="hover" class="stat-card">
             <div class="stat-content">
               <div class="stat-icon">
-                <el-icon :size="32"><Document /></el-icon>
+                <el-icon :size="32">
+                  <Document/>
+                </el-icon>
               </div>
               <div class="stat-info">
-                <div class="stat-title">课程总数</div>
+                <div class="stat-title">班级总数</div>
                 <div class="stat-value">{{ totalCourses }}</div>
               </div>
             </div>
@@ -24,7 +26,9 @@
           <el-card shadow="hover" class="stat-card">
             <div class="stat-content">
               <div class="stat-icon" style="background-color: rgba(103, 194, 58, 0.1); color: #67C23A;">
-                <el-icon :size="32"><HomeFilled /></el-icon>
+                <el-icon :size="32">
+                  <HomeFilled/>
+                </el-icon>
               </div>
               <div class="stat-info">
                 <div class="stat-title">作业总数</div>
@@ -38,29 +42,34 @@
       <div class="operation-bar">
         <div class="left-operations">
           <a-button type="primary" @click="handleAdd">
-            新增课程
+            新增班级
           </a-button>
           <a-button @click="handleRefresh">
-            <template #icon><ReloadOutlined /></template>
+            <template #icon>
+              <ReloadOutlined/>
+            </template>
             刷新
           </a-button>
         </div>
         <div class="right-operations">
           <a-button @click="toggleDisplayMode">
-            <template #icon><AppstoreOutlined v-if="displayMode === 'list'" /><BarsOutlined v-else /></template>
+            <template #icon>
+              <AppstoreOutlined v-if="displayMode === 'list'"/>
+              <BarsOutlined v-else/>
+            </template>
             {{ displayMode === 'list' ? '卡片模式' : '列表模式' }}
           </a-button>
         </div>
       </div>
-      
+
       <!-- 列表模式 -->
       <a-table
-        v-if="displayMode === 'list'"
-        :columns="columns"
-        :data-source="classList"
-        :loading="loading"
-        :pagination="pagination"
-        @change="handleTableChange"
+          v-if="displayMode === 'list'"
+          :columns="columns"
+          :data-source="classList"
+          :loading="loading"
+          :pagination="pagination"
+          @change="handleTableChange"
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'action'">
@@ -68,8 +77,8 @@
               <a-button type="link" @click="handleEdit(record)">编辑</a-button>
               <a-button type="link" @click="handleViewDetail(record)">查看</a-button>
               <a-popconfirm
-                title="确定要删除这个课程吗？"
-                @confirm="handleDelete(record.id)"
+                  title="确定要删除这个班级吗？"
+                  @confirm="handleDelete(record.id)"
               >
                 <a-button type="link" danger>删除</a-button>
               </a-popconfirm>
@@ -98,8 +107,8 @@
                     <a-button type="link" @click="handleEdit(item)">编辑</a-button>
                     <a-button type="link" @click="handleViewDetail(item)">查看</a-button>
                     <a-popconfirm
-                      title="确定要删除这个课程吗？"
-                      @confirm="handleDelete(item.id)"
+                        title="确定要删除这个班级吗？"
+                        @confirm="handleDelete(item.id)"
                     >
                       <a-button type="link" danger>删除</a-button>
                     </a-popconfirm>
@@ -114,21 +123,21 @@
 
     <!-- 添加/编辑对话框 -->
     <a-modal
-      v-model:visible="modalVisible"
-      :title="modalTitle"
-      @ok="handleModalOk"
-      @cancel="handleModalCancel"
-      :confirmLoading="modalLoading"
+        v-model:visible="modalVisible"
+        :title="modalTitle"
+        @ok="handleModalOk"
+        @cancel="handleModalCancel"
+        :confirmLoading="modalLoading"
     >
       <a-form
-        ref="formRef"
-        :model="formState"
-        :rules="rules"
-        :label-col="{ span: 6 }"
-        :wrapper-col="{ span: 16 }"
+          ref="formRef"
+          :model="formState"
+          :rules="rules"
+          :label-col="{ span: 6 }"
+          :wrapper-col="{ span: 16 }"
       >
-        <a-form-item label="课程名称" name="name">
-          <a-input v-model:value="formState.name" />
+        <a-form-item label="班级名称" name="name">
+          <a-input v-model:value="formState.name"/>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -136,14 +145,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { message } from 'ant-design-vue'
-import { Document, HomeFilled } from '@element-plus/icons-vue'
+import {ref, onMounted} from 'vue'
+import {message} from 'ant-design-vue'
+import {Document, HomeFilled} from '@element-plus/icons-vue'
 import PageLayout from '@/components/layout/PageLayout.vue'
-import type { FormInstance } from 'ant-design-vue'
+import type {FormInstance} from 'ant-design-vue'
 import request from '@/utils/request'
-import { useRouter } from 'vue-router'
-import { ReloadOutlined, AppstoreOutlined, BarsOutlined } from '@ant-design/icons-vue'
+import {useRouter} from 'vue-router'
+import {ReloadOutlined, AppstoreOutlined, BarsOutlined} from '@ant-design/icons-vue'
 
 interface Course {
   id: number
@@ -155,13 +164,13 @@ interface Course {
 // 表格列定义
 const columns = [
   {
-    title: '课程ID',
+    title: '班级ID',
     dataIndex: 'id',
     key: 'id',
     width: 100,
   },
   {
-    title: '课程名称',
+    title: '班级名称',
     dataIndex: 'name',
     key: 'name',
   },
@@ -183,7 +192,7 @@ const pagination = ref({
 
 // 表单相关
 const modalVisible = ref(false)
-const modalTitle = ref('新增课程')
+const modalTitle = ref('新增班级')
 const modalLoading = ref(false)
 const formRef = ref<FormInstance>()
 const formState = ref<Partial<Course>>({
@@ -193,8 +202,8 @@ const formState = ref<Partial<Course>>({
 // 表单验证规则
 const rules = {
   name: [
-    { required: true, message: '请输入课程名称', trigger: 'blur' },
-    { min: 2, max: 50, message: '课程名称长度应在 2-50 个字符之间', trigger: 'blur' }
+    {required: true, message: '请输入班级名称', trigger: 'blur'},
+    {min: 2, max: 50, message: '班级名称长度应在 2-50 个字符之间', trigger: 'blur'}
   ]
 }
 
@@ -217,22 +226,22 @@ const handleRefresh = () => {
 // 新增：随机背景色
 const getRandomColor = (index: number) => {
   const colors = [
-    '#e6f7ff', // 浅蓝
-    '#f6ffed', // 浅绿
-    '#fff7e6', // 浅橙
-    '#fff0f6', // 浅粉
-    '#f9f0ff', // 浅紫
-    '#e6fffb', // 浅青
+    'var(--bg-color-soft)', // 浅蓝
+    'var(--bg-color-soft)', // 浅绿
+    'var(--color-background)7e6', // 浅橙
+    'var(--color-background)0f6', // 浅粉
+    'var(--bg-color-soft)', // 浅紫
+    'var(--bg-color-soft)', // 浅青
   ]
   return colors[index % colors.length]
 }
 
 // 从 localStorage 中获取登录信息
-const localUser = localStorage.getItem('student-user') 
-  ? JSON.parse(localStorage.getItem('student-user'))
-  : localStorage.getItem('admin-user')
-    ? JSON.parse(localStorage.getItem('admin-user'))
-    : null;
+const localUser = localStorage.getItem('student-user')
+    ? JSON.parse(localStorage.getItem('student-user'))
+    : localStorage.getItem('admin-user')
+        ? JSON.parse(localStorage.getItem('admin-user'))
+        : null;
 
 const token = localUser ? localUser.token : '';
 const userId = localUser ? localUser.id : null;
@@ -252,22 +261,22 @@ const getCurrentUserId = () => {
   return userId;
 }
 
-// 获取课程列表
+// 获取班级列表
 const fetchCourses = async () => {
   loading.value = true
   try {
-    const [coursesResponse, homeworksResponse] = await Promise.all([
+    const [coursesResponse, overviewResponse] = await Promise.all([
       request.get('/courses', {
         params: {
           current: pagination.value.current,
           size: pagination.value.pageSize
         }
       }),
-      request.get('/homework/count') // 假设有这个接口获取作业总数
+      request.get('/analysis/overview') // 使用与Overview页面相同的接口获取作业总数
     ])
-    
+
     if (coursesResponse.data.success) {
-      const { records, total, current, size } = coursesResponse.data.data
+      const {records, total, current, size} = coursesResponse.data.data
       classList.value = records
       pagination.value = {
         current: current,
@@ -277,8 +286,8 @@ const fetchCourses = async () => {
       totalCourses.value = total
     }
 
-    if (homeworksResponse.data.success) {
-      totalHomeworks.value = homeworksResponse.data.data
+    if (overviewResponse.data.code === '200') {
+      totalHomeworks.value = overviewResponse.data.data.totalHomeworks
     }
   } catch (error) {
     console.error('获取数据失败:', error)
@@ -288,19 +297,19 @@ const fetchCourses = async () => {
   }
 }
 
-// 添加课程
+// 添加班级
 const handleAdd = () => {
-  modalTitle.value = '新增课程'
+  modalTitle.value = '新增班级'
   formState.value = {
     name: ''
   }
   modalVisible.value = true
 }
 
-// 编辑课程
+// 编辑班级
 const handleEdit = (record: Course) => {
-  modalTitle.value = '编辑课程'
-  formState.value = { ...record }
+  modalTitle.value = '编辑班级'
+  formState.value = {...record}
   modalVisible.value = true
 }
 
@@ -317,7 +326,7 @@ const handleViewDetail = (record: Course) => {
   })
 }
 
-// 删除课程
+// 删除班级
 const handleDelete = async (id: number) => {
   try {
     const response = await request.delete(`/courses/${id}`)
@@ -354,8 +363,18 @@ const handleModalOk = () => {
         name: formState.value.name,
         creatorId: currentUserId
       }
-      const response = await request.post('/courses', payload)
       
+      // 根据是否有ID判断是新增还是编辑
+      let response
+      if (formState.value.id) {
+        // 编辑操作：使用PUT请求
+        payload.id = formState.value.id
+        response = await request.put('/courses', payload)
+      } else {
+        // 新增操作：使用POST请求
+        response = await request.post('/courses', payload)
+      }
+
       if (response.data.success) {
         message.success(response.data.message || (formState.value.id ? '编辑成功' : '添加成功'))
         modalVisible.value = false
@@ -484,15 +503,15 @@ onMounted(() => {
   .classes-container {
     padding: 12px;
   }
-  
+
   .stat-content {
     padding: 12px;
   }
-  
+
   .stat-icon {
     padding: 12px;
   }
-  
+
   .stat-value {
     font-size: 20px;
   }

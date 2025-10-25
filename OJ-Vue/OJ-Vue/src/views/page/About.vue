@@ -375,7 +375,7 @@ export default {
 .page-title {
   text-align: center;
   margin-bottom: 30px;
-  color: #333;
+  color: var(--color-heading);
   font-weight: 600;
   animation: slideIn 0.8s ease-out;
   position: relative;
@@ -398,7 +398,7 @@ export default {
 
 .accordion-item {
   margin-bottom: 15px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-text);
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
@@ -443,7 +443,7 @@ export default {
 }
 
 .accordion-header.active {
-  background-color: #f0f0f0;
+  background-color: var(--bg-color-mute);
 }
 
 .color-bar {
@@ -489,7 +489,7 @@ export default {
   font-size: 18px;
   font-weight: 500;
   transition: all 0.3s ease;
-  color: #000; /* 设置文字为黑色 */
+  color: var(--color-heading); /* 设置文字为黑色 */
 }
 
 .accordion-header:hover h2 {
@@ -504,7 +504,7 @@ export default {
 .accordion-icon {
   font-size: 24px;
   font-weight: bold;
-  color: #666;
+  color: var(--color-text);
   transition: transform 0.3s ease, color 0.3s ease;
 }
 
@@ -513,18 +513,18 @@ export default {
 }
 
 .accordion-header.active .accordion-icon {
-  color: #333;
+  color: var(--color-heading);
   transform: rotate(360deg);
 }
 
 .accordion-content {
   padding: 0;
   max-height: 0;
-  background-color: #fff;
+  background-color: var(--color-background);
   overflow: hidden;
   transition: all 0.3s ease;
   opacity: 0;
-  color: #000; /* 设置内容文字为黑色 */
+  color: var(--color-heading); /* 设置内容文字为黑色 */
 }
 
 .accordion-content.active {
@@ -533,7 +533,7 @@ export default {
   max-height: 400px; /* 设置一个固定高度 */
   overflow-y: auto; /* 添加垂直滚动条 */
   opacity: 1;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--color-text);
 }
 
 /* 状态列表样式 */
@@ -554,7 +554,7 @@ export default {
 }
 
 .status-item:hover {
-  background-color: #f5f5f5;
+  background-color: var(--bg-color-mute);
   transform: translateX(5px);
 }
 
@@ -598,7 +598,7 @@ export default {
 }
 
 .status-pending {
-  background-color: #f0f2f5;
+  background-color: var(--bg-color-mute);
   color: #909399;
   border: 1px solid #d3d4d6;
 }
@@ -622,7 +622,7 @@ export default {
   align-items: flex-start;
   gap: 20px;
   padding: 20px;
-  background: #fff;
+  background: var(--color-background);
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
@@ -650,14 +650,14 @@ export default {
 
 .guide-content h3 {
   margin: 0 0 10px 0;
-  color: #333;
+  color: var(--color-heading);
   font-size: 1.2em;
   font-weight: 600;
 }
 
 .guide-content p {
   margin: 0;
-  color: #666;
+  color: var(--color-text);
   line-height: 1.6;
 }
 
@@ -694,7 +694,7 @@ export default {
   align-items: center;
   text-align: center;
   padding: 20px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-text);
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
   transition: all 0.3s ease;
@@ -761,12 +761,12 @@ export default {
   font-size: 18px;
   font-weight: 500;
   margin-bottom: 10px;
-  color: #333;
+  color: var(--color-heading);
 }
 
 .feature-desc {
   text-align: center;
-  color: #666;
+  color: var(--color-text);
   line-height: 1.6;
 }
 
@@ -782,12 +782,12 @@ export default {
   align-items: flex-start;
   gap: 15px;
   padding: 10px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-text);
   transition: all 0.3s ease;
 }
 
 .contact-item:hover {
-  background-color: #f5f5f5;
+  background-color: var(--bg-color-mute);
   transform: translateX(5px);
 }
 
@@ -854,7 +854,7 @@ export default {
 /* 自定义滚动条样式 */
 .accordion-content.active::-webkit-scrollbar {
   width: 8px;
-  background: #f1f1f1;
+  background: var(--bg-color-mute);
   border-radius: 4px;
 }
 
@@ -939,7 +939,7 @@ export default {
 }
 
 .resource-category {
-  background-color: #f8f9fa;
+  background-color: var(--bg-color-soft);
   border-radius: 8px;
   padding: 15px;
   transition: all 0.3s ease;
@@ -954,11 +954,11 @@ export default {
 }
 
 .resource-category h3 {
-  color: #333;
+  color: var(--color-heading);
   margin-top: 0;
   margin-bottom: 15px;
   font-size: 18px;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid var(--border-color);
   padding-bottom: 8px;
 }
 
@@ -967,7 +967,7 @@ export default {
 }
 
 .resource-group h4 {
-  color: #666;
+  color: var(--color-text);
   margin: 10px 0;
   font-size: 16px;
 }

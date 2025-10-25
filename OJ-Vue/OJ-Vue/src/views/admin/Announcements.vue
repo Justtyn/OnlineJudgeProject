@@ -230,7 +230,16 @@ const handleSubmit = async () => {
   await formRef.value.validate(async (valid) => {
     if (valid) {
       try {
-        const response = await request.post('/announcement', form.value)
+        let response
+        if (dialogType.value === 'add') {
+          // 添加公告时，不发送 id 字段
+          const { id, ...announcementData } = form.value
+          response = await request.post('/announcement', announcementData)
+        } else {
+          // 编辑公告时，发送完整数据包括 id
+          response = await request.put('/announcement', form.value)
+        }
+        
         const { code, msg } = response.data
         if (code === '200') {
           ElMessage.success(dialogType.value === 'add' ? '添加成功' : '编辑成功')

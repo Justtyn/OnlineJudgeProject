@@ -23,7 +23,7 @@ async function loadData() {
         left: 'center',
         top: 20,
         textStyle: {
-          color: '#333',
+          color: 'var(--color-heading)',
           fontSize: 14,
           fontWeight: 'normal'
         }
@@ -32,7 +32,7 @@ async function loadData() {
         left: 'center',
         top: 50,
         textStyle: {
-          color: '#666',
+          color: 'var(--color-text)',
           fontSize: 12
         }
       }],
@@ -45,7 +45,7 @@ async function loadData() {
         right: 10,
         top: 'middle',
         textStyle: {
-          color: '#666',
+          color: 'var(--color-text)',
           fontSize: 12
         }
       },
@@ -61,7 +61,7 @@ async function loadData() {
           show: true,
           position: 'outside',
           formatter: '{b}\n{d}%',
-          color: '#333',
+          color: 'var(--color-heading)',
           fontSize: 12,
           fontWeight: 'bold'
         },
@@ -70,12 +70,12 @@ async function loadData() {
           length: 10,
           length2: 10,
           lineStyle: {
-            color: '#999'
+            color: 'var(--color-text)'
           }
         },
         itemStyle: {
           borderRadius: 4,
-          borderColor: '#fff',
+          borderColor: 'var(--color-background)',
           borderWidth: 2
         },
         emphasis: {

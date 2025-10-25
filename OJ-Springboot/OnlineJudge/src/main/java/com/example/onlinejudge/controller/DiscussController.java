@@ -71,4 +71,11 @@ public class DiscussController {
         List<Discuss> list = discussService.selectByTitle(title);
         return Result.success(list);
     }
+
+    @ApiOperation("根据题目ID搜索讨论")
+    @GetMapping("/problem/{problemId}")
+    public Result searchByProblemId(@ApiParam("题目ID") @PathVariable Integer problemId) {
+        List<Discuss> list = discussService.selectByProblemId(problemId);
+        return Result.success(list);
+    }
 }

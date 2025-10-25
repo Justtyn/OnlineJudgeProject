@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,6 +30,13 @@ public class AnnouncementController {
     @PostMapping
     public Result<?> save(@ApiParam("公告信息") @RequestBody Announcement announcement) {
         announcementService.save(announcement);
+        return Result.success();
+    }
+
+    @ApiOperation("更新公告")
+    @PutMapping
+    public Result<?> update(@ApiParam("公告信息") @RequestBody Announcement announcement) {
+        announcementService.updateById(announcement);
         return Result.success();
     }
 

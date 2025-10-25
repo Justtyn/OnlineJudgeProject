@@ -1,5 +1,5 @@
 import axios from 'axios' // 导入axios HTTP请求库
-import { ElMessage } from 'element-plus' // 导入Element Plus的消息提示组件
+import { ElMessage, ElMessageBox } from 'element-plus' // 导入Element Plus的消息提示和消息框组件
 import router from '../router' // 导入Vue路由实例
 
 /**
@@ -20,8 +20,11 @@ const service = axios.create({
  * 例如：添加token、修改请求参数等
  */
 service.interceptors.request.use(config => {
-    // 从localStorage获取token
-    const token = localStorage.getItem('token')
+    // 从localStorage获取用户信息，然后提取token
+    const userStr = localStorage.getItem('student-user');
+    const user = userStr ? JSON.parse(userStr) : null;
+    const token = user ? user.token : null;
+
     if (token) {
         config.headers['Authorization'] = 'Bearer ' + token
     }
@@ -43,10 +46,21 @@ service.interceptors.response.use(
         if (error.response) {
             switch (error.response.status) {
                 case 401:
-                    // token失效，清除本地token并跳转到登录页
-                    localStorage.removeItem('token')
-                    ElMessage.error('登录已过期，请重新登录')
-                    router.push('/login')
+                    // token失效，清除本地用户数据
+                    localStorage.removeItem('student-user')
+
+                    // 显示过期提醒弹窗
+                    ElMessageBox.alert('登录已过期，请重新登录', '登录过期', {
+                        confirmButtonText: '重新登录',
+                        type: 'warning',
+                        showClose: false,
+                        closeOnClickModal: false,
+                        closeOnPressEscape: false
+                    }).then(() => {
+                        router.push('/login')
+                    }).catch(() => {
+                        router.push('/login')
+                    })
                     break
                 default:
                     ElMessage.error(error.response.data.message || '请求失败')

@@ -415,17 +415,24 @@ const fetchDiscussions = async () => {
   try {
     let response
     if (queryForm.problemId) {
-      response = await request.get(`/discuss/${queryForm.problemId}`)
+      // 按题目ID搜索讨论
+      response = await request.get(`/discuss/problem/${queryForm.problemId}`)
       if (response.data.code === '200') {
-        const discuss = response.data.data
-        const userInfo = await getUserInfo(discuss.userId)
-        discussionList.value = [{
-          ...discuss,
-          username: userInfo ? userInfo.username : '未知用户'
-        }]
-        pagination.value.total = 1
+        const discussList = response.data.data
+        const discussWithUserInfo = await Promise.all(
+          discussList.map(async (discuss: Discussion) => {
+            const userInfo = await getUserInfo(discuss.userId)
+            return {
+              ...discuss,
+              username: userInfo ? userInfo.username : '未知用户'
+            }
+          })
+        )
+        discussionList.value = discussWithUserInfo
+        pagination.value.total = discussList.length
       }
     } else if (queryForm.title) {
+      // 按标题搜索讨论
       response = await request.get('/discuss/search', {
         params: { title: queryForm.title }
       })
@@ -444,6 +451,7 @@ const fetchDiscussions = async () => {
         pagination.value.total = discussList.length
       }
     } else {
+      // 分页查询所有讨论
       response = await request.get('/discuss/page', {
         params: {
           pageNum: pagination.value.current,
@@ -786,7 +794,7 @@ onMounted(() => {
 
 .nested-comment-item {
   padding: 12px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--bg-color-mute);
 }
 
 .nested-comment-item:last-child {
@@ -801,7 +809,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 16px;
-  color: #999;
+  color: var(--color-text);
   font-size: 12px;
 }
 
@@ -826,9 +834,9 @@ onMounted(() => {
 .comment-node {
   margin-bottom: 16px;
   padding: 12px;
-  background: #fff;
+  background: var(--color-background);
   border-radius: 4px;
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--bg-color-mute);
 }
 
 .comment-node.level-0 {
@@ -865,7 +873,7 @@ onMounted(() => {
 }
 
 .comment-time {
-  color: #999;
+  color: var(--color-text);
   font-size: 12px;
   flex: 1;
 }
@@ -876,7 +884,7 @@ onMounted(() => {
 }
 
 .comment-text {
-  color: #333;
+  color: var(--color-heading);
   line-height: 1.5;
   word-break: break-word;
 }

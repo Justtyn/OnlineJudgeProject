@@ -410,7 +410,7 @@ onMounted(async () => {
 }
 
 .user-avatar {
-  border: 2px solid #fff;
+  border: 2px solid var(--color-background);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -421,7 +421,7 @@ onMounted(async () => {
 .content-section {
   margin: 20px 0;
   padding: 20px;
-  background: #fff;
+  background: var(--color-background);
   border-radius: 4px;
   box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
 }
@@ -465,7 +465,7 @@ onMounted(async () => {
   right: 0;
   margin: 0;
   padding: 20px;
-  background: #fff;
+  background: var(--color-background);
   box-shadow: 0 -2px 12px 0 rgba(0,0,0,0.1);
   z-index: 1000;
 }

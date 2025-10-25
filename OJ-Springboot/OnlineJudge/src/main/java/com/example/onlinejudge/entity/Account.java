@@ -7,6 +7,9 @@ import io.swagger.annotations.ApiModelProperty;
 @Data
 @ApiModel(description = "账户基础实体")
 public class Account {
+    @ApiModelProperty("用户ID")
+    private Integer id;
+    
     @ApiModelProperty("用户名")
     private String username;
     

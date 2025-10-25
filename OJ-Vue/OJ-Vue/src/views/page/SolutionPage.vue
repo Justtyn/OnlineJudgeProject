@@ -671,7 +671,7 @@ const handleLike = async (id) => {
 
 :deep(.el-card__header) {
   padding: 15px 20px;
-  background: linear-gradient(to right, #f0f9ff, #e6f7ff);
+  background: linear-gradient(to right, #f0f9ff, var(--bg-color-soft));
   border-bottom: 2px solid #1890ff;
 }
 
@@ -707,7 +707,7 @@ const handleLike = async (id) => {
   color: #606266;
   padding: 6px 12px;
   border-radius: 20px;
-  background: linear-gradient(45deg, #f0f9ff, #e6f7ff);
+  background: linear-gradient(45deg, #f0f9ff, var(--bg-color-soft));
   box-shadow: 0 2px 8px rgba(24, 144, 255, 0.1);
   transition: all 0.3s ease;
 }
@@ -755,7 +755,7 @@ const handleLike = async (id) => {
 }
 
 .user-avatar {
-  border: 2px solid #fff;
+  border: 2px solid var(--color-background);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   border-radius: 6px;
   transition: all 0.3s ease;
@@ -770,7 +770,7 @@ const handleLike = async (id) => {
   margin-left: 16px;
   font-size: 14px;
   font-weight: bold;
-  color: #333;
+  color: var(--color-heading);
   transition: all 0.3s ease;
 }
 
@@ -802,7 +802,7 @@ const handleLike = async (id) => {
 .code-editor-container {
   height: 400px;
   width: 100%;
-  border: 1px solid #dcdfe6;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   margin-bottom: 20px;
   overflow: hidden;

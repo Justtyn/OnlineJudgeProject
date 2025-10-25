@@ -478,6 +478,7 @@ const showChangePassword = () => {
   display: flex;
   align-items: center;
   position: absolute;
+  width: 360px;
   top: 50%; /* 使用 top: 50% 实现垂直居中 */
   transform: translateY(-50%); /* 配合 top: 50% 实现精确垂直居中 */
   left: 40px;

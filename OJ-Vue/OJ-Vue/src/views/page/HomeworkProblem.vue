@@ -4,6 +4,17 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElLoading } from 'element-plus'
 import request from "@/utils/request.js"
 
+// 获取用户信息并检查是否是管理员
+const isAdmin = computed(() => {
+  const localUser = localStorage.getItem('student-user')
+    ? JSON.parse(localStorage.getItem('student-user'))
+    : localStorage.getItem('admin-user')
+      ? JSON.parse(localStorage.getItem('admin-user'))
+      : null;
+  
+  return localUser && localUser.role === 'ADMIN';
+});
+
 const route = useRoute()
 const router = useRouter()
 const homeworkId = route.params.id
@@ -328,7 +339,7 @@ onMounted(() => {
             <el-button 
               type="primary" 
               @click="handleAddButtonClick"
-              :disabled="isHomeworkEnded"
+              :disabled="isHomeworkEnded || !isAdmin"
             >
               <el-icon><Plus /></el-icon>
               添加题目

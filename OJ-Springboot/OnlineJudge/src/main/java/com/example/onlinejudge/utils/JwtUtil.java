@@ -15,6 +15,7 @@ public class JwtUtil {
     // Token 过期时间，例如 1 天（毫秒）
     // 这里设置了 Token 的过期时间为 24 小时，单位为毫秒。
     private static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000;
+//    private static final long EXPIRATION_TIME = 1000;
 
     // 生成 token（这里可以加入更多 payload 信息，如用户角色、ID 等）
     // 该方法根据给定的用户名生成一个 JWT Token。Token 中包含了用户名和过期时间等信息，且通过 SECRET_KEY 进行签名。

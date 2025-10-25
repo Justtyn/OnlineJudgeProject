@@ -254,7 +254,7 @@ const avatarSize = ref('large');
 .profile-page {
   max-width: 1100px;
   margin: 0 auto;
-  background-color: #fff;
+  background-color: var(--color-background);
   height: 80vh;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 100%;
@@ -287,7 +287,7 @@ const avatarSize = ref('large');
   width: 120px !important;
   height: 120px !important;
   border-radius: 8px;
-  border: 3px solid #fff;
+  border: 3px solid var(--color-background);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   cursor: pointer;
 }
@@ -300,7 +300,7 @@ const avatarSize = ref('large');
   font-size: 24px;
   font-weight: bold;
   margin: 0;
-  color: #333;
+  color: var(--color-heading);
   word-break: break-word;
 }
 
@@ -318,7 +318,7 @@ const avatarSize = ref('large');
   grid-template-columns: repeat(2, 1fr);
   gap: 15px;
   padding: 15px;
-  background-color: #f8f9fa;
+  background-color: var(--bg-color-soft);
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
 }
@@ -328,7 +328,7 @@ const avatarSize = ref('large');
   align-items: center;
   margin-bottom: 0;
   padding: 10px;
-  background-color: #fff;
+  background-color: var(--color-background);
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
@@ -342,13 +342,13 @@ const avatarSize = ref('large');
 .info-label {
   width: 100px;
   font-size: 14px;
-  color: #666;
+  color: var(--color-text);
   font-weight: 500;
 }
 
 .info-value {
   font-size: 14px;
-  color: #333;
+  color: var(--color-heading);
   flex: 1;
   word-break: break-word;
 }
@@ -363,7 +363,7 @@ const avatarSize = ref('large');
   height: 200px;
   border-radius: 8px;
   object-fit: cover;
-  border: 2px solid #fff;
+  border: 2px solid var(--color-background);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
@@ -489,7 +489,7 @@ const avatarSize = ref('large');
 
 .golden-badge {
   background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-  color: #fff;
+  color: var(--color-background);
   padding: 6px 16px;
   border-radius: 20px;
   font-size: 14px;

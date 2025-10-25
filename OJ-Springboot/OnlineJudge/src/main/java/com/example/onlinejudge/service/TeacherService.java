@@ -93,3 +93,4 @@ public interface TeacherService {
     // 获取指定时间段内新注册的教师数
     long getNewTeacherCount(LocalDate startDate, LocalDate endDate);
 }
+

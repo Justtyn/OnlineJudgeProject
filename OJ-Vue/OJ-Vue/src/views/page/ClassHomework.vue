@@ -104,7 +104,7 @@ const handleRefresh = () => {
 // 随机生成背景颜色
 const getRandomColor = (index) => {
   const colors = [
-    '#e6f7ff', '#f6ffed', '#fff7e6', '#fff0f6', '#f9f0ff', '#e6fffb'
+    'var(--bg-color-soft)', 'var(--bg-color-soft)', 'var(--color-background)7e6', 'var(--color-background)0f6', 'var(--bg-color-soft)', 'var(--bg-color-soft)'
   ]
   return colors[index % colors.length]
 }

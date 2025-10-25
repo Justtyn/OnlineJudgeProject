@@ -8,6 +8,7 @@
           <el-radio-button label="7">近七日</el-radio-button>
           <el-radio-button label="30">近一月</el-radio-button>
           <el-radio-button label="365">近一年</el-radio-button>
+          <el-radio-button label="3000">全部</el-radio-button>
         </el-radio-group>
       </div>
     </template>
@@ -40,7 +41,7 @@ let chart = null
 // 日期范围
 const dateRange = ref(['', ''])
 // 快速选择
-const quickSelect = ref('7')
+const quickSelect = ref('3000')
 
 // 处理快速选择
 function handleQuickSelect(days) {
@@ -88,9 +89,9 @@ async function loadData() {
       xAxis: {
         type: 'category',
         data: categories,
-        axisLine: { lineStyle: { color: '#888' } },
+        axisLine: { lineStyle: { color: 'var(--color-text)' } },
         axisLabel: { 
-          color: '#333',
+          color: 'var(--color-heading)',
           fontSize: 12
         }
       },
@@ -98,13 +99,13 @@ async function loadData() {
         type: 'value',
         name: '数量',
         nameTextStyle: {
-          color: '#666',
+          color: 'var(--color-text)',
           fontSize: 12
         },
-        axisLine: { lineStyle: { color: '#888' } },
-        splitLine: { lineStyle: { color: '#eee' } },
+        axisLine: { lineStyle: { color: 'var(--color-text)' } },
+        splitLine: { lineStyle: { color: 'var(--color-text)' } },
         axisLabel: { 
-          color: '#333',
+          color: 'var(--color-heading)',
           fontSize: 12
         }
       },
@@ -123,7 +124,7 @@ async function loadData() {
         label: {
           show: true,
           position: 'top',
-          color: '#666',
+          color: 'var(--color-text)',
           fontSize: 12
         }
       }]
@@ -135,7 +136,7 @@ onMounted(() => {
   // 初始化图表实例
   chart = echarts.init(chartRef.value)
   // 默认显示近7天
-  handleQuickSelect(7)
+  handleQuickSelect(3000)
   window.addEventListener('resize', () => chart.resize())
 })
 
@@ -164,6 +165,6 @@ onBeforeUnmount(() => {
   justify-content: center;
   padding: 15px;
   background-color: #f5f7fa;
-  border-top: 1px solid #ebeef5;
+  border-top: 1px solid var(--border-color);
 }
 </style>

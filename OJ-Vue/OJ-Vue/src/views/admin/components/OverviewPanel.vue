@@ -48,7 +48,7 @@ onMounted(loadOverview)
   margin-bottom: 20px;
 }
 .stat-card {
-  background: #ffffff;
+  background: var(--color-background);
   border-left: 5px solid #409EFF;
   transition: all 0.3s;
   height: 100%;
@@ -61,7 +61,7 @@ onMounted(loadOverview)
 }
 .stat-card :deep(.el-card__header) {
   padding: 15px 20px;
-  border-bottom: 1px solid #ebeef5;
+  border-bottom: 1px solid var(--border-color);
   background: #f5f7fa;
 }
 .stat-card :deep(.el-card__body) {

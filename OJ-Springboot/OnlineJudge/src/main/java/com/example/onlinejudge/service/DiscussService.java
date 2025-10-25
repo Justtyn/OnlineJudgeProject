@@ -52,6 +52,12 @@ public interface DiscussService {
      */
     List<Discuss> selectByTitle(String title);
 
+    /**
+     * 根据题目ID查询讨论列表
+     * @param problemId 题目ID
+     */
+    List<Discuss> selectByProblemId(Integer problemId);
+
     // 获取讨论总数
     long count();
 

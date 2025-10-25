@@ -25,7 +25,7 @@ const chartRef = ref(null)
 let chart = null
 
 async function initChart() {
-  const res = await request.get('/stats/user/registration-trend?days=30')
+  const res = await request.get('/stats/user/registration-trend?days=3000')
   const arr = res.data.data || []
   const labels = arr.map(item => item.date)
   const counts = arr.map(item => item.count)
@@ -71,9 +71,9 @@ async function initChart() {
           mode: 'index',
           intersect: false,
           backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          titleColor: '#333',
-          bodyColor: '#666',
-          borderColor: '#ddd',
+          titleColor: 'var(--color-heading)',
+          bodyColor: 'var(--color-text)',
+          borderColor: 'var(--color-text)',
           borderWidth: 1
         }
       }

@@ -210,4 +210,25 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     public long getSolutionCount() {
         return count();
     }
+    
+    @Override
+    public boolean editSolution(Integer id, String content) {
+        Solution solution = getById(id);
+        if (solution == null) {
+            log.error("题解不存在，ID: {}", id);
+            return false;
+        }
+        
+        // 只更新题解内容，其他字段保持不变
+        solution.setContent(content);
+        boolean result = updateById(solution);
+        
+        if (result) {
+            log.info("题解编辑成功，ID: {}", id);
+        } else {
+            log.error("题解编辑失败，ID: {}", id);
+        }
+        
+        return result;
+    }
 }

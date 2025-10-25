@@ -107,7 +107,7 @@ public class StudentController {
      * 上传学生头像
      *
      * @param file 上传的头像文件
-     * @param id 学生ID
+     * @param id   学生ID
      * @return 包含头像URL的操作结果，成功或失败
      */
     @ApiOperation("上传学生头像")
@@ -189,7 +189,7 @@ public class StudentController {
     /**
      * 根据AC排名返回所有学生信息（分页）
      *
-     * @param pageNum 当前页码
+     * @param pageNum  当前页码
      * @param pageSize 每页显示数量
      * @return 返回分页后的、按AC数量降序排列的学生列表
      */

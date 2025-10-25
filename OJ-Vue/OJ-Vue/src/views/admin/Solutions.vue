@@ -52,7 +52,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="likeNum" label="点赞数" width="100" align="center" />
-          <el-table-column label="操作" width="200" align="center" fixed="right">
+          <el-table-column label="操作" width="250" align="center" fixed="right">
             <template #default="{ row }">
               <el-space>
                 <el-button 
@@ -61,6 +61,13 @@
                   @click="handleView(row.id)"
                 >
                   查看
+                </el-button>
+                <el-button 
+                  type="success" 
+                  link
+                  @click="handleEdit(row)"
+                >
+                  编辑
                 </el-button>
                 <el-popconfirm
                   title="确定要删除这个题解吗？"
@@ -88,6 +95,52 @@
           />
         </div>
       </el-card>
+      
+      <!-- 编辑题解对话框 -->
+      <el-dialog
+        v-model="editDialogVisible"
+        title="编辑题解"
+        width="800px"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+      >
+        <el-form :model="editForm" label-width="100px">
+          <el-form-item label="题解ID">
+            <el-input v-model="editForm.id" disabled />
+          </el-form-item>
+          <el-form-item label="题目">
+            <el-input v-model="editForm.problemName" disabled />
+          </el-form-item>
+          <el-form-item label="作者">
+            <el-input v-model="editForm.authorName" disabled />
+          </el-form-item>
+          <el-form-item label="发布时间">
+            <el-input v-model="editForm.createTime" disabled />
+          </el-form-item>
+          <el-form-item label="点赞数">
+            <el-input v-model="editForm.likeNum" disabled />
+          </el-form-item>
+          <el-form-item label="题解内容" required>
+            <el-input
+              v-model="editForm.content"
+              type="textarea"
+              :rows="10"
+              placeholder="请输入题解内容"
+              maxlength="10000"
+              show-word-limit
+            />
+          </el-form-item>
+        </el-form>
+        
+        <template #footer>
+          <div class="dialog-footer">
+            <el-button @click="editDialogVisible = false">取消</el-button>
+            <el-button type="primary" @click="handleSaveEdit" :loading="editLoading">
+              保存
+            </el-button>
+          </div>
+        </template>
+      </el-dialog>
     </div>
   </page-layout>
 </template>
@@ -128,6 +181,18 @@ const totalSolutions = ref(0)
 // 缓存
 const userCache = ref({})
 const problemCache = ref({})
+
+// 编辑相关
+const editDialogVisible = ref(false)
+const editLoading = ref(false)
+const editForm = ref({
+  id: null,
+  problemName: '',
+  authorName: '',
+  createTime: '',
+  likeNum: 0,
+  content: ''
+})
 
 // 获取题解列表
 const fetchSolutions = async () => {
@@ -250,6 +315,62 @@ const handleViewProblem = (id) => {
   router.push(`/problem/${id}`)
 }
 
+// 编辑题解
+const handleEdit = async (row) => {
+  try {
+    // 获取题解的详细信息
+    const res = await request.get(`/solution/${row.id}`)
+    if (res.data.code === 200) {
+      const solution = res.data.data
+      
+      // 填充编辑表单
+      editForm.value = {
+        id: solution.id,
+        problemName: problemCache.value[solution.problemId]?.name || `题目 #${solution.problemId}`,
+        authorName: userCache.value[solution.userId]?.username || '未知用户',
+        createTime: formatDateTime(solution.createTime),
+        likeNum: solution.likeNum,
+        content: solution.content || ''
+      }
+      
+      editDialogVisible.value = true
+    } else {
+      ElMessage.error('获取题解详情失败')
+    }
+  } catch (error) {
+    console.error('获取题解详情失败:', error)
+    ElMessage.error('获取题解详情失败')
+  }
+}
+
+// 保存编辑
+const handleSaveEdit = async () => {
+  if (!editForm.value.content.trim()) {
+    ElMessage.warning('题解内容不能为空')
+    return
+  }
+  
+  editLoading.value = true
+  try {
+    const res = await request.put(`/solution/edit/${editForm.value.id}`, {
+      content: editForm.value.content
+    })
+    
+    if (res.data.code === 200) {
+      ElMessage.success('编辑成功')
+      editDialogVisible.value = false
+      await fetchSolutions() // 刷新列表
+    } else {
+      ElMessage.error(res.data.message || '编辑失败')
+    }
+  } catch (error) {
+    console.error('编辑题解失败:', error)
+    ElMessage.error('编辑失败')
+  } finally {
+    editLoading.value = false
+  }
+}
+
 // 删除题解
 const handleDelete = async (id) => {
   try {
@@ -313,7 +434,7 @@ onMounted(() => {
 
 .stat-label {
   margin-top: 8px;
-  color: #666;
+  color: var(--color-text);
 }
 
 .table-card {

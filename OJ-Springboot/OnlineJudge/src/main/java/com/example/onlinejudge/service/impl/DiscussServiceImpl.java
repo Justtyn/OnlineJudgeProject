@@ -145,6 +145,11 @@ public class DiscussServiceImpl extends ServiceImpl<DiscussMapper, Discuss> impl
     }
 
     @Override
+    public List<Discuss> selectByProblemId(Integer problemId) {
+        return discussMapper.selectByProblemId(problemId);
+    }
+
+    @Override
     public void add(Discuss discuss) {
         discussMapper.insert(discuss);
     }

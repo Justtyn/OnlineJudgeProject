@@ -1,6 +1,6 @@
 <template>
   <page-layout 
-    title="用户管理" 
+    title="学生管理"
     :show-back="false"
   >
     <div class="users-container">
@@ -13,7 +13,7 @@
             </template>
             添加用户
           </a-button>
-          <a-button @click="fetchUsers">
+          <a-button @click="handleRefresh">
             <template #icon>
               <reload-outlined />
             </template>
@@ -117,7 +117,7 @@
           <a-form-item label="角色" prop="role">
             <a-select v-model:value="form.role" placeholder="请选择角色">
               <a-select-option value="STUDENT">学生</a-select-option>
-              <a-select-option value="ADMIN">管理员</a-select-option>
+              <a-select-option value="ADMIN" disabled>管理员</a-select-option>
             </a-select>
           </a-form-item>
           <a-form-item label="姓名" prop="name">
@@ -147,6 +147,17 @@
               value-format="YYYY-MM-DD"
             />
           </a-form-item>
+          <a-form-item label="所属班级" prop="classId">
+            <a-select v-model:value="form.classId" placeholder="请选择班级">
+              <a-select-option 
+                v-for="cls in classList" 
+                :key="cls.id" 
+                :value="cls.id"
+              >
+                {{ cls.name }}
+              </a-select-option>
+            </a-select>
+          </a-form-item>
         </a-form>
       </a-modal>
     </div>
@@ -157,8 +168,13 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons-vue'
-import { message, Modal, type FormRules } from 'ant-design-vue'
+import { message, Modal } from 'ant-design-vue'
 import type { FormInstance } from 'ant-design-vue'
+
+// 定义表单验证规则类型
+interface FormRules {
+  [key: string]: any[]
+}
 import PageLayout from '@/components/layout/PageLayout.vue'
 import request from "@/utils/request.js"
 
@@ -189,6 +205,7 @@ const roleFilter = ref('')
 const dialogVisible = ref(false)
 const dialogType = ref<'add' | 'edit'>('add')
 const formRef = ref<FormInstance>()
+const classList = ref([]) // 班级列表
 
 // 修改排序状态的默认值
 const sortOrder = ref('ascend')
@@ -207,7 +224,8 @@ const form = ref({
   school: '',
   birth: '',
   avatar: '',
-  background: ''
+  background: '',
+  classId: null // 添加班级ID字段
 })
 
 // 表单验证规则
@@ -235,7 +253,25 @@ const rules: FormRules = {
   ],
   sex: [
     { required: true, message: '请选择性别', trigger: 'change' }
+  ],
+  classId: [
+    { required: true, message: '请选择所属班级', trigger: 'change' }
   ]
+}
+
+// 获取班级列表
+const fetchClasses = async () => {
+  try {
+    const response = await request.get('/courses', {
+      headers: { Authorization: 'Bearer ' + token }
+    })
+    
+    if (response.data.success) {
+      classList.value = response.data.data.records || []
+    }
+  } catch (error) {
+    console.error('获取班级列表失败:', error)
+  }
 }
 
 // 获取用户列表
@@ -276,19 +312,29 @@ const fetchUsers = async () => {
     const res = response.data
     if (res.code === '200') {
       // 判断返回数据格式，适配不同API的返回结构
+      let userData = []
       if (Array.isArray(res.data)) {
-        users.value = res.data
+        userData = res.data
         pagination.value.total = res.data.length
       } else if (res.data && res.data.records) {
-        users.value = res.data.records
+        userData = res.data.records
         pagination.value.total = res.data.total
       } else if (res.data && res.data.list) {
-        users.value = res.data.list
+        userData = res.data.list
         pagination.value.total = res.data.total
       } else {
-        users.value = []
+        userData = []
         pagination.value.total = 0
       }
+
+      // 为每个用户添加班级名称
+      users.value = userData.map(user => {
+        const className = classList.value.find(cls => cls.id === user.classId)?.name || '未分配班级'
+        return {
+          ...user,
+          className
+        }
+      })
 
       // 如果有角色筛选
       if (roleFilter.value) {
@@ -337,6 +383,12 @@ const handleSearch = () => {
   fetchUsers()
 }
 
+// 刷新数据
+const handleRefresh = async () => {
+  await fetchClasses()
+  await fetchUsers()
+}
+
 // 重置表单
 const resetForm = () => {
   form.value = {
@@ -351,7 +403,8 @@ const resetForm = () => {
     school: '',
     birth: '',
     avatar: '',
-    background: ''
+    background: '',
+    classId: null
   }
 }
 
@@ -463,8 +516,9 @@ const handleTableChange = (pag, filters, sorter) => {
 }
 
 // 初始化时立即获取数据
-onMounted(() => {
-  fetchUsers()
+onMounted(async () => {
+  await fetchClasses()
+  await fetchUsers()
 })
 
 // 定义表格列
@@ -495,6 +549,12 @@ const columns = [
     dataIndex: 'role',
     key: 'role',
     width: 100,
+  },
+  {
+    title: '所属班级',
+    dataIndex: 'className',
+    key: 'className',
+    width: 150,
   },
   {
     title: '性别',
@@ -551,19 +611,19 @@ const pagination = ref({
 <style scoped>
 .users-container {
   padding: 24px;
-  background: #f0f2f5;
+  background: var(--bg-color-mute);
 }
 
 .operation-bar {
   margin-bottom: 16px;
-  background: #fff;
+  background: var(--color-background);
   padding: 16px;
   border-radius: 4px;
   box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
 }
 
 :deep(.ant-table-wrapper) {
-  background: #fff;
+  background: var(--color-background);
   padding: 16px;
   border-radius: 4px;
 }
@@ -574,7 +634,7 @@ const pagination = ref({
 }
 
 :deep(.ant-table-row:hover) {
-  background: #f5f5f5;
+  background: var(--bg-color-mute);
   transform: translateY(-2px);
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }

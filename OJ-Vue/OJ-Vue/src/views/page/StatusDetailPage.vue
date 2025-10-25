@@ -84,6 +84,25 @@
             </div>
             
             <div class="ai-controls">
+              <!-- AI角色选择 -->
+              <el-tooltip
+                v-for="role in aiRoles"
+                :key="role.id"
+                :content="getRoleTooltip(role)"
+                placement="top"
+                effect="dark"
+              >
+                <el-button
+                  :type="selectedRole.id === role.id ? 'primary' : ''"
+                  size="small"
+                  class="role-btn"
+                  @click="selectedRole = role"
+                >
+                  <el-icon><component :is="role.icon" /></el-icon>
+                  {{ role.name }}
+                </el-button>
+              </el-tooltip>
+              
               <el-select
                 v-model="aiModel"
                 placeholder="选择模型"
@@ -107,7 +126,7 @@
                 class="ai-button"
               >
                 <el-icon v-if="!isThinking"><Lightning /></el-icon>
-                {{ hasResponse ? '重新分析' : '分析代码' }}
+                {{ hasResponse ? '重新分析' : '开始分析' }}
               </el-button>
             </div>
           </div>
@@ -126,7 +145,30 @@
   
           <!-- 聊天窗口 -->
           <div v-if="hasResponse || isThinking" ref="chatWindowRef" class="chat-window">
-            <pre :class="{ 'blur-text': isThinking }">{{ typewriterContent }}</pre>
+            <div class="ai-response-content">
+              <div 
+                v-html="formatMessage(typewriterContent)" 
+                class="markdown-content"
+              ></div>
+              <span v-if="isStreaming" class="streaming-cursor">|</span>
+            </div>
+            
+            <!-- 操作按钮 -->
+            <div v-if="hasResponse && !isThinking" class="ai-response-actions">
+              <div class="action-buttons">
+                <el-button size="small" @click="copyAIResponse" class="copy-btn">
+                  <el-icon><DocumentCopy /></el-icon>
+                  复制全文
+                </el-button>
+                <el-button size="small" @click="regenerateAIResponse" class="regenerate-btn">
+                  <el-icon><Refresh /></el-icon>
+                  重新生成
+                </el-button>
+              </div>
+              <div v-if="responseDuration > 0" class="response-duration">
+                用时: {{ formatDuration(responseDuration) }}
+              </div>
+            </div>
           </div>
         </div>
       </el-card>
@@ -134,10 +176,30 @@
   </template>
   
   <script setup>
-  import { ref, onMounted, computed, nextTick, watch } from 'vue'
-  import { useRoute, useRouter } from 'vue-router'
-  import { Refresh, Loading, Lightning, InfoFilled } from '@element-plus/icons-vue'
-  import request from '@/utils/request.js'
+import { ref, onMounted, computed, nextTick, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { Refresh, Loading, Lightning, InfoFilled, DocumentCopy } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import request from '@/utils/request.js'
+import { marked } from 'marked'
+import hljs from 'highlight.js'
+import 'highlight.js/styles/github.css'
+
+// 配置Markdown解析器
+marked.setOptions({
+  highlight: function(code, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return hljs.highlight(code, { language: lang }).value
+      } catch (err) {
+        console.error('代码高亮错误:', err)
+      }
+    }
+    return hljs.highlightAuto(code).value
+  },
+  breaks: true,
+  gfm: true
+})
   
   // 路由
   const route = useRoute()
@@ -150,16 +212,108 @@
   // 行列表
   const linesList = computed(() => statusData.value.code.split('\n'))
   
-  // AI 模型选项
-  const models = ['deepseek-v3']
-  const aiModel = ref(models[0])
+// AI 模型选项
+const models = ['deepseek-v3']
+const aiModel = ref(models[0])
+
+// AI 角色选项
+const aiRoles = ref([
+  {
+    id: 'debugger',
+    name: '调试专家',
+    icon: 'Tools',
+    description: '专门解决代码错误和调试问题',
+    systemPrompt: '你是一个专业的代码调试专家，擅长快速定位和解决各种编程错误。请分析用户提供的错误代码，找出问题所在，并提供详细的解决方案和调试建议。'
+  },
+  {
+    id: 'optimizer',
+    name: '性能优化师',
+    icon: 'MagicStick',
+    description: '专注于代码性能优化',
+    systemPrompt: '你是一个专业的代码性能优化专家，精通各种编程语言的性能优化技巧。请分析用户代码的性能瓶颈，提供优化建议和最佳实践。'
+  },
+  {
+    id: 'teacher',
+    name: '编程导师',
+    icon: 'QuestionFilled',
+    description: '从教学角度解释代码问题',
+    systemPrompt: '你是一个经验丰富的编程导师，擅长用通俗易懂的方式解释复杂的编程概念。请从教学角度分析用户代码，提供清晰的学习指导和知识点解释。'
+  }
+])
+
+const selectedRole = ref(aiRoles.value[0])
+
+// AI 对话状态
+const isThinking = ref(false)
+const isStreaming = ref(false)
+const fullResponse = ref('')
+const typewriterContent = ref('')
+const chatWindowRef = ref(null)
+const hasResponse = computed(() => typewriterContent.value.length > 0)
+const streamingMessageIndex = ref(-1)
+const currentStreamingMessage = ref('')
+
+// 计时相关状态
+const responseStartTime = ref(null)
+const responseEndTime = ref(null)
+const responseDuration = ref(0)
+
+// 格式化消息内容 - 支持Markdown解析
+const formatMessage = (content) => {
+  if (!content) return ''
   
-  // AI 对话状态
-  const isThinking = ref(false)
-  const fullResponse = ref('')
-  const typewriterContent = ref('')
-  const chatWindowRef = ref(null)
-  const hasResponse = computed(() => typewriterContent.value.length > 0)
+  try {
+    return marked(content)
+  } catch (error) {
+    console.error('Markdown解析错误:', error)
+    return content.replace(/\n/g, '<br>')
+  }
+}
+
+// 格式化持续时间
+const formatDuration = (duration) => {
+  if (duration < 1000) {
+    return `${duration}ms`
+  } else if (duration < 60000) {
+    return `${(duration / 1000).toFixed(1)}s`
+  } else {
+    const minutes = Math.floor(duration / 60000)
+    const seconds = Math.floor((duration % 60000) / 1000)
+    return `${minutes}m ${seconds}s`
+  }
+}
+
+// 复制AI回复内容
+const copyAIResponse = async () => {
+  try {
+    const tempDiv = document.createElement('div')
+    tempDiv.innerHTML = typewriterContent.value
+    const textContent = tempDiv.textContent || tempDiv.innerText || ''
+    
+    await navigator.clipboard.writeText(textContent)
+    ElMessage.success('AI回复已复制到剪贴板')
+  } catch (error) {
+    console.error('复制失败:', error)
+    ElMessage.error('复制失败，请手动复制')
+  }
+}
+
+// 重新生成AI回复
+const regenerateAIResponse = async () => {
+  typewriterContent.value = ''
+  fullResponse.value = ''
+  await askAI()
+}
+
+// 获取角色提示信息
+const getRoleTooltip = (role) => {
+  const tooltips = {
+    debugger: '🛠️ 调试专家：我是bug终结者！让我用侦探般的敏锐眼光帮你找出代码中的问题，就像福尔摩斯破案一样精准！',
+    optimizer: '⚡ 性能优化师：我是速度的魔法师！让我帮你把代码调教得飞快，就像给火箭装上了超音速引擎！',
+    teacher: '👨‍🏫 编程导师：我是你的编程老师！让我用通俗易懂的方式解释复杂概念，就像把高深的武功秘籍翻译成白话文！'
+  }
+  return tooltips[role.id] || role.description
+}
   
   // 获取状态详情
   const fetchStatusDetail = async (id) => {
@@ -222,11 +376,13 @@
     }[type]
   }
   
-  // AI 提问逻辑，超时120秒，并自动滚动，更快的打字机效果
+  // AI 提问逻辑 - 流式传输版本
   const askAI = async () => {
     isThinking.value = true
+    isStreaming.value = true
     fullResponse.value = ''
     typewriterContent.value = ''
+    responseStartTime.value = Date.now()
     
     try {
       // 获取题目信息
@@ -243,75 +399,96 @@
         // 代码优化模式
         messages.push({
           role: 'system',
-          content: '你是一个专业的代码改进助手，精通 C++、Python、Java 和 C 语言。无论用户提交何种已有代码，你都要：\n1. 首先简要分析现有代码的关键问题与改进方向（如性能优化、可读性提升、内存管理、错误处理、安全性等）\n2. 针对每个改进点给出清晰说明，并指出改动前后的差异\n3. 输出重构后的完整、可运行代码，保持原有输入输出规范和功能不变\n4. 在代码前用注释或简短文字说明主要改动与优化思路\n5. 如果用户没有指定语言，默认帮其用原语言改进；如指定其它语言，可提供等效实现。'
+          content: selectedRole.value.systemPrompt
         })
         messages.push({
           role: 'user',
-          content: `题目：${problemData.name}\n题目描述：${problemData.desc}\n输入格式：${problemData.descInput}\n输出格式：${problemData.descOutput}\n示例输入：\n${problemData.sampleInput}\n示例输出：\n${problemData.sampleOutput}\n\n这是我目前的代码：\n\`\`\`${statusData.value.language.toLowerCase()}\n${statusData.value.code}\n\`\`\`\n请帮我改进并优化性能。`
+          content: `题目：${problemData.name}\n题目描述：${problemData.desc}\n输入格式：${problemData.descInput}\n输出格式：${problemData.descOutput}\n示例输入：\n${problemData.sampleInput}\n示例输出：\n${problemData.sampleOutput}\n\n这是我目前的代码：\n\`\`\`${statusData.value.language.toLowerCase()}\n${statusData.value.code}\n\`\`\`\n请以${selectedRole.value.name}的身份帮我分析并改进这段代码。`
         })
       } else {
         // 解题模式
         messages.push({
           role: 'system',
-          content: '你是一个专业的编程助手，精通 C++、Python、Java、C 语言。无论用户给出何种算法题或编程题描述，你都要：\n1. 根据题目要求，给出可运行的、风格清晰的完整代码\n2. 在代码前简要说明解题思路和算法复杂度\n3. 对输入输出格式严格遵守，不要额外打印多余信息\n4. 如果用户没有指定语言，默认给出 C++ 解法；如指定语言，则按用户要求输出对应语言的代码。'
+          content: selectedRole.value.systemPrompt
         })
         messages.push({
           role: 'user',
-          content: `题目：${problemData.name}\n题目描述：${problemData.desc}\n输入格式：${problemData.descInput}\n输出格式：${problemData.descOutput}\n示例输入：\n${problemData.sampleInput}\n示例输出：\n${problemData.sampleOutput}\n\n用户代码：\n\`\`\`${statusData.value.language.toLowerCase()}\n${statusData.value.code}\n\`\`\`\n\n错误信息：${output.value}\n请帮我分析问题并提供解决方案。`
+          content: `题目：${problemData.name}\n题目描述：${problemData.desc}\n输入格式：${problemData.descInput}\n输出格式：${problemData.descOutput}\n示例输入：\n${problemData.sampleInput}\n示例输出：\n${problemData.sampleOutput}\n\n用户代码：\n\`\`\`${statusData.value.language.toLowerCase()}\n${statusData.value.code}\n\`\`\`\n\n错误信息：${output.value}\n请以${selectedRole.value.name}的身份帮我分析问题并提供解决方案。`
         })
       }
 
-      const res = await request.post(
-        'https://api.deepseek.com/chat/completions',
-        {
+      // 使用fetch直接请求，避免被request拦截器处理
+      const response = await fetch('https://api.deepseek.com/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer sk-ff342bebb7114fbbbf402971065c977e'
+        },
+        body: JSON.stringify({
           model: 'deepseek-chat',
           messages: messages,
-          stream: false
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer sk-663f54627f1a4c539b9fc02a5fa1f2eb'
-          },
-          timeout: 120000
-        }
-      )
+          stream: true,
+          temperature: 0.7,
+          max_tokens: 2000
+        })
+      })
       
-      // 更新响应处理逻辑 - 加快打字机效果
-      if (res.data && res.data.choices && res.data.choices[0] && res.data.choices[0].message) {
-        fullResponse.value = res.data.choices[0].message.content || ''
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ''
+      
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
         
-        // 更快的打字机效果，每批处理多个字符
-        const BATCH_SIZE = 10; // 每次添加10个字符
-        const DELAY = 5; // 每批延迟5ms
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split('\n')
+        buffer = lines.pop() || ''
         
-        for (let i = 0; i < fullResponse.value.length; i += BATCH_SIZE) {
-          const end = Math.min(i + BATCH_SIZE, fullResponse.value.length);
-          typewriterContent.value += fullResponse.value.substring(i, end);
-          await new Promise(r => setTimeout(r, DELAY));
-          
-          // 每3批更新一次滚动位置，减少重绘
-          if (i % (BATCH_SIZE * 3) === 0) {
-            await nextTick();
-            if (chatWindowRef.value) {
-              chatWindowRef.value.scrollTop = chatWindowRef.value.scrollHeight;
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const data = line.slice(6)
+            if (data === '[DONE]') {
+              // 流式传输完成
+              responseEndTime.value = Date.now()
+              responseDuration.value = responseEndTime.value - responseStartTime.value
+              isStreaming.value = false
+              isThinking.value = false
+              await nextTick()
+              if (chatWindowRef.value) {
+                chatWindowRef.value.scrollTop = chatWindowRef.value.scrollHeight
+              }
+              return
+            }
+            
+            try {
+              const parsed = JSON.parse(data)
+              if (parsed.choices && parsed.choices[0] && parsed.choices[0].delta && parsed.choices[0].delta.content) {
+                const content = parsed.choices[0].delta.content
+                typewriterContent.value += content
+                
+                // 平滑滚动到底部
+                await nextTick()
+                if (chatWindowRef.value) {
+                  chatWindowRef.value.scrollTop = chatWindowRef.value.scrollHeight
+                }
+              }
+            } catch (e) {
+              console.warn('解析流式数据失败:', e)
             }
           }
         }
-        
-        // 最后确保滚动到底部
-        await nextTick();
-        if (chatWindowRef.value) {
-          chatWindowRef.value.scrollTop = chatWindowRef.value.scrollHeight;
-        }
-      } else {
-        throw new Error('Invalid API response format')
       }
     } catch (e) {
       console.error('AI 请求失败：', e)
       typewriterContent.value = 'AI 请求失败，请重试。'
     } finally {
       isThinking.value = false
+      isStreaming.value = false
     }
   }
   
@@ -365,7 +542,7 @@
   }
   .output-info {
     padding: 8px;
-    background-color: #f8f9fa;
+    background-color: var(--bg-color-soft);
     border-radius: 4px;
     min-height: 40px;
     display: flex;
@@ -383,20 +560,20 @@
     word-break: break-word;
   }
   :deep(.el-descriptions__body) {
-    background-color: #ffffff;
+    background-color: var(--color-background);
   }
   :deep(.el-descriptions__table) {
     border-collapse: separate;
     border-spacing: 0;
   }
   :deep(.el-descriptions__cell.is-bordered) {
-    border: 1px solid #ebeef5;
+    border: 1px solid var(--border-color);
   }
   :deep(.el-descriptions__cell.is-bordered:first-child) {
-    border-left: 1px solid #ebeef5;
+    border-left: 1px solid var(--border-color);
   }
   :deep(.el-descriptions__cell.is-bordered:last-child) {
-    border-right: 1px solid #ebeef5;
+    border-right: 1px solid var(--border-color);
   }
   .problem-link {
     color: #1890ff;
@@ -489,7 +666,7 @@
     display: inline-block;
     padding: 2px 8px;
     border-radius: 4px;
-    background-color: #f0f2f5;
+    background-color: var(--bg-color-mute);
     color: #909399;
     border: 1px solid #d3d4d6;
     font-weight: bold;
@@ -519,7 +696,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #fff;
+    color: var(--color-background);
     font-weight: bold;
     font-size: 16px;
   }
@@ -539,9 +716,141 @@
     gap: 10px;
   }
   
+  .role-btn {
+    margin-right: 8px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+
+  .role-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
   .model-select {
     width: 160px;
     border-radius: 4px;
+  }
+
+  /* AI回复内容样式 */
+  .ai-response-content {
+    position: relative;
+  }
+
+  .markdown-content {
+    line-height: 1.6;
+    word-wrap: break-word;
+  }
+
+  .markdown-content :deep(pre) {
+    background: #1e293b;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 12px 0;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 14px;
+    overflow-x: auto;
+    color: var(--border-color);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .markdown-content :deep(code) {
+    background: rgba(99, 102, 241, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 13px;
+    color: #6366f1;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+  }
+
+  .markdown-content :deep(pre code) {
+    background: transparent;
+    padding: 0;
+    border: none;
+    color: inherit;
+  }
+
+  .markdown-content :deep(h1), 
+  .markdown-content :deep(h2), 
+  .markdown-content :deep(h3), 
+  .markdown-content :deep(h4), 
+  .markdown-content :deep(h5), 
+  .markdown-content :deep(h6) {
+    color: #6366f1;
+    margin: 16px 0 8px 0;
+    font-weight: 600;
+  }
+
+  .markdown-content :deep(h1) { font-size: 1.5em; }
+  .markdown-content :deep(h2) { font-size: 1.3em; }
+  .markdown-content :deep(h3) { font-size: 1.2em; }
+
+  .markdown-content :deep(ul), 
+  .markdown-content :deep(ol) {
+    margin: 8px 0;
+    padding-left: 20px;
+  }
+
+  .markdown-content :deep(li) {
+    margin: 4px 0;
+    line-height: 1.6;
+  }
+
+  .markdown-content :deep(blockquote) {
+    border-left: 4px solid #6366f1;
+    padding-left: 16px;
+    margin: 12px 0;
+    color: #64748b;
+    font-style: italic;
+  }
+
+  /* AI回复操作按钮 */
+  .ai-response-actions {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .copy-btn {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+
+  .copy-btn:hover {
+    background: #22c55e;
+    color: white;
+    transform: translateY(-1px);
+  }
+
+  .regenerate-btn {
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    color: #6366f1;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+
+  .regenerate-btn:hover {
+    background: #6366f1;
+    color: white;
+    transform: translateY(-1px);
+  }
+
+  .response-duration {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
   }
   
   .ai-button {
@@ -618,6 +927,12 @@
     filter: blur(3px);
     opacity: 0.5;
   }
+
+  .streaming-cursor {
+    animation: blink 1s infinite;
+    color: #4361ee;
+    font-weight: bold;
+  }
   
   @keyframes spin {
     from { transform: rotate(0deg); }
@@ -687,6 +1002,14 @@
     .ai-controls {
       width: 100%;
       justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .role-btn {
+      flex: 1;
+      min-width: 80px;
+      margin-bottom: 8px;
     }
     
     .model-select {

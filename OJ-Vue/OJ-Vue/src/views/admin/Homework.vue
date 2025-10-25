@@ -297,16 +297,30 @@ const formatDateTime = (dateTimeStr) => {
 const fetchHomeworks = async () => {
   loading.value = true
   try {
+    const params = {
+      current: currentPage.value,
+      size: pageSize.value
+    }
+    
+    // 添加搜索参数
+    if (searchQuery.value && searchQuery.value.trim()) {
+      params.title = searchQuery.value.trim()
+    }
+    if (classFilter.value) {
+      params.classId = classFilter.value
+    }
+    if (statusFilter.value) {
+      params.status = statusFilter.value
+    }
+    
     const response = await request.get('/homework/page', {
-      params: {
-        current: currentPage.value,
-        size: pageSize.value
-      }
+      params
     })
     
-    if (response.data) {
-      homeworks.value = response.data.records || []
-      total.value = response.data.total || 0
+    if (response.data && response.data.code === '200') {
+      const pageData = response.data.data
+      homeworks.value = pageData.records || []
+      total.value = pageData.total || 0
     }
   } catch (error) {
     console.error('获取作业列表失败:', error)
@@ -663,7 +677,7 @@ onMounted(() => {
   display: flex;
   gap: 10px;
   font-size: 14px;
-  color: #666;
+  color: var(--color-text);
 }
 
 .problem-management {

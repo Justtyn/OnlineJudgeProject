@@ -2,6 +2,8 @@
 
 // 引入 Vue Router 库用于路由管理
 import { createRouter, createWebHistory } from 'vue-router'
+// 引入 Element Plus 的消息框组件
+import { ElMessageBox } from 'element-plus'
 
 // 创建路由实例
 const router = createRouter({
@@ -165,6 +167,12 @@ const router = createRouter({
                     name: 'DailyChallenge',
                     component: () =>
                         import ('@/views/page/DailyChallenge.vue')
+                },
+                {
+                    path: 'aiAssistant',
+                    name: 'AIAssistant',
+                    component: () =>
+                        import ('@/views/page/AIAssistant.vue')
                 }
             ]
         },
@@ -174,7 +182,7 @@ const router = createRouter({
             name: 'AdminLayout',
             component: () =>
                 import ('@/views/admin/AdminLayout.vue'),
-            meta: { requiresAuth: true, requiresAdmin: true },
+            meta: { requiresAuth: true, requiresTeacher: true },
             redirect: '/admin/dashboard',
             children: [{
                     path: 'dashboard',
@@ -188,28 +196,35 @@ const router = createRouter({
                     name: 'UserManagement',
                     component: () =>
                         import ('@/views/admin/Users.vue'),
-                    meta: { title: '用户管理' }
+                    meta: { title: '用户管理', requiresAdmin: true }
+                },
+                {
+                    path: 'teachers',
+                    name: 'TeacherManagement',
+                    component: () =>
+                        import ('@/views/admin/Teachers.vue'),
+                    meta: { title: '教师管理', requiresAdmin: true }
                 },
                 {
                     path: 'problems',
                     name: 'ProblemManagement',
                     component: () =>
                         import ('@/views/admin/Problems.vue'),
-                    meta: { title: '题目管理' }
+                    meta: { title: '题目管理', requiresAdmin: true }
                 },
                 {
                     path: 'problem/add',
                     name: 'ProblemAdd',
                     component: () =>
                         import ('@/views/admin/ProblemEdit.vue'),
-                    meta: { title: '新增题目' }
+                    meta: { title: '新增题目', requiresAdmin: true }
                 },
                 {
                     path: 'problem/edit/:id',
                     name: 'ProblemEdit',
                     component: () =>
                         import ('@/views/admin/ProblemEdit.vue'),
-                    meta: { title: '编辑题目' }
+                    meta: { title: '编辑题目', requiresAdmin: true }
                 },
                 {
                     path: 'homework',
@@ -223,42 +238,42 @@ const router = createRouter({
                     name: 'DiscussionManagement',
                     component: () =>
                         import ('@/views/admin/Discussions.vue'),
-                    meta: { title: '讨论管理' }
+                    meta: { title: '讨论管理', requiresAdmin: true }
                 },
                 {
                     path: 'announcements',
                     name: 'AnnouncementManagement',
                     component: () =>
                         import ('@/views/admin/Announcements.vue'),
-                    meta: { title: '公告管理' }
+                    meta: { title: '公告管理', requiresAdmin: true }
                 },
                 {
                     path: 'solutions',
                     name: 'SolutionManagement',
                     component: () =>
                         import ('@/views/admin/Solutions.vue'),
-                    meta: { title: '题解管理' }
+                    meta: { title: '题解管理', requiresAdmin: true }
                 },
                 {
                     path: 'classes',
                     name: 'ClassManagement',
                     component: () =>
                         import ('@/views/admin/Classes.vue'),
-                    meta: { title: '课程管理' }
+                    meta: { title: '班级管理' }
                 },
                 {
                     path: 'statistics',
                     name: 'Statistics',
                     component: () =>
                         import ('@/views/admin/Statistics.vue'),
-                    meta: { title: '数据统计' }
+                    meta: { title: '数据统计', requiresAdmin: true }
                 },
                 {
                     path: 'status',
                     name: 'StatusManagement',
                     component: () =>
                         import ('@/views/admin/Status.vue'),
-                    meta: { title: '提交状态管理' }
+                    meta: { title: '提交状态管理', requiresAdmin: true }
                 }
             ]
         },
@@ -300,6 +315,7 @@ router.beforeEach((to, from, next) => {
     const user = userStr ? JSON.parse(userStr) : null;
     const token = user ? user.token : null;
 
+
     // 检查是否需要管理员权限
     if (to.matched.some(record => record.meta.requiresAdmin)) {
         if (!user || user.role !== 'ADMIN') {
@@ -308,16 +324,44 @@ router.beforeEach((to, from, next) => {
         }
     }
 
-    // 原有的登录检查逻辑
-    if (to.name !== 'Login' && to.name !== 'Register' && !token) {
-        console.log('用户未登录，重定向到登录页');
-        localStorage.removeItem('student-user');
-        return next({ name: 'Login' });
+    // 检查是否需要教师权限
+    if (to.matched.some(record => record.meta.requiresTeacher)) {
+        if (!user || (user.role !== 'TEACHER' && user.role !== 'ADMIN')) {
+            console.log('需要教师权限');
+            return next('/403');
+        }
     }
 
-    if ((to.name === 'Login' || to.name === 'Register') && token) {
+    // 检查token是否存在和是否过期
+    if (to.name !== 'Login' && to.name !== 'Register') {
+        if (!token || isTokenExpired(token)) {
+            console.log('用户未登录或token已过期，重定向到登录页');
+            // 清除用户数据
+            localStorage.removeItem('student-user');
+
+            // 显示过期提醒弹窗
+            ElMessageBox.alert('登录已过期，请重新登录', '登录过期', {
+                confirmButtonText: '重新登录',
+                type: 'warning',
+                showClose: false,
+                closeOnClickModal: false,
+                closeOnPressEscape: false
+            }).then(() => {
+                next({ name: 'Login' });
+            }).catch(() => {
+                next({ name: 'Login' });
+            });
+            return;
+        }
+    }
+
+    if ((to.name === 'Login' || to.name === 'Register') && token && !isTokenExpired(token)) {
         // 如果是管理员，重定向到管理系统
         if (user.role === 'ADMIN') {
+            return next('/admin/dashboard');
+        }
+        // 如果是教师，重定向到管理系统
+        if (user.role === 'TEACHER') {
             return next('/admin/dashboard');
         }
         return next({ path: '/' });

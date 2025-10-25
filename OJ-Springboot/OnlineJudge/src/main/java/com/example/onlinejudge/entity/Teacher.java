@@ -1,34 +1,44 @@
 package com.example.onlinejudge.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-import java.time.LocalDateTime;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
+@TableName("teacher")
 @ApiModel(description = "教师实体类")
-public class Teacher extends Admin {
+public class Teacher {
     @ApiModelProperty("教师ID")
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+    
+    @ApiModelProperty("用户名")
+    private String username;
+    
+    @ApiModelProperty("密码")
+    private String password;
+    
+    @ApiModelProperty("姓名")
+    private String name;
+    
+    @ApiModelProperty("性别")
+    private String sex;
+    
+    @ApiModelProperty("电话")
+    private String phone;
+    
+    @ApiModelProperty("邮箱")
+    private String email;
+    
+    @ApiModelProperty("头像")
+    private String avatar;
+    
+    @ApiModelProperty("角色")
+    private String role;
     
     @ApiModelProperty("所属班级ID")
     private Integer classId;
-    
-    @ApiModelProperty("创建时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private LocalDateTime createTime;
-    
-    @ApiModelProperty("最后登录时间")
-    private String lastLoginTime;
-    
-    @ApiModelProperty("最后使用的编程语言")
-    private String lastLanguage;
-    
-    @ApiModelProperty("最后访问时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private LocalDateTime lastVisitTime;
 }

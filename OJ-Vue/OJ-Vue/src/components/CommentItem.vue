@@ -148,7 +148,7 @@ onMounted(async () => {
 }
 
 .comment-main {
-  background: #fff;
+  background: var(--color-background);
   padding: 16px;
   border-radius: 4px;
   box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
@@ -173,7 +173,7 @@ onMounted(async () => {
 }
 
 .user-avatar {
-  border: 2px solid #fff;
+  border: 2px solid var(--color-background);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 

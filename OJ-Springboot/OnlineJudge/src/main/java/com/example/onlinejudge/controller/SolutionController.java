@@ -145,4 +145,34 @@ public class SolutionController {
         
         return ResponseEntity.ok(result);
     }
+    
+    @ApiOperation("编辑题解")
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<Map<String, Object>> editSolution(
+            @ApiParam("题解ID") @PathVariable Integer id,
+            @ApiParam("题解内容") @RequestBody Map<String, String> requestBody) {
+        Map<String, Object> result = new HashMap<>();
+        
+        String content = requestBody.get("content");
+        if (content == null || content.trim().isEmpty()) {
+            result.put("code", 400);
+            result.put("message", "题解内容不能为空");
+            return ResponseEntity.badRequest().body(result);
+        }
+        
+        boolean success = solutionService.editSolution(id, content);
+        
+        if (success) {
+            result.put("code", 200);
+            result.put("message", "编辑题解成功");
+            // 返回更新后的题解信息
+            Solution solution = solutionService.getSolutionById(id);
+            result.put("data", solution);
+        } else {
+            result.put("code", 500);
+            result.put("message", "编辑题解失败");
+        }
+        
+        return ResponseEntity.ok(result);
+    }
 }

@@ -23,17 +23,38 @@
         >
           每日挑战
         </el-button>
+        <el-button 
+          class="learn-more-btn ai-assistant-btn"
+          size="large" 
+          @click="handleNavigation('/aiAssistant')"
+        >
+          <el-icon><ChatDotRound /></el-icon>
+          AI 编程助手
+        </el-button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onErrorCaptured } from 'vue'
+import { ref, onErrorCaptured, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const loading = ref(false)
+
+// 检查用户角色并自动跳转
+const checkUserRole = () => {
+  const userStr = localStorage.getItem('student-user')
+  if (userStr) {
+    const user = JSON.parse(userStr)
+    // 只有教师需要自动跳转到管理后台，管理员可以正常访问主页
+    if (user.role === 'TEACHER') {
+      router.push('/admin/dashboard')
+      return
+    }
+  }
+}
 
 const handleNavigation = (path) => {
   loading.value = true
@@ -44,11 +65,18 @@ const handleNavigation = (path) => {
 
 // 导入打字效果组件
 import TypingEffect from "@/views/tool/TypingEffect-Main.vue";
+// 导入图标
+import { ChatDotRound } from '@element-plus/icons-vue';
 
 onErrorCaptured((err) => {
   console.error('路由跳转错误:', err)
   // 可以在这里添加错误提示
   return false
+})
+
+// 组件挂载时检查用户角色
+onMounted(() => {
+  checkUserRole()
 })
 </script>
 
@@ -89,7 +117,8 @@ onErrorCaptured((err) => {
   align-items: center;  /* 垂直居中 */
   gap: 20px;  /* 按钮之间的间距 */
   width: 100%;  /* 占满父容器宽度 */
-  max-width: 600px;  /* 增加最大宽度以适应两个按钮 */
+  max-width: 800px;  /* 增加最大宽度以适应三个按钮 */
+  flex-wrap: wrap;  /* 允许换行 */
 }
 
 /* Learn More 按钮样式 */
@@ -140,6 +169,49 @@ onErrorCaptured((err) => {
   box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
 }
 
+/* AI 助手按钮特殊样式 */
+.ai-assistant-btn {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-assistant-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.ai-assistant-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 107, 107, 0.4);
+  background: linear-gradient(135deg, #ee5a24 0%, #d63031 100%);
+}
+
+.ai-assistant-btn:hover::before {
+  left: 100%;
+}
+
+.ai-assistant-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+}
+
 /* 鼠标悬停时增强阴影效果 */
 .card:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -177,12 +249,20 @@ onErrorCaptured((err) => {
   }
 
   .button-container {
-    width: 240px;  /* 移动端稍微窄一些 */
+    width: 100%;
+    max-width: 300px;
+    flex-direction: column;
+    gap: 15px;
   }
   
   .learn-more-btn {
     font-size: 16px;
     padding: 12px 30px;
+    width: 100%;
+  }
+  
+  .ai-assistant-btn {
+    width: 100%;
   }
 }
 </style>

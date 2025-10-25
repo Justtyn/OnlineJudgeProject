@@ -24,7 +24,7 @@ async function loadData() {
         text: '语言分布',
         left: 'center',
         textStyle: {
-          color: '#333',
+          color: 'var(--color-heading)',
           fontSize: 14,
           fontWeight: 'normal'
         }
@@ -38,7 +38,7 @@ async function loadData() {
         right: 10,
         top: 'middle',
         textStyle: {
-          color: '#666',
+          color: 'var(--color-text)',
           fontSize: 12
         }
       },
@@ -49,7 +49,7 @@ async function loadData() {
         data: langData,
         label: {
           formatter: '{b}\n{d}%',
-          color: '#333',
+          color: 'var(--color-heading)',
           fontSize: 12,
           fontWeight: 'bold'
         },
@@ -58,12 +58,12 @@ async function loadData() {
           length: 10,
           length2: 10,
           lineStyle: {
-            color: '#999'
+            color: 'var(--color-text)'
           }
         },
         itemStyle: {
           borderRadius: 4,
-          borderColor: '#fff',
+          borderColor: 'var(--color-background)',
           borderWidth: 2
         },
         emphasis: {

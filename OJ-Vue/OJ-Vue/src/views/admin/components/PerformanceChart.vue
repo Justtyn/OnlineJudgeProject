@@ -35,7 +35,7 @@ async function loadData() {
         data: ['AC题数', '提交次数'],
         bottom: 0,
         textStyle: {
-          color: '#666',
+          color: 'var(--color-text)',
           fontSize: 12
         }
       },
@@ -50,33 +50,33 @@ async function loadData() {
         data: buckets,
         name: '区间',
         nameTextStyle: {
-          color: '#666',
+          color: 'var(--color-text)',
           fontSize: 12
         },
         axisLabel: {
-          color: '#333',
+          color: 'var(--color-heading)',
           fontSize: 12
         },
         axisLine: {
-          lineStyle: { color: '#888' }
+          lineStyle: { color: 'var(--color-text)' }
         }
       },
       yAxis: {
         type: 'value',
         name: '人数',
         nameTextStyle: {
-          color: '#666',
+          color: 'var(--color-text)',
           fontSize: 12
         },
         axisLabel: {
-          color: '#333',
+          color: 'var(--color-heading)',
           fontSize: 12
         },
         axisLine: {
-          lineStyle: { color: '#888' }
+          lineStyle: { color: 'var(--color-text)' }
         },
         splitLine: {
-          lineStyle: { color: '#eee' }
+          lineStyle: { color: 'var(--color-text)' }
         }
       },
       series: [
@@ -95,7 +95,7 @@ async function loadData() {
           label: {
             show: true,
             position: 'top',
-            color: '#666',
+            color: 'var(--color-text)',
             fontSize: 12
           }
         },
@@ -114,7 +114,7 @@ async function loadData() {
           label: {
             show: true,
             position: 'top',
-            color: '#666',
+            color: 'var(--color-text)',
             fontSize: 12
           }
         }

@@ -58,16 +58,16 @@ export default {
           textStyle: {
             fontSize: 18,
             fontWeight: 'bold',
-            color: '#333'
+            color: 'var(--color-heading)'
           }
         },
         tooltip: {
           trigger: 'axis',
           backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          borderColor: '#ccc',
+          borderColor: 'var(--color-text)',
           borderWidth: 1,
           textStyle: {
-            color: '#333'
+            color: 'var(--color-heading)'
           }
         },
         xAxis: {
@@ -75,7 +75,7 @@ export default {
           boundaryGap: false,
           axisLine: {
             lineStyle: {
-              color: '#666'
+              color: 'var(--color-text)'
             }
           }
         },
@@ -83,7 +83,7 @@ export default {
           type: 'value',
           axisLine: {
             lineStyle: {
-              color: '#666'
+              color: 'var(--color-text)'
             }
           }
         },
@@ -155,7 +155,7 @@ export default {
           textStyle: {
             fontSize: 18,
             fontWeight: 'bold',
-            color: '#333'
+            color: 'var(--color-heading)'
           }
         },
         tooltip: {
@@ -164,13 +164,13 @@ export default {
             type: 'shadow'
           },
           backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          borderColor: '#ccc',
+          borderColor: 'var(--color-text)',
           borderWidth: 1
         },
         legend: {
           data: ['类别1', '类别2', '类别3'],
           textStyle: {
-            color: '#666'
+            color: 'var(--color-text)'
           }
         },
         xAxis: {
@@ -178,7 +178,7 @@ export default {
           data: data.categories,
           axisLine: {
             lineStyle: {
-              color: '#666'
+              color: 'var(--color-text)'
             }
           }
         },
@@ -186,7 +186,7 @@ export default {
           type: 'value',
           axisLine: {
             lineStyle: {
-              color: '#666'
+              color: 'var(--color-text)'
             }
           }
         },
@@ -275,20 +275,20 @@ export default {
           textStyle: {
             fontSize: 18,
             fontWeight: 'bold',
-            color: '#333'
+            color: 'var(--color-heading)'
           }
         },
         tooltip: {
           trigger: 'item',
           backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          borderColor: '#ccc',
+          borderColor: 'var(--color-text)',
           borderWidth: 1
         },
         legend: {
           orient: 'vertical',
           left: 'left',
           textStyle: {
-            color: '#666'
+            color: 'var(--color-text)'
           }
         },
         series: [{
@@ -298,7 +298,7 @@ export default {
           avoidLabelOverlap: false,
           itemStyle: {
             borderRadius: 10,
-            borderColor: '#fff',
+            borderColor: 'var(--color-background)',
             borderWidth: 2
           },
           label: {
@@ -515,7 +515,7 @@ export default {
 <style scoped>
 .charts-container {
   padding: 20px;
-  background-color: #f5f5f5;
+  background-color: var(--bg-color-mute);
 }
 
 /* 添加移动端适配样式 */

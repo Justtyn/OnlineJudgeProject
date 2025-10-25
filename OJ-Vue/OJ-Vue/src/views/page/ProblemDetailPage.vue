@@ -317,7 +317,7 @@ onMounted(() => {
   color: #303133;
   margin-bottom: 15px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #ebeef5;  /* 底部分隔线 */
+  border-bottom: 1px solid var(--border-color);  /* 底部分隔线 */
 }
 
 /* 内容文本样式 */
@@ -331,7 +331,7 @@ onMounted(() => {
 
 /* 样例卡片样式 */
 .sample-card {
-  background-color: #fafafa;  /* 浅色背景，区分样例 */
+  background-color: var(--bg-color-soft);  /* 浅色背景，区分样例 */
   transition: all 0.3s ease;
 }
 

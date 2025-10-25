@@ -57,9 +57,7 @@ public interface TeacherMapper extends BaseMapper<Teacher> {
      */
     @Update("update teacher set username=#{username}, name=#{name}, sex=#{sex}, " +
             "phone=#{phone}, email=#{email}, avatar=#{avatar}, " +
-            "password=#{password}, class_id=#{classId}, " +
-            "role=#{role}, last_login_time=#{lastLoginTime}, last_language=#{lastLanguage}, " +
-            "last_visit_time=#{lastVisitTime} " +
+            "password=#{password}, class_id=#{classId}, role=#{role} " +
             "where id=#{id}")
     int update(Teacher teacher);
 

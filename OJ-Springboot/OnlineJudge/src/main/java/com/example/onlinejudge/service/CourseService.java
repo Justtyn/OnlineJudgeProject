@@ -23,6 +23,13 @@ public interface CourseService extends IService<Course> {
     boolean deleteCourse(Integer id);
     
     /**
+     * 更新课程
+     * @param course 课程信息
+     * @return 更新结果
+     */
+    boolean updateCourse(Course course);
+    
+    /**
      * 分页查询所有课程
      * @param current 当前页
      * @param size 每页大小

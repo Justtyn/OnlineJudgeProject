@@ -50,17 +50,6 @@
           <div class="header-body nav-section" :class="{ 'nav-active': isMenuOpen }">
             <nav class="nav-links">
               <router-link to="/homePage" class="nav-link" @click="closeMenu">首页</router-link>
-              <!-- <el-dropdown @command="handleNavCommand" class="nav-dropdown">
-                <span class="nav-link dropdown-trigger">
-                  统计<el-icon class="el-icon--right"><ArrowDown /></el-icon>
-                </span>
-                <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item command="charts">测试</el-dropdown-item>
-                    <el-dropdown-item command="stats">统计</el-dropdown-item>
-                  </el-dropdown-menu>
-                </template>
-              </el-dropdown> -->
               <router-link to="/stats" class="nav-link" @click="closeMenu">统计</router-link>
               <router-link to="/problemListPage" class="nav-link" @click="closeMenu">题库</router-link>
               <router-link to="/statusListPage" class="nav-link" @click="closeMenu">状态</router-link>
@@ -89,8 +78,8 @@
                     <el-dropdown-item v-if="userRole === 'ADMIN'" command="adminCenter">
                       管理系统
                     </el-dropdown-item>
-                    <el-dropdown-item command="userCenter">个人主页</el-dropdown-item>
-                    <el-dropdown-item command="userClass">我的班级</el-dropdown-item>
+                    <el-dropdown-item v-if="userRole === 'STUDENT'"  command="userCenter">个人主页</el-dropdown-item>
+                    <el-dropdown-item v-if="userRole === 'STUDENT'"  command="userClass">我的班级</el-dropdown-item>
                     <!-- <el-dropdown-item command="favorites">我的收藏</el-dropdown-item> -->
                     <el-dropdown-item command="solutions">我的题解</el-dropdown-item>
                     <el-dropdown-item divided command="logout">退出登录</el-dropdown-item>

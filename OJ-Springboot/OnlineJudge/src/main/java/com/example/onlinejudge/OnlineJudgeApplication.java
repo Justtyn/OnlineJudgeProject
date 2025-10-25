@@ -13,5 +13,4 @@ public class OnlineJudgeApplication {
     public static void main(String[] args) {
         SpringApplication.run(OnlineJudgeApplication.class, args);
     }
-
 }

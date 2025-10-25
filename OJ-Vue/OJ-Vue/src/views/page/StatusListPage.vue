@@ -384,7 +384,7 @@ onBeforeUnmount(() => {
 }
 
 :deep(.el-table--striped .el-table__body tr.el-table__row--striped td) {
-  background: #fafafa;
+  background: var(--bg-color-soft);
 }
 
 :deep(.el-table__body tr:hover > td) {
@@ -463,7 +463,7 @@ onBeforeUnmount(() => {
   display: inline-block;
   padding: 6px 12px;
   border-radius: 6px;
-  background: linear-gradient(135deg, #f0f2f5, #e4e7ed);
+  background: linear-gradient(135deg, var(--bg-color-mute), #e4e7ed);
   color: #909399;
   border: 1px solid #d3d4d6;
   font-weight: bold;

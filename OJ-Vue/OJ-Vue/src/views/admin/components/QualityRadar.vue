@@ -36,30 +36,30 @@ async function loadData() {
         type: 'category',
         data: categories,
         axisLabel: {
-          color: '#333',
+          color: 'var(--color-heading)',
           fontSize: 12,
           interval: 0
         },
         axisLine: {
-          lineStyle: { color: '#888' }
+          lineStyle: { color: 'var(--color-text)' }
         }
       },
       yAxis: {
         type: 'value',
         name: '数量',
         nameTextStyle: {
-          color: '#666',
+          color: 'var(--color-text)',
           fontSize: 12
         },
         axisLabel: {
-          color: '#333',
+          color: 'var(--color-heading)',
           fontSize: 12
         },
         axisLine: {
-          lineStyle: { color: '#888' }
+          lineStyle: { color: 'var(--color-text)' }
         },
         splitLine: {
-          lineStyle: { color: '#eee' }
+          lineStyle: { color: 'var(--color-text)' }
         }
       },
       series: [{
@@ -77,7 +77,7 @@ async function loadData() {
         label: {
           show: true,
           position: 'top',
-          color: '#666',
+          color: 'var(--color-text)',
           fontSize: 12,
           fontWeight: 'bold'
         }

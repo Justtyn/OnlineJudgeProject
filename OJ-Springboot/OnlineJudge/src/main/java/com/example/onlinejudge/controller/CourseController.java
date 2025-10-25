@@ -27,6 +27,10 @@ public class CourseController {
     public ResponseEntity<Map<String, Object>> addCourse(
             @ApiParam("课程信息") @RequestBody Course course) {
         Map<String, Object> response = new HashMap<>();
+        
+        // 设置创建者ID为管理员ID（1），因为外键约束要求creator_id必须引用admin表的id
+        course.setCreatorId(1);
+        
         boolean result = courseService.addCourse(course);
 
         if (result) {
@@ -55,6 +59,29 @@ public class CourseController {
         } else {
             response.put("success", false);
             response.put("message", "课程删除失败，可能课程不存在");
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @ApiOperation("更新课程")
+    @PutMapping
+    public ResponseEntity<Map<String, Object>> updateCourse(
+            @ApiParam("课程信息") @RequestBody Course course) {
+        Map<String, Object> response = new HashMap<>();
+        
+        // 设置创建者ID为管理员ID（1），因为外键约束要求creator_id必须引用admin表的id
+        course.setCreatorId(1);
+        
+        boolean result = courseService.updateCourse(course);
+
+        if (result) {
+            response.put("success", true);
+            response.put("message", "课程更新成功");
+            response.put("data", course);
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("success", false);
+            response.put("message", "课程更新失败");
             return ResponseEntity.badRequest().body(response);
         }
     }

@@ -25,9 +25,9 @@ public class FilterConfig {
         // 设置要注册的JWT认证过滤器实例
         registrationBean.setFilter(new JwtAuthenticationFilter());
         
-        // 配置过滤器的URL匹配模式，使其对/api/*下的所有请求生效
-        // 注意：登录接口虽然可能也在/api路径下，但在过滤器内部做了放行处理
-        registrationBean.addUrlPatterns("/api/*");
+        // 配置过滤器的URL匹配模式，使其对所有API请求生效
+        // 注意：登录接口在过滤器内部做了放行处理
+        registrationBean.addUrlPatterns("/*");
         
         return registrationBean;
     }

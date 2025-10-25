@@ -1,8 +1,19 @@
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from "@/utils/request.js";
 import { Clock } from '@element-plus/icons-vue'
+
+// 获取用户信息并检查是否是管理员
+const isAdmin = computed(() => {
+  const localUser = localStorage.getItem('student-user')
+    ? JSON.parse(localStorage.getItem('student-user'))
+    : localStorage.getItem('admin-user')
+      ? JSON.parse(localStorage.getItem('admin-user'))
+      : null;
+  
+  return localUser && localUser.role === 'ADMIN';
+});
 
 // 格式化日期时间
 const formatDateTime = (dateTimeStr) => {
@@ -208,12 +219,12 @@ const handleDelete = async (id) => {
 // 随机生成背景颜色
 const getRandomColor = (index) => {
   const colors = [
-    '#e6f7ff', // 浅蓝
-    '#f6ffed', // 浅绿
-    '#fff7e6', // 浅橙
-    '#fff0f6', // 浅粉
-    '#f9f0ff', // 浅紫
-    '#e6fffb', // 浅青
+    'var(--bg-color-soft)', // 浅蓝
+    'var(--bg-color-soft)', // 浅绿
+    'var(--color-background)7e6', // 浅橙
+    'var(--color-background)0f6', // 浅粉
+    'var(--bg-color-soft)', // 浅紫
+    'var(--bg-color-soft)', // 浅青
   ]
   return colors[index % colors.length]
 }
@@ -231,7 +242,7 @@ onMounted(() => {
       <template #header>
         <div class="card-header">
           <span class="title">公告列表</span>
-          <el-button type="primary" @click="handleAdd">
+          <el-button type="primary" @click="handleAdd" :disabled="!isAdmin">
             <el-icon>
               <Plus />
             </el-icon>

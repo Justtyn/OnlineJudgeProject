@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -34,6 +35,41 @@ public class HomeworkServiceImpl extends ServiceImpl<HomeworkMapper, Homework> i
     public Page<Homework> listHomeworkByPage(Integer current, Integer size) {
         Page<Homework> page = new Page<>(current, size);
         return homeworkMapper.selectPage(page, null);
+    }
+    
+    @Override
+    public Page<Homework> listHomeworkByPage(Integer current, Integer size, String title, Integer classId, String status) {
+        Page<Homework> page = new Page<>(current, size);
+        QueryWrapper<Homework> queryWrapper = new QueryWrapper<>();
+        
+        // 标题搜索
+        if (title != null && !title.trim().isEmpty()) {
+            queryWrapper.like("title", title.trim());
+        }
+        
+        // 班级筛选
+        if (classId != null) {
+            queryWrapper.eq("class_id", classId);
+        }
+        
+        // 状态筛选
+        if (status != null && !status.trim().isEmpty()) {
+            LocalDateTime now = LocalDateTime.now();
+            switch (status) {
+                case "pending":
+                    queryWrapper.gt("start_time", now);
+                    break;
+                case "ongoing":
+                    queryWrapper.le("start_time", now).gt("end_time", now);
+                    break;
+                case "finished":
+                    queryWrapper.le("end_time", now);
+                    break;
+            }
+        }
+        
+        queryWrapper.orderByDesc("id");
+        return homeworkMapper.selectPage(page, queryWrapper);
     }
     
     @Override

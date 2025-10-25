@@ -362,19 +362,19 @@ const handleRowClick = (row) => {
 
 .rank-1 {
   background: linear-gradient(45deg, #FFD700, #FFA500);
-  color: #fff;
+  color: var(--color-background);
   box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 .rank-2 {
   background: linear-gradient(45deg, #C0C0C0, #A9A9A9);
-  color: #fff;
+  color: var(--color-background);
   box-shadow: 0 0 10px rgba(192, 192, 192, 0.5);
 }
 
 .rank-3 {
   background: linear-gradient(45deg, #CD7F32, #8B4513);
-  color: #fff;
+  color: var(--color-background);
   box-shadow: 0 0 10px rgba(205, 127, 50, 0.5);
 }
 

@@ -76,12 +76,12 @@ const handleRefresh = () => {
 // 随机生成背景颜色
 const getRandomColor = (index) => {
   const colors = [
-    '#e6f7ff', // 浅蓝
-    '#f6ffed', // 浅绿
-    '#fff7e6', // 浅橙
-    '#fff0f6', // 浅粉
-    '#f9f0ff', // 浅紫
-    '#e6fffb', // 浅青
+    'var(--bg-color-soft)', // 浅蓝
+    'var(--bg-color-soft)', // 浅绿
+    'var(--color-background)7e6', // 浅橙
+    'var(--color-background)0f6', // 浅粉
+    'var(--bg-color-soft)', // 浅紫
+    'var(--bg-color-soft)', // 浅青
   ]
   return colors[index % colors.length]
 }
@@ -359,7 +359,7 @@ onMounted(() => {
 .class-content {
   padding: 20px;
   min-height: 80px;
-  background: #fff;
+  background: var(--color-background);
 }
 
 .class-item {
@@ -399,7 +399,7 @@ onMounted(() => {
 
 :deep(.el-card__header) {
   padding: 15px 20px;
-  border-bottom: 1px solid #ebeef5;
+  border-bottom: 1px solid var(--border-color);
 }
 
 :deep(.el-card__body) {

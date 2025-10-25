@@ -74,9 +74,9 @@
   .comment-node {
     margin-bottom: 16px;
     padding: 12px;
-    background: #fff;
+    background: var(--color-background);
     border-radius: 4px;
-    border: 1px solid #f0f0f0;
+    border: 1px solid var(--bg-color-mute);
   }
   
   .comment-node.level-0 {
@@ -113,7 +113,7 @@
   }
   
   .comment-time {
-    color: #999;
+    color: var(--color-text);
     font-size: 12px;
     flex: 1;
   }
@@ -124,7 +124,7 @@
   }
   
   .comment-text {
-    color: #333;
+    color: var(--color-heading);
     line-height: 1.5;
     word-break: break-word;
   }
