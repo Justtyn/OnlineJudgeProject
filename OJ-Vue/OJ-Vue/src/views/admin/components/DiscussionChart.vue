@@ -75,8 +75,7 @@ async function loadData() {
         },
         itemStyle: {
           borderRadius: 4,
-          borderColor: 'var(--color-background)',
-          borderWidth: 2
+          borderWidth: 0
         },
         emphasis: {
           scale: true,
@@ -106,5 +105,16 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.chart-card > .el-card__body { padding:0; }
+.chart-card {
+  border: none;
+  box-shadow: none;
+}
+
+.chart-card > .el-card__body { 
+  padding: 0; 
+}
+
+.chart-card > .el-card__header {
+  border: none;
+}
 </style>

@@ -150,16 +150,25 @@ onBeforeUnmount(() => {
 .chart-card {
   display: flex;
   flex-direction: column;
+  border: none;
+  box-shadow: none;
 }
+
 .chart-card > .el-card__body {
   flex: 1;
   padding: 0;
 }
+
+.chart-card > .el-card__header {
+  border: none;
+}
+
 .header-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .time-selector {
   display: flex;
   justify-content: center;

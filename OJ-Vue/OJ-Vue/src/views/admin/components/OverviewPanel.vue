@@ -49,6 +49,7 @@ onMounted(loadOverview)
 }
 .stat-card {
   background: var(--color-background);
+  border: none;
   border-left: 5px solid #409EFF;
   transition: all 0.3s;
   height: 100%;

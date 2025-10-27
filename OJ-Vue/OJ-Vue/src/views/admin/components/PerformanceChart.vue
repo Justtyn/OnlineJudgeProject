@@ -136,5 +136,16 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.chart-card > .el-card__body { padding:0; }
+.chart-card {
+  border: none;
+  box-shadow: none;
+}
+
+.chart-card > .el-card__body { 
+  padding: 0; 
+}
+
+.chart-card > .el-card__header {
+  border: none;
+}
 </style>

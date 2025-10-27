@@ -438,7 +438,7 @@ onMounted(() => {
 }
 
 .chart-card.active {
-  border: 2px solid #409EFF;
+  border: none;
   box-shadow: 0 0 20px rgba(64, 158, 255, 0.2);
 }
 

@@ -95,12 +95,20 @@ onUnmounted(() => {
 <style scoped>
 .chart-card {
   height: 100%;
+  border: none;
+  box-shadow: none;
 }
+
+.chart-card > .el-card__header {
+  border: none;
+}
+
 .chart-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .chart-content {
   height: 300px;
   position: relative;

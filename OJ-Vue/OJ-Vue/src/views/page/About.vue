@@ -398,7 +398,7 @@ export default {
 
 .accordion-item {
   margin-bottom: 15px;
-  border: 1px solid var(--color-text);
+  border: none;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
@@ -533,7 +533,6 @@ export default {
   max-height: 400px; /* 设置一个固定高度 */
   overflow-y: auto; /* 添加垂直滚动条 */
   opacity: 1;
-  border-top: 1px solid var(--color-text);
 }
 
 /* 状态列表样式 */
@@ -582,31 +581,31 @@ export default {
 .status-success {
   background-color: #f0f9eb;
   color: #67c23a;
-  border: 1px solid #c2e7b0;
+  border: none;
 }
 
 .status-error {
   background-color: #fef0f0;
   color: #f56c6c;
-  border: 1px solid #fbc4c4;
+  border: none;
 }
 
 .status-warning {
   background-color: #fdf6ec;
   color: #e6a23c;
-  border: 1px solid #f5dab1;
+  border: none;
 }
 
 .status-pending {
   background-color: var(--bg-color-mute);
   color: #909399;
-  border: 1px solid #d3d4d6;
+  border: none;
 }
 
 .status-unknown {
   background-color: #f5f7fa;
   color: #909399;
-  border: 1px solid #e4e7ed;
+  border: none;
 }
 
 /* 使用指南样式 */
@@ -694,7 +693,7 @@ export default {
   align-items: center;
   text-align: center;
   padding: 20px;
-  border: 1px solid var(--color-text);
+  border: none;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
   transition: all 0.3s ease;
@@ -782,7 +781,7 @@ export default {
   align-items: flex-start;
   gap: 15px;
   padding: 10px;
-  border-bottom: 1px solid var(--color-text);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
 }
 
