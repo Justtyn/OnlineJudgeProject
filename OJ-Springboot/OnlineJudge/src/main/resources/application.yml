@@ -52,3 +52,16 @@ springfox:
     swagger-ui:
       enabled: true
     enabled: true
+
+# 访问日志配置
+access-log:
+  enabled: true
+  # 采样比例(0-100)，这里全量记录
+  sample-rate: 100
+  # 慢请求阈值(ms)；超过则打告警
+  slow-threshold-ms: 2000
+  # 是否记录请求/响应体（建议默认false）
+  record-request-body: false
+  record-response-body: false
+  # 可忽略路径前缀（仍按你要求默认不忽略，这里留配置位）
+  ignore-path-prefixes: []

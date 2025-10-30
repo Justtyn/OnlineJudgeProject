@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.onlinejudge.mapper.AccessLogMapper">
+
+    <resultMap id="AccessLogResultMap" type="com.example.onlinejudge.entity.AccessLog">
+        <id property="id" column="id"/>
+        <result property="requestTime" column="request_time"/>
+        <result property="responseTime" column="response_time"/>
+        <result property="durationMs" column="duration_ms"/>
+        <result property="method" column="method"/>
+        <result property="scheme" column="scheme"/>
+        <result property="host" column="host"/>
+        <result property="port" column="port"/>
+        <result property="uri" column="uri"/>
+        <result property="path" column="path"/>
+        <result property="queryString" column="query_string"/>
+        <result property="routePattern" column="route_pattern"/>
+        <result property="httpStatus" column="http_status"/>
+        <result property="referer" column="referer"/>
+        <result property="userAgent" column="user_agent"/>
+        <result property="clientIp" column="client_ip"/>
+        <result property="clientIpSrc" column="client_ip_src"/>
+        <result property="clientIps" column="client_ips"/>
+        <result property="userId" column="user_id"/>
+        <result property="userType" column="user_type"/>
+        <result property="username" column="username"/>
+        <result property="role" column="role"/>
+        <result property="headers" column="headers"/>
+        <result property="requestBody" column="request_body"/>
+        <result property="responseBody" column="response_body"/>
+        <result property="traceId" column="trace_id"/>
+        <result property="requestId" column="request_id"/>
+        <result property="app" column="app"/>
+        <result property="env" column="env"/>
+        <result property="instance" column="instance"/>
+        <result property="ipCountry" column="ip_country"/>
+        <result property="ipRegion" column="ip_region"/>
+        <result property="ipCity" column="ip_city"/>
+        <result property="ipIsp" column="ip_isp"/>
+        <result property="isAlert" column="is_alert"/>
+        <result property="alertReason" column="alert_reason"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <sql id="Base_Columns">
+        request_time, response_time, duration_ms,
+        method, scheme, host, port, uri, path, query_string, route_pattern,
+        http_status, referer, user_agent,
+        client_ip, client_ip_src, client_ips,
+        user_id, user_type, username, role,
+        headers, request_body, response_body,
+        trace_id, request_id, app, env, instance,
+        ip_country, ip_region, ip_city, ip_isp,
+        is_alert, alert_reason,
+        created_at, updated_at
+    </sql>
+
+    <insert id="insert" parameterType="com.example.onlinejudge.entity.AccessLog" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO access_log (
+            <include refid="Base_Columns"/>
+        ) VALUES (
+            #{requestTime}, #{responseTime}, #{durationMs},
+            #{method}, #{scheme}, #{host}, #{port}, #{uri}, #{path}, #{queryString}, #{routePattern},
+            #{httpStatus}, #{referer}, #{userAgent},
+            #{clientIp}, #{clientIpSrc}, #{clientIps},
+            #{userId}, #{userType}, #{username}, #{role},
+            #{headers}, #{requestBody}, #{responseBody},
+            #{traceId}, #{requestId}, #{app}, #{env}, #{instance},
+            #{ipCountry}, #{ipRegion}, #{ipCity}, #{ipIsp},
+            #{isAlert}, #{alertReason},
+            NOW(3), NOW(3)
+        )
+    </insert>
+
+    <insert id="batchInsert">
+        INSERT INTO access_log (
+            <include refid="Base_Columns"/>
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+                #{item.requestTime}, #{item.responseTime}, #{item.durationMs},
+                #{item.method}, #{item.scheme}, #{item.host}, #{item.port}, #{item.uri}, #{item.path}, #{item.queryString}, #{item.routePattern},
+                #{item.httpStatus}, #{item.referer}, #{item.userAgent},
+                #{item.clientIp}, #{item.clientIpSrc}, #{item.clientIps},
+                #{item.userId}, #{item.userType}, #{item.username}, #{item.role},
+                #{item.headers}, #{item.requestBody}, #{item.responseBody},
+                #{item.traceId}, #{item.requestId}, #{item.app}, #{item.env}, #{item.instance},
+                #{item.ipCountry}, #{item.ipRegion}, #{item.ipCity}, #{item.ipIsp},
+                #{item.isAlert}, #{item.alertReason},
+                NOW(3), NOW(3)
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectByFilter" resultMap="AccessLogResultMap">
+        SELECT 
+            id,
+            <include refid="Base_Columns"/>
+        FROM access_log
+        <where>
+            <if test="from != null"> AND request_time &gt;= #{from} </if>
+            <if test="to != null"> AND request_time &lt;= #{to} </if>
+            <if test="method != null and method != ''"> AND method = #{method} </if>
+            <if test="pathLike != null and pathLike != ''"> AND path LIKE CONCAT('%', #{pathLike}, '%') </if>
+            <if test="status != null"> AND http_status = #{status} </if>
+            <if test="minDuration != null"> AND duration_ms &gt;= #{minDuration} </if>
+            <if test="maxDuration != null"> AND duration_ms &lt;= #{maxDuration} </if>
+            <if test="clientIp != null and clientIp != ''"> AND client_ip = #{clientIp} </if>
+            <if test="username != null and username != ''"> AND username = #{username} </if>
+            <if test="isAlert != null"> AND is_alert = #{isAlert} </if>
+        </where>
+        ORDER BY request_time DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="countByFilter" resultType="long">
+        SELECT COUNT(1)
+        FROM access_log
+        <where>
+            <if test="from != null"> AND request_time &gt;= #{from} </if>
+            <if test="to != null"> AND request_time &lt;= #{to} </if>
+            <if test="method != null and method != ''"> AND method = #{method} </if>
+            <if test="pathLike != null and pathLike != ''"> AND path LIKE CONCAT('%', #{pathLike}, '%') </if>
+            <if test="status != null"> AND http_status = #{status} </if>
+            <if test="minDuration != null"> AND duration_ms &gt;= #{minDuration} </if>
+            <if test="maxDuration != null"> AND duration_ms &lt;= #{maxDuration} </if>
+            <if test="clientIp != null and clientIp != ''"> AND client_ip = #{clientIp} </if>
+            <if test="username != null and username != ''"> AND username = #{username} </if>
+            <if test="isAlert != null"> AND is_alert = #{isAlert} </if>
+        </where>
+    </select>
+
+</mapper>
+

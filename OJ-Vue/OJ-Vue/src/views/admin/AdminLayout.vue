@@ -98,6 +98,10 @@
                 </template>
                 <el-menu-item index="/admin/solutions">题解列表</el-menu-item>
               </el-sub-menu>
+              <el-menu-item index="/admin/access-logs">
+                <el-icon><Odometer /></el-icon>
+                <span>访问日志</span>
+              </el-menu-item>
             </template>
           </el-menu>
         </el-scrollbar>

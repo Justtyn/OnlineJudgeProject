@@ -274,6 +274,13 @@ const router = createRouter({
                     component: () =>
                         import ('@/views/admin/Status.vue'),
                     meta: { title: '提交状态管理', requiresAdmin: true }
+                },
+                {
+                    path: 'access-logs',
+                    name: 'AccessLogs',
+                    component: () =>
+                        import ('@/views/admin/AccessLogs.vue'),
+                    meta: { title: '访问日志', requiresAdmin: true }
                 }
             ]
         },

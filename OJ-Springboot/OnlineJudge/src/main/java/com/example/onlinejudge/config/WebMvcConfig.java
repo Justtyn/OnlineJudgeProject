@@ -1,6 +1,9 @@
 package com.example.onlinejudge.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.example.onlinejudge.utils.AccessLogInterceptor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -19,6 +22,9 @@ import java.util.List;
  */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    @Autowired
+    private AccessLogInterceptor accessLogInterceptor;
 
     /**
      * 添加资源处理器
@@ -42,6 +48,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/static/")
                 .resourceChain(false)
                 .addResolver(new PushStateResourceResolver());
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(accessLogInterceptor).addPathPatterns("/**");
     }
 
     /**
