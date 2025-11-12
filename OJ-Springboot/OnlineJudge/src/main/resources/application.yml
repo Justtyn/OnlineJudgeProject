@@ -64,4 +64,4 @@ access-log:
   record-request-body: false
   record-response-body: false
   # 可忽略路径前缀（仍按你要求默认不忽略，这里留配置位）
-  ignore-path-prefixes: []
+  ignore-path-prefixes: [ ]

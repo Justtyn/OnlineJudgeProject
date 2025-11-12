@@ -17,16 +17,16 @@ import java.util.Map;
 @RestController
 @RequestMapping("/solution")
 public class SolutionController {
-    
+
     @Autowired
     private SolutionService solutionService;
-    
+
     @ApiOperation("添加题解")
     @PostMapping("/add")
     public ResponseEntity<Map<String, Object>> addSolution(@ApiParam("题解信息") @RequestBody Solution solution) {
         Map<String, Object> result = new HashMap<>();
         boolean success = solutionService.addSolution(solution);
-        
+
         if (success) {
             result.put("code", 200);
             result.put("message", "添加题解成功");
@@ -35,16 +35,16 @@ public class SolutionController {
             result.put("code", 500);
             result.put("message", "添加题解失败");
         }
-        
+
         return ResponseEntity.ok(result);
     }
-    
+
     @ApiOperation("删除题解")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Map<String, Object>> deleteSolution(@ApiParam("题解ID") @PathVariable Integer id) {
         Map<String, Object> result = new HashMap<>();
         boolean success = solutionService.deleteSolution(id);
-        
+
         if (success) {
             result.put("code", 200);
             result.put("message", "删除题解成功");
@@ -52,10 +52,10 @@ public class SolutionController {
             result.put("code", 500);
             result.put("message", "删除题解失败");
         }
-        
+
         return ResponseEntity.ok(result);
     }
-    
+
     @ApiOperation("分页查询题解")
     @GetMapping("/page")
     public ResponseEntity<Map<String, Object>> getSolutionPage(
@@ -63,7 +63,7 @@ public class SolutionController {
             @ApiParam("每页大小") @RequestParam(defaultValue = "10") Integer size) {
         Map<String, Object> result = new HashMap<>();
         Page<Solution> page = solutionService.getSolutionPage(current, size);
-        
+
         result.put("code", 200);
         result.put("message", "查询成功");
         result.put("data", page);
@@ -71,16 +71,16 @@ public class SolutionController {
         result.put("pages", page.getPages());
         result.put("current", page.getCurrent());
         result.put("size", page.getSize());
-        
+
         return ResponseEntity.ok(result);
     }
-    
+
     @ApiOperation("根据ID查询题解")
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getSolutionById(@ApiParam("题解ID") @PathVariable Integer id) {
         Map<String, Object> result = new HashMap<>();
         Solution solution = solutionService.getSolutionById(id);
-        
+
         if (solution != null) {
             result.put("code", 200);
             result.put("message", "查询成功");
@@ -89,16 +89,16 @@ public class SolutionController {
             result.put("code", 404);
             result.put("message", "题解不存在");
         }
-        
+
         return ResponseEntity.ok(result);
     }
-    
+
     @ApiOperation("增加题解点赞数")
     @PutMapping("/like/{id}")
     public ResponseEntity<Map<String, Object>> increaseLike(@ApiParam("题解ID") @PathVariable Integer id) {
         Map<String, Object> result = new HashMap<>();
         boolean success = solutionService.increaseLike(id);
-        
+
         if (success) {
             result.put("code", 200);
             result.put("message", "点赞成功");
@@ -109,10 +109,10 @@ public class SolutionController {
             result.put("code", 500);
             result.put("message", "点赞失败");
         }
-        
+
         return ResponseEntity.ok(result);
     }
-    
+
     @ApiOperation("根据用户ID查询题解")
     @GetMapping("/user/{userId}")
     public ResponseEntity<Map<String, Object>> getSolutionsByUserId(
@@ -121,7 +121,7 @@ public class SolutionController {
             @ApiParam("每页大小") @RequestParam(defaultValue = "10") Integer size) {
         Map<String, Object> result = new HashMap<>();
         Page<Solution> page = solutionService.getSolutionsByUserId(userId, current, size);
-        
+
         result.put("code", 200);
         result.put("message", "查询成功");
         result.put("data", page.getRecords());
@@ -129,39 +129,39 @@ public class SolutionController {
         result.put("pages", page.getPages());
         result.put("current", page.getCurrent());
         result.put("size", page.getSize());
-        
+
         return ResponseEntity.ok(result);
     }
-    
+
     @ApiOperation("获取题解总数")
     @GetMapping("/count")
     public ResponseEntity<Map<String, Object>> getSolutionCount() {
         Map<String, Object> result = new HashMap<>();
         long count = solutionService.getSolutionCount();
-        
+
         result.put("code", 200);
         result.put("message", "查询成功");
         result.put("data", count);
-        
+
         return ResponseEntity.ok(result);
     }
-    
+
     @ApiOperation("编辑题解")
     @PutMapping("/edit/{id}")
     public ResponseEntity<Map<String, Object>> editSolution(
             @ApiParam("题解ID") @PathVariable Integer id,
             @ApiParam("题解内容") @RequestBody Map<String, String> requestBody) {
         Map<String, Object> result = new HashMap<>();
-        
+
         String content = requestBody.get("content");
         if (content == null || content.trim().isEmpty()) {
             result.put("code", 400);
             result.put("message", "题解内容不能为空");
             return ResponseEntity.badRequest().body(result);
         }
-        
+
         boolean success = solutionService.editSolution(id, content);
-        
+
         if (success) {
             result.put("code", 200);
             result.put("message", "编辑题解成功");
@@ -172,7 +172,7 @@ public class SolutionController {
             result.put("code", 500);
             result.put("message", "编辑题解失败");
         }
-        
+
         return ResponseEntity.ok(result);
     }
 }

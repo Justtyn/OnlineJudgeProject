@@ -18,20 +18,20 @@ public class Solution {
     @ApiModelProperty("题解ID")
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
-    
+
     @ApiModelProperty("用户ID")
     private Integer userId;
-    
+
     @ApiModelProperty("问题ID")
     private Integer problemId;
-    
+
     @ApiModelProperty("题解内容")
     private String content;
-    
+
     @ApiModelProperty("创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
-    
+
     @ApiModelProperty("点赞数")
     private int likeNum;
 }

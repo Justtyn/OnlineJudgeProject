@@ -50,7 +50,7 @@ public class TeacherServiceImpl implements TeacherService {
             throw new CustomException("账号或密码错误");
         }
         String token = JwtUtil.generateToken(dbTeacher.getUsername());
-        
+
         // 转换为Account对象返回
         Account result = new Account();
         result.setId(dbTeacher.getId()); // 添加ID字段
@@ -62,7 +62,7 @@ public class TeacherServiceImpl implements TeacherService {
         result.setEmail(dbTeacher.getEmail());
         result.setPhone(dbTeacher.getPhone());
         result.setAvatar(dbTeacher.getAvatar());
-        
+
         return result;
     }
 
@@ -140,12 +140,12 @@ public class TeacherServiceImpl implements TeacherService {
         int offset = (pageNum - 1) * pageSize;
         List<Teacher> teachers = teacherMapper.selectWithPage(offset, pageSize);
         long total = teacherMapper.countAll();
-        
+
         result.put("list", teachers);
         result.put("total", total);
         result.put("pageNum", pageNum);
         result.put("pageSize", pageSize);
-        
+
         return result;
     }
 

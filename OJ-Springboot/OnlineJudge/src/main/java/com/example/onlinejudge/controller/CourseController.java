@@ -27,10 +27,10 @@ public class CourseController {
     public ResponseEntity<Map<String, Object>> addCourse(
             @ApiParam("课程信息") @RequestBody Course course) {
         Map<String, Object> response = new HashMap<>();
-        
+
         // 设置创建者ID为管理员ID（1），因为外键约束要求creator_id必须引用admin表的id
         course.setCreatorId(1);
-        
+
         boolean result = courseService.addCourse(course);
 
         if (result) {
@@ -68,10 +68,10 @@ public class CourseController {
     public ResponseEntity<Map<String, Object>> updateCourse(
             @ApiParam("课程信息") @RequestBody Course course) {
         Map<String, Object> response = new HashMap<>();
-        
+
         // 设置创建者ID为管理员ID（1），因为外键约束要求creator_id必须引用admin表的id
         course.setCreatorId(1);
-        
+
         boolean result = courseService.updateCourse(course);
 
         if (result) {

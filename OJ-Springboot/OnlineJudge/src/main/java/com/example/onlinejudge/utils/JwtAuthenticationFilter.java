@@ -30,18 +30,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 登录接口不进行 Token 校验（或其他白名单接口）
         // 对于登录和注册接口，用户尚未获取token，因此不需要进行token验证
         String path = request.getRequestURI();
-        if ("/login".equals(path) || "/register".equals(path) || 
-            "/api/student/resetPassword".equals(path) || "/api/student/changePassword".equals(path) ||
-            "/teacher/resetPassword".equals(path) || "/teacher/changePassword".equals(path)) {
+        if ("/login".equals(path) || "/register".equals(path) ||
+                "/api/student/resetPassword".equals(path) || "/api/student/changePassword".equals(path) ||
+                "/teacher/resetPassword".equals(path) || "/teacher/changePassword".equals(path)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         // 静态资源路径不需要token验证
-        if (path.startsWith("/uploads/") || path.startsWith("/static/") || 
-            path.endsWith(".jpg") || path.endsWith(".jpeg") || path.endsWith(".png") || 
-            path.endsWith(".gif") || path.endsWith(".ico") || path.endsWith(".css") || 
-            path.endsWith(".js") || path.endsWith(".html")) {
+        if (path.startsWith("/uploads/") || path.startsWith("/static/") ||
+                path.endsWith(".jpg") || path.endsWith(".jpeg") || path.endsWith(".png") ||
+                path.endsWith(".gif") || path.endsWith(".ico") || path.endsWith(".css") ||
+                path.endsWith(".js") || path.endsWith(".html")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -77,7 +77,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.getWriter().write("Token解析错误");
             return;
         }
-        
+
         // token验证通过，继续执行过滤器链中的下一个过滤器或处理请求
         filterChain.doFilter(request, response);
     }

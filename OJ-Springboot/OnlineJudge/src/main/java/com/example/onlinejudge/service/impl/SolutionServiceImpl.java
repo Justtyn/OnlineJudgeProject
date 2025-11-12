@@ -72,33 +72,33 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     @Override
     public Map<String, Object> getSolutionStats() {
         Map<String, Object> stats = new HashMap<>();
-        
+
         // 获取总题解数
         stats.put("totalSolutions", count());
-        
+
         // 获取总点赞数
         stats.put("totalLikes", solutionMapper.getTotalLikes());
-        
+
         // 获取总贡献用户数
         stats.put("totalContributors", solutionMapper.getTotalContributors());
-        
+
         // 获取今日新增题解数
         stats.put("todayNewSolutions", solutionMapper.getTodayNewSolutions());
-        
+
         return stats;
     }
 
     @Override
     public Map<String, Long> getLikeCountDistribution() {
         Map<String, Long> distribution = new HashMap<>();
-        
+
         List<Map<String, Object>> rawData = solutionMapper.selectLikeCountDistribution();
         for (Map<String, Object> data : rawData) {
             String range = (String) data.get("range");
             Long count = ((Number) data.get("count")).longValue();
             distribution.put(range, count);
         }
-        
+
         return distribution;
     }
 
@@ -110,14 +110,14 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     @Override
     public Map<String, Long> getLanguageDistribution() {
         Map<String, Long> distribution = new HashMap<>();
-        
+
         List<Map<String, Object>> rawData = solutionMapper.selectLanguageDistribution();
         for (Map<String, Object> data : rawData) {
             String language = (String) data.get("language");
             Long count = ((Number) data.get("count")).longValue();
             distribution.put(language, count);
         }
-        
+
         return distribution;
     }
 
@@ -134,14 +134,14 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     @Override
     public Map<String, Long> getQualityDistribution() {
         Map<String, Long> distribution = new HashMap<>();
-        
+
         List<Map<String, Object>> rawData = solutionMapper.selectQualityDistribution();
         for (Map<String, Object> data : rawData) {
             String range = (String) data.get("range");
             Long count = ((Number) data.get("count")).longValue();
             distribution.put(range, count);
         }
-        
+
         return distribution;
     }
 
@@ -154,44 +154,44 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     @Override
     public Map<String, Object> getProblemSolutionAnalysis() {
         Map<String, Object> analysis = new HashMap<>();
-        
+
         // 获取每个问题的题解数量分布
         analysis.put("solutionCountPerProblem", solutionMapper.selectSolutionCountPerProblem());
-        
+
         // 获取最受关注的问题（题解数最多）
         analysis.put("mostSolvedProblems", solutionMapper.selectMostSolvedProblems(10));
-        
+
         // 获取高质量题解最多的问题
         analysis.put("highQualitySolutionProblems", solutionMapper.selectHighQualitySolutionProblems(10));
-        
+
         return analysis;
     }
 
     @Override
     public Map<String, Long> getContentLengthDistribution() {
         Map<String, Long> distribution = new HashMap<>();
-        
+
         List<Map<String, Object>> rawData = solutionMapper.selectContentLengthDistribution();
         for (Map<String, Object> data : rawData) {
             String range = (String) data.get("range");
             Long count = ((Number) data.get("count")).longValue();
             distribution.put(range, count);
         }
-        
+
         return distribution;
     }
 
     @Override
     public Map<String, Long> getCreateTimeDistribution() {
         Map<String, Long> distribution = new HashMap<>();
-        
+
         List<Map<String, Object>> rawData = solutionMapper.selectCreateTimeDistribution();
         for (Map<String, Object> data : rawData) {
             String period = (String) data.get("period");
             Long count = ((Number) data.get("count")).longValue();
             distribution.put(period, count);
         }
-        
+
         return distribution;
     }
 
@@ -210,7 +210,7 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
     public long getSolutionCount() {
         return count();
     }
-    
+
     @Override
     public boolean editSolution(Integer id, String content) {
         Solution solution = getById(id);
@@ -218,17 +218,17 @@ public class SolutionServiceImpl extends ServiceImpl<SolutionMapper, Solution> i
             log.error("题解不存在，ID: {}", id);
             return false;
         }
-        
+
         // 只更新题解内容，其他字段保持不变
         solution.setContent(content);
         boolean result = updateById(solution);
-        
+
         if (result) {
             log.info("题解编辑成功，ID: {}", id);
         } else {
             log.error("题解编辑失败，ID: {}", id);
         }
-        
+
         return result;
     }
 }

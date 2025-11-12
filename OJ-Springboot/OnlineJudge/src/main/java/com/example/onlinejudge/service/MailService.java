@@ -2,6 +2,7 @@ package com.example.onlinejudge.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,7 +16,9 @@ public class MailService {
 
     private final JavaMailSender mailSender;
 
-    /** 发件人，必须和 SMTP 授权用户一致 */
+    /**
+     * 发件人，必须和 SMTP 授权用户一致
+     */
     @Value("${spring.mail.from}")
     private String from;
 

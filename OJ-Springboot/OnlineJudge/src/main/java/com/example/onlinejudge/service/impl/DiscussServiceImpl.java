@@ -16,7 +16,7 @@ import java.util.HashMap;
 @Service
 @Slf4j
 public class DiscussServiceImpl extends ServiceImpl<DiscussMapper, Discuss> implements DiscussService {
-    
+
     @Resource
     private DiscussMapper discussMapper;
 
@@ -28,33 +28,33 @@ public class DiscussServiceImpl extends ServiceImpl<DiscussMapper, Discuss> impl
     @Override
     public Map<String, Object> getDiscussStats() {
         Map<String, Object> stats = new HashMap<>();
-        
+
         // 获取总讨论数
         stats.put("totalDiscussions", discussMapper.selectTotal());
-        
+
         // 获取总评论数
         stats.put("totalComments", discussMapper.getTotalComments());
-        
+
         // 获取总参与用户数
         stats.put("totalParticipants", discussMapper.getTotalParticipants());
-        
+
         // 获取今日新增讨论数
         stats.put("todayNewDiscussions", discussMapper.getTodayNewDiscussions());
-        
+
         return stats;
     }
 
     @Override
     public Map<String, Long> getTopicDistribution() {
         Map<String, Long> distribution = new HashMap<>();
-        
+
         List<Map<String, Object>> rawData = discussMapper.selectTopicDistribution();
         for (Map<String, Object> data : rawData) {
             String topic = (String) data.get("topic");
             Long count = ((Number) data.get("count")).longValue();
             distribution.put(topic, count);
         }
-        
+
         return distribution;
     }
 
@@ -100,31 +100,31 @@ public class DiscussServiceImpl extends ServiceImpl<DiscussMapper, Discuss> impl
     @Override
     public Map<String, Long> getReplyTimeDistribution() {
         Map<String, Long> distribution = new HashMap<>();
-        
+
         List<Map<String, Object>> rawData = discussMapper.selectReplyTimeDistribution();
         for (Map<String, Object> data : rawData) {
             String range = (String) data.get("range");
             Long count = ((Number) data.get("count")).longValue();
             distribution.put(range, count);
         }
-        
+
         return distribution;
     }
 
     @Override
     public Map<String, Object> selectPage(Integer pageNum, Integer pageSize) {
         Map<String, Object> result = new HashMap<>();
-        
+
         // 计算偏移量
         int offset = (pageNum - 1) * pageSize;
-        
+
         // 获取分页数据和总数
         List<Discuss> list = discussMapper.selectPage(offset, pageSize);
         Long total = discussMapper.selectTotal();
-        
+
         result.put("list", list);
         result.put("total", total);
-        
+
         return result;
     }
 

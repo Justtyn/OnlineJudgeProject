@@ -44,7 +44,8 @@
     </resultMap>
 
     <sql id="Base_Columns">
-        request_time, response_time, duration_ms,
+        request_time
+        , response_time, duration_ms,
         method, scheme, host, port, uri, path, query_string, route_pattern,
         http_status, referer, user_agent,
         client_ip, client_ip_src, client_ips,
@@ -56,59 +57,61 @@
         created_at, updated_at
     </sql>
 
-    <insert id="insert" parameterType="com.example.onlinejudge.entity.AccessLog" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.example.onlinejudge.entity.AccessLog" useGeneratedKeys="true"
+            keyProperty="id">
         INSERT INTO access_log (
-            <include refid="Base_Columns"/>
+        <include refid="Base_Columns"/>
         ) VALUES (
-            #{requestTime}, #{responseTime}, #{durationMs},
-            #{method}, #{scheme}, #{host}, #{port}, #{uri}, #{path}, #{queryString}, #{routePattern},
-            #{httpStatus}, #{referer}, #{userAgent},
-            #{clientIp}, #{clientIpSrc}, #{clientIps},
-            #{userId}, #{userType}, #{username}, #{role},
-            #{headers}, #{requestBody}, #{responseBody},
-            #{traceId}, #{requestId}, #{app}, #{env}, #{instance},
-            #{ipCountry}, #{ipRegion}, #{ipCity}, #{ipIsp},
-            #{isAlert}, #{alertReason},
-            NOW(3), NOW(3)
+        #{requestTime}, #{responseTime}, #{durationMs},
+        #{method}, #{scheme}, #{host}, #{port}, #{uri}, #{path}, #{queryString}, #{routePattern},
+        #{httpStatus}, #{referer}, #{userAgent},
+        #{clientIp}, #{clientIpSrc}, #{clientIps},
+        #{userId}, #{userType}, #{username}, #{role},
+        #{headers}, #{requestBody}, #{responseBody},
+        #{traceId}, #{requestId}, #{app}, #{env}, #{instance},
+        #{ipCountry}, #{ipRegion}, #{ipCity}, #{ipIsp},
+        #{isAlert}, #{alertReason},
+        NOW(3), NOW(3)
         )
     </insert>
 
     <insert id="batchInsert">
         INSERT INTO access_log (
-            <include refid="Base_Columns"/>
+        <include refid="Base_Columns"/>
         ) VALUES
         <foreach collection="list" item="item" separator=",">
             (
-                #{item.requestTime}, #{item.responseTime}, #{item.durationMs},
-                #{item.method}, #{item.scheme}, #{item.host}, #{item.port}, #{item.uri}, #{item.path}, #{item.queryString}, #{item.routePattern},
-                #{item.httpStatus}, #{item.referer}, #{item.userAgent},
-                #{item.clientIp}, #{item.clientIpSrc}, #{item.clientIps},
-                #{item.userId}, #{item.userType}, #{item.username}, #{item.role},
-                #{item.headers}, #{item.requestBody}, #{item.responseBody},
-                #{item.traceId}, #{item.requestId}, #{item.app}, #{item.env}, #{item.instance},
-                #{item.ipCountry}, #{item.ipRegion}, #{item.ipCity}, #{item.ipIsp},
-                #{item.isAlert}, #{item.alertReason},
-                NOW(3), NOW(3)
+            #{item.requestTime}, #{item.responseTime}, #{item.durationMs},
+            #{item.method}, #{item.scheme}, #{item.host}, #{item.port}, #{item.uri}, #{item.path}, #{item.queryString},
+            #{item.routePattern},
+            #{item.httpStatus}, #{item.referer}, #{item.userAgent},
+            #{item.clientIp}, #{item.clientIpSrc}, #{item.clientIps},
+            #{item.userId}, #{item.userType}, #{item.username}, #{item.role},
+            #{item.headers}, #{item.requestBody}, #{item.responseBody},
+            #{item.traceId}, #{item.requestId}, #{item.app}, #{item.env}, #{item.instance},
+            #{item.ipCountry}, #{item.ipRegion}, #{item.ipCity}, #{item.ipIsp},
+            #{item.isAlert}, #{item.alertReason},
+            NOW(3), NOW(3)
             )
         </foreach>
     </insert>
 
     <select id="selectByFilter" resultMap="AccessLogResultMap">
-        SELECT 
-            id,
-            <include refid="Base_Columns"/>
+        SELECT
+        id,
+        <include refid="Base_Columns"/>
         FROM access_log
         <where>
-            <if test="from != null"> AND request_time &gt;= #{from} </if>
-            <if test="to != null"> AND request_time &lt;= #{to} </if>
-            <if test="method != null and method != ''"> AND method = #{method} </if>
-            <if test="pathLike != null and pathLike != ''"> AND path LIKE CONCAT('%', #{pathLike}, '%') </if>
-            <if test="status != null"> AND http_status = #{status} </if>
-            <if test="minDuration != null"> AND duration_ms &gt;= #{minDuration} </if>
-            <if test="maxDuration != null"> AND duration_ms &lt;= #{maxDuration} </if>
-            <if test="clientIp != null and clientIp != ''"> AND client_ip = #{clientIp} </if>
-            <if test="username != null and username != ''"> AND username = #{username} </if>
-            <if test="isAlert != null"> AND is_alert = #{isAlert} </if>
+            <if test="from != null">AND request_time &gt;= #{from}</if>
+            <if test="to != null">AND request_time &lt;= #{to}</if>
+            <if test="method != null and method != ''">AND method = #{method}</if>
+            <if test="pathLike != null and pathLike != ''">AND path LIKE CONCAT('%', #{pathLike}, '%')</if>
+            <if test="status != null">AND http_status = #{status}</if>
+            <if test="minDuration != null">AND duration_ms &gt;= #{minDuration}</if>
+            <if test="maxDuration != null">AND duration_ms &lt;= #{maxDuration}</if>
+            <if test="clientIp != null and clientIp != ''">AND client_ip = #{clientIp}</if>
+            <if test="username != null and username != ''">AND username = #{username}</if>
+            <if test="isAlert != null">AND is_alert = #{isAlert}</if>
         </where>
         ORDER BY request_time DESC
         LIMIT #{offset}, #{limit}
@@ -118,16 +121,16 @@
         SELECT COUNT(1)
         FROM access_log
         <where>
-            <if test="from != null"> AND request_time &gt;= #{from} </if>
-            <if test="to != null"> AND request_time &lt;= #{to} </if>
-            <if test="method != null and method != ''"> AND method = #{method} </if>
-            <if test="pathLike != null and pathLike != ''"> AND path LIKE CONCAT('%', #{pathLike}, '%') </if>
-            <if test="status != null"> AND http_status = #{status} </if>
-            <if test="minDuration != null"> AND duration_ms &gt;= #{minDuration} </if>
-            <if test="maxDuration != null"> AND duration_ms &lt;= #{maxDuration} </if>
-            <if test="clientIp != null and clientIp != ''"> AND client_ip = #{clientIp} </if>
-            <if test="username != null and username != ''"> AND username = #{username} </if>
-            <if test="isAlert != null"> AND is_alert = #{isAlert} </if>
+            <if test="from != null">AND request_time &gt;= #{from}</if>
+            <if test="to != null">AND request_time &lt;= #{to}</if>
+            <if test="method != null and method != ''">AND method = #{method}</if>
+            <if test="pathLike != null and pathLike != ''">AND path LIKE CONCAT('%', #{pathLike}, '%')</if>
+            <if test="status != null">AND http_status = #{status}</if>
+            <if test="minDuration != null">AND duration_ms &gt;= #{minDuration}</if>
+            <if test="maxDuration != null">AND duration_ms &lt;= #{maxDuration}</if>
+            <if test="clientIp != null and clientIp != ''">AND client_ip = #{clientIp}</if>
+            <if test="username != null and username != ''">AND username = #{username}</if>
+            <if test="isAlert != null">AND is_alert = #{isAlert}</if>
         </where>
     </select>
 

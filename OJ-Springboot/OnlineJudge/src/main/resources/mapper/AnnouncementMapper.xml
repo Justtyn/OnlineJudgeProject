@@ -12,6 +12,6 @@
         FROM announcement
         GROUP BY DATE_FORMAT(create_time, '%Y-%m')
         ORDER BY month DESC
-        LIMIT 12
+            LIMIT 12
     </select>
 </mapper> 

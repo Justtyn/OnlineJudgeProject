@@ -2,6 +2,7 @@ package com.example.onlinejudge.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.onlinejudge.entity.Course;
+
 import java.util.Map;
 
 public interface ScoreService extends IService<Course> {

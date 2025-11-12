@@ -41,7 +41,9 @@ public class DiscussCommentService {
         return tree;
     }
 
-    /** 新增评论 */
+    /**
+     * 新增评论
+     */
     public void add(DiscussComment comment) {
         if (comment.getDiscussId() == null || comment.getUserId() == null) {
             throw new CustomException("讨论ID和用户ID不能为空");
@@ -49,7 +51,9 @@ public class DiscussCommentService {
         commentMapper.insert(comment);
     }
 
-    /** 修改评论 */
+    /**
+     * 修改评论
+     */
     public void update(DiscussComment comment) {
         if (comment.getId() == null) {
             throw new CustomException("评论ID不能为空");
@@ -57,7 +61,9 @@ public class DiscussCommentService {
         commentMapper.update(comment);
     }
 
-    /** 删除评论 */
+    /**
+     * 删除评论
+     */
     public void deleteById(Integer id) {
         commentMapper.deleteById(id);
     }

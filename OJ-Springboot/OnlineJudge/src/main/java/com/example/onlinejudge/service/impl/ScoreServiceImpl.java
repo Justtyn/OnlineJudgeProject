@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 @Service
 public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Course> implements ScoreService {
-    
+
     @Resource
     private ScoreMapper scoreMapper;
 

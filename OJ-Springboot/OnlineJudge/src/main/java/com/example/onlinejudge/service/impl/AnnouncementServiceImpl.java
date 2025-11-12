@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -43,7 +44,9 @@ public class AnnouncementServiceImpl extends ServiceImpl<AnnouncementMapper, Ann
         return null;
     }
 
-    /** “最近公告统计”里原来放 typeDistribution，就改成月度分布 */
+    /**
+     * “最近公告统计”里原来放 typeDistribution，就改成月度分布
+     */
     @Override
     public Map<String, Object> getRecentAnnouncementsStats() {
         Map<String, Object> stats = new HashMap<>();
@@ -57,18 +60,18 @@ public class AnnouncementServiceImpl extends ServiceImpl<AnnouncementMapper, Ann
         Map<String, Object> map = new LinkedHashMap<>();
         announcementMapper.selectMonthlyDistribution().forEach(row -> {
             String period = (String) row.get("period");
-            Long cnt      = ((Number) row.get("cnt")).longValue();
+            Long cnt = ((Number) row.get("cnt")).longValue();
             map.put(period, cnt);
         });
         return map;
     }
-    
+
     @Override
     public Map<String, Object> getTimeDistribution() {
         Map<String, Object> map = new LinkedHashMap<>();
         announcementMapper.selectDailyDistribution().forEach(row -> {
             String period = (String) row.get("period");
-            Long cnt      = ((Number) row.get("cnt")).longValue();
+            Long cnt = ((Number) row.get("cnt")).longValue();
             map.put(period, cnt);
         });
         return map;

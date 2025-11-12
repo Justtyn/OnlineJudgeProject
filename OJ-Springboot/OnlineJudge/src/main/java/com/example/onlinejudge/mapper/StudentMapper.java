@@ -53,6 +53,7 @@ public interface StudentMapper extends BaseMapper<Student> {
 
     /**
      * 更新学生信息
+     *
      * @param student 包含更新信息的学生对象，必须包含id字段
      * @return 返回受影响的行数，通常成功更新时返回1
      */

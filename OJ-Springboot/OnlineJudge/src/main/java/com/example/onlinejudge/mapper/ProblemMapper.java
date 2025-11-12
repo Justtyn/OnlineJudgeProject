@@ -17,8 +17,8 @@ public interface ProblemMapper extends BaseMapper<Problem> {
 
     /**
      * 分页查询所有题目
-     * 
-     * @param pageNum 页码(从0开始的偏移量)
+     *
+     * @param pageNum  页码(从0开始的偏移量)
      * @param pageSize 每页显示的记录数
      * @return 返回指定页的题目列表
      */
@@ -27,7 +27,7 @@ public interface ProblemMapper extends BaseMapper<Problem> {
 
     /**
      * 查询题目总数
-     * 
+     *
      * @return 返回题目总数
      */
     @Select("SELECT COUNT(*) FROM oj_problem")
@@ -35,7 +35,7 @@ public interface ProblemMapper extends BaseMapper<Problem> {
 
     /**
      * 根据ID查询题目
-     * 
+     *
      * @param id 题目ID
      * @return 返回指定ID的题目
      */
@@ -44,9 +44,9 @@ public interface ProblemMapper extends BaseMapper<Problem> {
 
     /**
      * 根据题目名称模糊查询并分页
-     * 
-     * @param name 题目名称(支持模糊查询)
-     * @param pageNum 页码(从0开始的偏移量)
+     *
+     * @param name     题目名称(支持模糊查询)
+     * @param pageNum  页码(从0开始的偏移量)
      * @param pageSize 每页显示的记录数
      * @return 返回符合条件的题目列表
      */
@@ -55,7 +55,7 @@ public interface ProblemMapper extends BaseMapper<Problem> {
 
     /**
      * 根据题目名称查询符合条件的总记录数
-     * 
+     *
      * @param name 题目名称(支持模糊查询)
      * @return 返回符合条件的记录总数
      */
@@ -64,9 +64,9 @@ public interface ProblemMapper extends BaseMapper<Problem> {
 
     /**
      * 根据出题人模糊查询并分页
-     * 
-     * @param setter 出题人(支持模糊查询)
-     * @param pageNum 页码(从0开始的偏移量)
+     *
+     * @param setter   出题人(支持模糊查询)
+     * @param pageNum  页码(从0开始的偏移量)
      * @param pageSize 每页显示的记录数
      * @return 返回符合条件的题目列表
      */
@@ -75,7 +75,7 @@ public interface ProblemMapper extends BaseMapper<Problem> {
 
     /**
      * 根据出题人查询符合条件的总记录数
-     * 
+     *
      * @param setter 出题人(支持模糊查询)
      * @return 返回符合条件的记录总数
      */
@@ -85,7 +85,7 @@ public interface ProblemMapper extends BaseMapper<Problem> {
     /**
      * 插入新题目
      * 使用 @Options 注解获取自动生成的主键值并赋值给 problem 对象的 id 属性
-     * 
+     *
      * @param problem 要插入的题目对象
      */
     @Insert("INSERT INTO oj_problem(name, setter, create_time, ac_count, submit_count, `desc`, desc_input, desc_output, sample_input, sample_output, hint) " +
@@ -95,7 +95,7 @@ public interface ProblemMapper extends BaseMapper<Problem> {
 
     /**
      * 更新题目信息
-     * 
+     *
      * @param problem 包含更新信息的题目对象
      */
     @Update("UPDATE oj_problem SET name = #{name}, setter = #{setter}, create_time = #{createTime}, " +
@@ -107,7 +107,7 @@ public interface ProblemMapper extends BaseMapper<Problem> {
 
     /**
      * 根据ID删除题目
-     * 
+     *
      * @param id 要删除的题目ID
      */
     @Delete("DELETE FROM oj_problem WHERE id = #{id}")
@@ -115,6 +115,7 @@ public interface ProblemMapper extends BaseMapper<Problem> {
 
     /**
      * 原子性地增加提交次数
+     *
      * @param id 题目ID
      */
     @Update("UPDATE oj_problem SET submit_count = submit_count + 1 WHERE id = #{id}")
@@ -122,6 +123,7 @@ public interface ProblemMapper extends BaseMapper<Problem> {
 
     /**
      * 原子性地增加通过次数
+     *
      * @param id 题目ID
      */
     @Update("UPDATE oj_problem SET ac_count = ac_count + 1 WHERE id = #{id}")
@@ -129,7 +131,7 @@ public interface ProblemMapper extends BaseMapper<Problem> {
 
     /**
      * 查询所有题目
-     * 
+     *
      * @return 返回所有题目列表
      */
     @Select("SELECT * FROM oj_problem ORDER BY id")
@@ -137,7 +139,7 @@ public interface ProblemMapper extends BaseMapper<Problem> {
 
     /**
      * 查询所有题目，只返回id和name字段
-     * 
+     *
      * @return 返回所有题目的id和name列表
      */
     @Select("SELECT id, name FROM oj_problem ORDER BY id")
@@ -145,6 +147,7 @@ public interface ProblemMapper extends BaseMapper<Problem> {
 
     /**
      * 获取每日挑战题目
+     *
      * @return 返回10道随机题目
      */
     @Select("SELECT * FROM oj_problem WHERE daily_challenge = 'FALSE' ORDER BY RAND() LIMIT 10")
@@ -152,7 +155,8 @@ public interface ProblemMapper extends BaseMapper<Problem> {
 
     /**
      * 更新题目的每日挑战状态
-     * @param id 题目ID
+     *
+     * @param id             题目ID
      * @param dailyChallenge 是否为每日挑战题，"TRUE"或"FALSE"
      */
     @Update("UPDATE oj_problem SET daily_challenge = #{dailyChallenge} WHERE id = #{id}")
@@ -166,6 +170,7 @@ public interface ProblemMapper extends BaseMapper<Problem> {
 
     /**
      * 获取当前选中的每日挑战题目
+     *
      * @return 返回当前选中的题目列表
      */
     @Select("SELECT * FROM oj_problem WHERE daily_challenge = 'TRUE'")
@@ -196,10 +201,10 @@ public interface ProblemMapper extends BaseMapper<Problem> {
 
     @Select("SELECT * FROM oj_problem WHERE name LIKE CONCAT('%', #{name}, '%') ORDER BY id")
     List<Problem> selectAllByName(@Param("name") String name);
-    
+
     /**
      * 根据题目名称和内容进行模糊查询
-     * 
+     *
      * @param keyword 查询关键词(支持模糊查询)
      * @return 返回符合条件的题目列表
      */

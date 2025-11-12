@@ -19,10 +19,10 @@ public class Discuss {
 
     @ApiModelProperty("用户ID")
     private Integer userId;
-    
+
     @ApiModelProperty("问题ID")
     private Integer problemId;
-    
+
     @ApiModelProperty("讨论标题")
     private String title;
 
@@ -36,7 +36,7 @@ public class Discuss {
 
     @ApiModelProperty("讨论内容")
     private String content;
-    
+
     @ApiModelProperty("浏览次数")
     private Integer viewNum;
 

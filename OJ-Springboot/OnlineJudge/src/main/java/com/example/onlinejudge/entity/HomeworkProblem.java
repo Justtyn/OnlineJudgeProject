@@ -12,13 +12,13 @@ import lombok.Data;
 public class HomeworkProblem {
     @ApiModelProperty("作业ID")
     private int homeworkId;
-    
+
     @ApiModelProperty("题目ID")
     private int problemId;
-    
+
     @ApiModelProperty("通过次数")
     private int acCount;
-    
+
     @ApiModelProperty("提交次数")
     private int submitCount;
 }

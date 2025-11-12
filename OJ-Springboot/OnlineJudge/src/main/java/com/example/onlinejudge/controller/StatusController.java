@@ -29,7 +29,7 @@ public class StatusController {
         private final Integer problemId;
         private final String status;
         private final String submitTime;
-        
+
         public StatusDTO(Status status) {
             this.problemId = status.getProblemId();
             this.status = status.getStatus();
@@ -90,7 +90,7 @@ public class StatusController {
             @ApiParam("每页数量") @RequestParam(defaultValue = "10") Integer pageSize) {
         QueryWrapper<Status> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", userId)
-                   .orderByDesc("creat_time");
+                .orderByDesc("creat_time");
         Page<Status> page = statusService.page(new Page<>(pageNum, pageSize), queryWrapper);
         return Result.success(page);
     }
@@ -103,7 +103,7 @@ public class StatusController {
             @ApiParam("每页数量") @RequestParam(defaultValue = "10") Integer pageSize) {
         QueryWrapper<Status> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("problem_id", problemId)
-                   .orderByDesc("creat_time");
+                .orderByDesc("creat_time");
         Page<Status> page = statusService.page(new Page<>(pageNum, pageSize), queryWrapper);
         return Result.success(page);
     }
@@ -115,18 +115,18 @@ public class StatusController {
             @ApiParam("日期") @RequestParam String date) {
         LocalDate targetDate = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
         LocalDate nextDay = targetDate.plusDays(1);
-        
+
         QueryWrapper<Status> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", userId)
-                   .ge("creat_time", targetDate.toString())
-                   .lt("creat_time", nextDay.toString())
-                   .eq("status", "Accepted");
-        
+                .ge("creat_time", targetDate.toString())
+                .lt("creat_time", nextDay.toString())
+                .eq("status", "Accepted");
+
         List<Status> statusList = statusService.list(queryWrapper);
         List<StatusDTO> result = statusList.stream()
                 .map(StatusDTO::new)
                 .collect(Collectors.toList());
-        
+
         return Result.success(result);
     }
 } 

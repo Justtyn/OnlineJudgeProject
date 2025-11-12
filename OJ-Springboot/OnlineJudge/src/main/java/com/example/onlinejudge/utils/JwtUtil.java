@@ -11,7 +11,7 @@ public class JwtUtil {
     // 秘钥（建议在生产环境中存放在安全地方）
     // 这个秘钥是用来进行签名和验证 token 的，需要保密。生产环境中不应硬编码到代码中，应该通过安全的方式存储。
     private static final String SECRET_KEY = "ahdigf0239hf28hf274g87923f8098hg9hf2309uhroOIHHihoihHILHIPjh9hahaashwjdiqwhidiqhdidhqidhiqdhihdqidiqdq02rfhhf38";
-    
+
     // Token 过期时间，例如 1 天（毫秒）
     // 这里设置了 Token 的过期时间为 24 小时，单位为毫秒。
     private static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000;

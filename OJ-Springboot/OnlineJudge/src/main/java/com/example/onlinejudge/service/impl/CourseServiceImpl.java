@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 @Slf4j
 @Service
 public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> implements CourseService {
-    
+
     @Resource
     private CourseMapper courseMapper;
 
@@ -25,23 +25,23 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     public boolean addCourse(Course course) {
         return save(course);
     }
-    
+
     @Override
     public boolean deleteCourse(Integer id) {
         return removeById(id);
     }
-    
+
     @Override
     public boolean updateCourse(Course course) {
         return updateById(course);
     }
-    
+
     @Override
     public Page<Course> listCourses(Integer current, Integer size) {
         Page<Course> page = new Page<>(current, size);
         return page(page);
     }
-    
+
     @Override
     public Course getCourseById(Integer id) {
         return getById(id);
@@ -64,19 +64,19 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     @Override
     public Map<String, Long> getStudentCountDistribution() {
         return courseMapper.selectStudentCountDistribution().stream()
-            .collect(Collectors.toMap(
-                m -> (String) m.get("student_count_range"),
-                m -> ((Number) m.get("cnt")).longValue()
-            ));
+                .collect(Collectors.toMap(
+                        m -> (String) m.get("student_count_range"),
+                        m -> ((Number) m.get("cnt")).longValue()
+                ));
     }
 
     @Override
     public Map<String, Long> getHomeworkCountDistribution() {
         return courseMapper.selectHomeworkCountDistribution().stream()
-            .collect(Collectors.toMap(
-                m -> (String) m.get("homework_qty_range"),
-                m -> ((Number) m.get("cnt")).longValue()
-            ));
+                .collect(Collectors.toMap(
+                        m -> (String) m.get("homework_qty_range"),
+                        m -> ((Number) m.get("cnt")).longValue()
+                ));
     }
 
     @Override

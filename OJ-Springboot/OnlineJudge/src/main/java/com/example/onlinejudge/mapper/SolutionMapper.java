@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Mapper
 public interface SolutionMapper extends BaseMapper<Solution> {
-    
+
     @Update("UPDATE solution SET `like_num` = `like_num` + 1 WHERE id = #{id}")
     int increaseLike(Integer id);
 

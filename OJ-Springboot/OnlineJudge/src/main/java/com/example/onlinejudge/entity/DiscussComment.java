@@ -19,16 +19,16 @@ public class DiscussComment {
 
     @ApiModelProperty("讨论ID")
     private Integer discussId;
-    
+
     @ApiModelProperty("用户ID")
     private Integer userId;
-    
+
     @ApiModelProperty("父评论ID")
     private Integer parentCommentId;
-    
+
     @ApiModelProperty("回复用户ID")
     private Integer replyToUserId;
-    
+
     @ApiModelProperty("评论内容")
     private String content;
 

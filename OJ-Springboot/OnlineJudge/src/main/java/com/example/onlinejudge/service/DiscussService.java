@@ -4,6 +4,7 @@ package com.example.onlinejudge.service;
 import cn.hutool.core.date.DateUtil;
 import com.example.onlinejudge.entity.Discuss;
 import com.example.onlinejudge.exception.CustomException;
+
 import java.time.LocalDate;
 import java.util.*;
 
@@ -11,7 +12,8 @@ public interface DiscussService {
 
     /**
      * 分页倒序查询讨论列表
-     * @param pageNum 当前页（1 起）
+     *
+     * @param pageNum  当前页（1 起）
      * @param pageSize 每页数量
      * @return 包含 list 和 total 的 Map
      */
@@ -19,24 +21,28 @@ public interface DiscussService {
 
     /**
      * 根据 ID 查询讨论详情并组装评论树，同时 +1 浏览量
+     *
      * @param id 讨论ID
      */
     Discuss selectById(Integer id);
 
     /**
      * 新增讨论
+     *
      * @param discuss 讨论实体
      */
     void add(Discuss discuss);
 
     /**
      * 修改讨论
+     *
      * @param discuss 包含 id 和要更新的字段
      */
     void update(Discuss discuss);
 
     /**
      * 删除讨论
+     *
      * @param id 讨论ID
      */
     void deleteById(Integer id);
@@ -48,12 +54,14 @@ public interface DiscussService {
 
     /**
      * 根据标题模糊查询讨论列表
+     *
      * @param title 标题关键字
      */
     List<Discuss> selectByTitle(String title);
 
     /**
      * 根据题目ID查询讨论列表
+     *
      * @param problemId 题目ID
      */
     List<Discuss> selectByProblemId(Integer problemId);
@@ -78,12 +86,14 @@ public interface DiscussService {
 
     /**
      * 获取讨论区统计数据
+     *
      * @return 包含各种统计数据的Map
      */
     Map<String, Object> getDiscussStats();
 
     /**
      * 获取每日讨论趋势
+     *
      * @param days 统计天数
      * @return 每日新增讨论数量
      */
@@ -91,6 +101,7 @@ public interface DiscussService {
 
     /**
      * 获取最热门讨论
+     *
      * @param limit 获取数量
      * @return 热门讨论列表
      */
@@ -98,6 +109,7 @@ public interface DiscussService {
 
     /**
      * 获取用户参与度排名
+     *
      * @param limit 获取数量
      * @return 用户参与度排名列表
      */
@@ -105,6 +117,7 @@ public interface DiscussService {
 
     /**
      * 获取讨论回复时间分布
+     *
      * @return 不同回复时间范围的数量
      */
     Map<String, Long> getReplyTimeDistribution();

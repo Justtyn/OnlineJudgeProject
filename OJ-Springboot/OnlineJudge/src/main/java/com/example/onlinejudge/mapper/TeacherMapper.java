@@ -52,6 +52,7 @@ public interface TeacherMapper extends BaseMapper<Teacher> {
 
     /**
      * 更新教师信息
+     *
      * @param teacher 包含更新信息的教师对象，必须包含id字段
      * @return 返回受影响的行数，通常成功更新时返回1
      */

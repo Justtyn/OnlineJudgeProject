@@ -11,18 +11,25 @@ import java.util.Map;
 
 public interface TeacherService {
     void add(Teacher teacher);
+
     Teacher getTeacherById(Integer id);
+
     List<Teacher> getAllTeachers();
+
     boolean update(Teacher teacher);
+
     boolean delete(Integer id);
+
     Account login(Account account);
+
     void register(Account account);
+
     String uploadAvatar(MultipartFile file, Integer id) throws IOException;
 
     /**
      * 分页获取教师列表
      *
-     * @param pageNum 当前页码
+     * @param pageNum  当前页码
      * @param pageSize 每页显示数量
      * @return 包含分页信息和教师列表的Map
      */
@@ -72,7 +79,7 @@ public interface TeacherService {
      * 找回密码
      *
      * @param username 用户名
-     * @param email 邮箱
+     * @param email    邮箱
      * @return 是否成功发送邮件
      */
     boolean resetPassword(String username, String email);
@@ -80,7 +87,7 @@ public interface TeacherService {
     /**
      * 修改密码
      *
-     * @param username 用户名
+     * @param username    用户名
      * @param oldPassword 旧密码
      * @param newPassword 新密码
      * @return 是否成功修改密码

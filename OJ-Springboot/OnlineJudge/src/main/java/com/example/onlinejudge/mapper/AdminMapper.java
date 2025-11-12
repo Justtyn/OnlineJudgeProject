@@ -16,7 +16,7 @@ public interface AdminMapper extends BaseMapper<Admin> {
     /**
      * 根据用户名查询管理员信息
      * 主要用于管理员登录验证
-     * 
+     *
      * @param username 管理员用户名
      * @return 返回查询到的管理员对象，如果不存在则返回null
      */
@@ -26,7 +26,7 @@ public interface AdminMapper extends BaseMapper<Admin> {
     /**
      * 插入新的管理员记录
      * 用于管理员注册或由超级管理员添加新管理员
-     * 
+     *
      * @param admin 包含管理员完整信息的Admin对象，包括：
      *              - username: 用户名
      *              - password: 密码
@@ -45,7 +45,7 @@ public interface AdminMapper extends BaseMapper<Admin> {
 
     /**
      * 根据ID查询管理员信息
-     * 
+     *
      * @param id 管理员ID
      * @return 返回查询到的管理员对象，如果不存在则返回null
      */

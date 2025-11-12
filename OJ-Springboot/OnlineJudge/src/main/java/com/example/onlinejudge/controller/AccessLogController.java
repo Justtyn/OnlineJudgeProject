@@ -51,24 +51,41 @@ public class AccessLogController {
         PrintWriter writer = response.getWriter();
         writer.println("request_time,response_time,duration_ms,method,path,http_status,client_ip,username,is_alert,alert_reason");
         for (AccessLog l : list) {
-            writer.print(s(l.getRequestTime())); writer.print(',');
-            writer.print(s(l.getResponseTime())); writer.print(',');
-            writer.print(n(l.getDurationMs())); writer.print(',');
-            writer.print(s(l.getMethod())); writer.print(',');
-            writer.print(s(l.getPath())); writer.print(',');
-            writer.print(n(l.getHttpStatus())); writer.print(',');
-            writer.print(s(l.getClientIp())); writer.print(',');
-            writer.print(s(l.getUsername())); writer.print(',');
-            writer.print(b(l.getIsAlert())); writer.print(',');
+            writer.print(s(l.getRequestTime()));
+            writer.print(',');
+            writer.print(s(l.getResponseTime()));
+            writer.print(',');
+            writer.print(n(l.getDurationMs()));
+            writer.print(',');
+            writer.print(s(l.getMethod()));
+            writer.print(',');
+            writer.print(s(l.getPath()));
+            writer.print(',');
+            writer.print(n(l.getHttpStatus()));
+            writer.print(',');
+            writer.print(s(l.getClientIp()));
+            writer.print(',');
+            writer.print(s(l.getUsername()));
+            writer.print(',');
+            writer.print(b(l.getIsAlert()));
+            writer.print(',');
             writer.print(s(l.getAlertReason()));
             writer.println();
         }
         writer.flush();
     }
 
-    private static String s(Object o) { return o == null ? "" : String.valueOf(o).replace("\n"," ").replace("\r"," "); }
-    private static String n(Number n) { return n == null ? "" : String.valueOf(n); }
-    private static String b(Boolean b) { return b == null ? "" : (b ? "1" : "0"); }
+    private static String s(Object o) {
+        return o == null ? "" : String.valueOf(o).replace("\n", " ").replace("\r", " ");
+    }
+
+    private static String n(Number n) {
+        return n == null ? "" : String.valueOf(n);
+    }
+
+    private static String b(Boolean b) {
+        return b == null ? "" : (b ? "1" : "0");
+    }
 }
 
 

@@ -25,7 +25,8 @@ public class AccessLogWriter {
     }
 
     @PostConstruct
-    public void init() { }
+    public void init() {
+    }
 
     @Scheduled(fixedDelay = 2000)
     public void flush() {
@@ -37,7 +38,10 @@ public class AccessLogWriter {
         } catch (Exception e) {
             // 降级：逐条插入，避免整批失败全部丢失
             for (AccessLog log : batch) {
-                try { accessLogMapper.insert(log); } catch (Exception ignore) { }
+                try {
+                    accessLogMapper.insert(log);
+                } catch (Exception ignore) {
+                }
             }
         }
     }

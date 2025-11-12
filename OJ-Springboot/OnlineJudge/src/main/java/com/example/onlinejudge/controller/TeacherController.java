@@ -59,7 +59,7 @@ public class TeacherController {
     @ApiOperation("分页查询教师")
     @GetMapping("/page")
     public Result getTeachersWithPage(@ApiParam("页码") @RequestParam(defaultValue = "1") Integer pageNum,
-                                     @ApiParam("每页数量") @RequestParam(defaultValue = "10") Integer pageSize) {
+                                      @ApiParam("每页数量") @RequestParam(defaultValue = "10") Integer pageSize) {
         try {
             Map<String, Object> result = teacherService.getTeachersWithPage(pageNum, pageSize);
             return Result.success(result);
@@ -101,7 +101,7 @@ public class TeacherController {
     @ApiOperation("上传教师头像")
     @PostMapping("/upload/avatar/{id}")
     public Result uploadAvatar(@ApiParam("头像文件") @RequestParam("file") MultipartFile file,
-                              @ApiParam("教师ID") @PathVariable Integer id) {
+                               @ApiParam("教师ID") @PathVariable Integer id) {
         try {
             if (file.isEmpty()) {
                 return Result.error("400", "文件不能为空");
@@ -188,7 +188,7 @@ public class TeacherController {
     @ApiOperation("找回密码")
     @PostMapping("/reset-password")
     public Result resetPassword(@ApiParam("用户名") @RequestParam String username,
-                               @ApiParam("邮箱") @RequestParam String email) {
+                                @ApiParam("邮箱") @RequestParam String email) {
         try {
             if (ObjectUtil.isEmpty(username) || ObjectUtil.isEmpty(email)) {
                 return Result.error("400", "用户名和邮箱不能为空");
@@ -207,8 +207,8 @@ public class TeacherController {
     @ApiOperation("修改密码")
     @PostMapping("/change-password")
     public Result changePassword(@ApiParam("用户名") @RequestParam String username,
-                                @ApiParam("旧密码") @RequestParam String oldPassword,
-                                @ApiParam("新密码") @RequestParam String newPassword) {
+                                 @ApiParam("旧密码") @RequestParam String oldPassword,
+                                 @ApiParam("新密码") @RequestParam String newPassword) {
         try {
             if (ObjectUtil.isEmpty(username) || ObjectUtil.isEmpty(oldPassword) || ObjectUtil.isEmpty(newPassword)) {
                 return Result.error("400", "用户名、旧密码和新密码不能为空");

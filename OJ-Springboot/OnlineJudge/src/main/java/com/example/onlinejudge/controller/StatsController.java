@@ -25,7 +25,7 @@ public class StatsController {
 
     @ApiOperation("获取用户注册趋势")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "days", value = "统计天数", defaultValue = "30", dataType = "int")
+            @ApiImplicitParam(name = "days", value = "统计天数", defaultValue = "30", dataType = "int")
     })
     @GetMapping("/user/registration-trend")
     public Result registrationTrend(
@@ -45,7 +45,7 @@ public class StatsController {
 
     @ApiOperation("获取题目提交排行")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "limit", value = "获取数量", defaultValue = "10", dataType = "int")
+            @ApiImplicitParam(name = "limit", value = "获取数量", defaultValue = "10", dataType = "int")
     })
     @GetMapping("/problem/top-submit")
     public Result topProblemSubmit(

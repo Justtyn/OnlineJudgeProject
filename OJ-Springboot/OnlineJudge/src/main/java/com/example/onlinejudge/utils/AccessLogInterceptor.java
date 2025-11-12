@@ -77,12 +77,13 @@ public class AccessLogInterceptor implements HandlerInterceptor {
 
             // 归属地解析
             try {
-                java.util.Map<String,String> geo = ipGeoService.resolve(clientIp);
+                java.util.Map<String, String> geo = ipGeoService.resolve(clientIp);
                 log.setIpCountry(geo.get("country"));
                 log.setIpRegion(geo.get("region"));
                 log.setIpCity(geo.get("city"));
                 log.setIpIsp(geo.get("isp"));
-            } catch (Exception ignore) { }
+            } catch (Exception ignore) {
+            }
 
             // 业务用户信息：从JWT subject中取用户名（若有），此处保守填充
             try {
@@ -92,7 +93,8 @@ public class AccessLogInterceptor implements HandlerInterceptor {
                     String username = JwtUtil.parseToken(token).getSubject();
                     log.setUsername(username);
                 }
-            } catch (Exception ignore) { }
+            } catch (Exception ignore) {
+            }
 
             // trace/request id
             String requestId = request.getHeader("X-Request-Id");

@@ -28,7 +28,8 @@ public class IpGeoService {
                     if (file.exists()) {
                         is = new FileInputStream(file);
                     }
-                } catch (Exception ignore) { }
+                } catch (Exception ignore) {
+                }
                 if (is == null) {
                     System.out.println("[IpGeoService] ip2region.xdb 未找到，跳过归属地解析");
                     return; // 未提供库则跳过
@@ -44,12 +45,16 @@ public class IpGeoService {
             byte[] cBuff = baos.toByteArray();
             searcher = Searcher.newWithBuffer(cBuff);
             System.out.println("[IpGeoService] ip2region.xdb 加载成功，size=" + cBuff.length);
-        } catch (Exception ignore) { }
+        } catch (Exception ignore) {
+        }
     }
 
     @PreDestroy
     public void destroy() {
-        if (searcher != null) try { searcher.close(); } catch (Exception ignore) {}
+        if (searcher != null) try {
+            searcher.close();
+        } catch (Exception ignore) {
+        }
     }
 
     public Map<String, String> resolve(String ip) {
@@ -93,7 +98,8 @@ public class IpGeoService {
                     map.put("isp", parts[2]);
                 }
             }
-        } catch (Exception ignore) { }
+        } catch (Exception ignore) {
+        }
         return map;
     }
 }

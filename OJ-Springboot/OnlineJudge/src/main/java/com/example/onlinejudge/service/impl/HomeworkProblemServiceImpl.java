@@ -12,62 +12,62 @@ import java.util.List;
 
 @Service
 public class HomeworkProblemServiceImpl extends ServiceImpl<HomeworkProblemMapper, HomeworkProblem> implements HomeworkProblemService {
-    
+
     @Override
     public boolean addHomeworkProblem(HomeworkProblem homeworkProblem) {
         return save(homeworkProblem);
     }
-    
+
     @Override
     public boolean removeHomeworkProblem(int homeworkId, int problemId) {
         LambdaQueryWrapper<HomeworkProblem> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(HomeworkProblem::getHomeworkId, homeworkId)
-                   .eq(HomeworkProblem::getProblemId, problemId);
+                .eq(HomeworkProblem::getProblemId, problemId);
         return remove(queryWrapper);
     }
-    
+
     @Override
     public List<HomeworkProblem> getHomeworkProblemsByHomeworkId(int homeworkId) {
         LambdaQueryWrapper<HomeworkProblem> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(HomeworkProblem::getHomeworkId, homeworkId);
         return list(queryWrapper);
     }
-    
+
     @Override
     public boolean incrementSubmitCount(int homeworkId, int problemId) {
         LambdaQueryWrapper<HomeworkProblem> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(HomeworkProblem::getHomeworkId, homeworkId)
-                   .eq(HomeworkProblem::getProblemId, problemId);
-        
+                .eq(HomeworkProblem::getProblemId, problemId);
+
         HomeworkProblem homeworkProblem = getOne(queryWrapper);
         if (homeworkProblem == null) {
             return false;
         }
-        
+
         LambdaUpdateWrapper<HomeworkProblem> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(HomeworkProblem::getHomeworkId, homeworkId)
-                    .eq(HomeworkProblem::getProblemId, problemId)
-                    .set(HomeworkProblem::getSubmitCount, homeworkProblem.getSubmitCount() + 1);
-        
+                .eq(HomeworkProblem::getProblemId, problemId)
+                .set(HomeworkProblem::getSubmitCount, homeworkProblem.getSubmitCount() + 1);
+
         return update(updateWrapper);
     }
-    
+
     @Override
     public boolean incrementAcCount(int homeworkId, int problemId) {
         LambdaQueryWrapper<HomeworkProblem> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(HomeworkProblem::getHomeworkId, homeworkId)
-                   .eq(HomeworkProblem::getProblemId, problemId);
-        
+                .eq(HomeworkProblem::getProblemId, problemId);
+
         HomeworkProblem homeworkProblem = getOne(queryWrapper);
         if (homeworkProblem == null) {
             return false;
         }
-        
+
         LambdaUpdateWrapper<HomeworkProblem> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(HomeworkProblem::getHomeworkId, homeworkId)
-                    .eq(HomeworkProblem::getProblemId, problemId)
-                    .set(HomeworkProblem::getAcCount, homeworkProblem.getAcCount() + 1);
-        
+                .eq(HomeworkProblem::getProblemId, problemId)
+                .set(HomeworkProblem::getAcCount, homeworkProblem.getAcCount() + 1);
+
         return update(updateWrapper);
     }
 }
