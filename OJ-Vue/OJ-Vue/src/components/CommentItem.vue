@@ -61,6 +61,7 @@
 <script setup>
 import { defineProps, defineEmits, ref, onMounted } from 'vue'
 import request from '@/utils/request.js'
+import { getUploadUrl } from '@/utils/env.js'
 
 const props = defineProps({
   comment: {
@@ -74,6 +75,8 @@ const props = defineProps({
 })
 
 defineEmits(['reply', 'click-user'])
+
+const defaultAvatar = getUploadUrl('1743236403200_IMG_0748.JPG')
 
 // 获取token
 const getAuthInfo = () => {
@@ -105,7 +108,7 @@ const fetchUserInfo = async (userId) => {
       const userData = response.data.data
       return {
         username: userData.name || userData.username || '未知用户',
-        avatar: userData.avatar || 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG'
+        avatar: userData.avatar || defaultAvatar
       }
     }
   } catch (error) {

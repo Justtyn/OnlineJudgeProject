@@ -151,6 +151,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import request from '@/utils/request'
 import PageLayout from '@/components/layout/PageLayout.vue'
+import { getUploadUrl } from '@/utils/env.js'
 
 const router = useRouter()
 
@@ -169,6 +170,7 @@ const getAuthInfo = () => {
 }
 
 const { token, userId } = getAuthInfo();
+const defaultAvatar = getUploadUrl('1743236403200_IMG_0748.JPG')
 
 // 数据状态
 const loading = ref(false)
@@ -249,14 +251,14 @@ const fetchUserInfo = async (userId) => {
     if (res.data.code === '200') {
       userCache.value[userId] = {
         username: res.data.data.username || res.data.data.name || '未知用户',
-        avatar: res.data.data.avatar || 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG'
+        avatar: res.data.data.avatar || defaultAvatar
       }
     }
   } catch (error) {
     console.error('获取用户信息失败:', error)
     userCache.value[userId] = {
       username: '未知用户',
-      avatar: 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG'
+      avatar: defaultAvatar
     }
   }
 }

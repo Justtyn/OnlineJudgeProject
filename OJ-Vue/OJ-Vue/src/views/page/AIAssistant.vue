@@ -322,6 +322,7 @@
   } from '@element-plus/icons-vue'
   import PageLayout from '@/components/layout/PageLayout.vue'
   import request from '@/utils/request.js'
+  import { getUploadUrl } from '@/utils/env.js'
   import { marked } from 'marked'
   import hljs from 'highlight.js'
   import 'highlight.js/styles/github.css'
@@ -379,6 +380,8 @@
     actionText: ''
   })
   
+  const defaultAvatar = getUploadUrl('1743236403200_IMG_0748.JPG')
+
   // 用户头像
   const userAvatar = computed(() => {
     const localUser = localStorage.getItem('student-user') 
@@ -387,7 +390,7 @@
         ? JSON.parse(localStorage.getItem('admin-user'))
         : null;
     
-    return localUser?.avatar || 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG'
+    return localUser?.avatar || defaultAvatar
   })
   
   // 快捷问题选项

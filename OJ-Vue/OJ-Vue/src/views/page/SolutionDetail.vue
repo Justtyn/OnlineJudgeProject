@@ -178,6 +178,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { Document, Star, Loading, Lightning, InfoFilled, DocumentCopy, Refresh } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import request from '@/utils/request.js'
+import { getUploadUrl } from '@/utils/env.js'
 import { marked } from 'marked'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github.css'
@@ -205,6 +206,7 @@ const router = useRouter()
 // 题解详情
 const solutionData = ref({ content: '' })
 const userInfo = ref(null)
+const defaultAvatar = getUploadUrl('1743236403200_IMG_0748.JPG')
 
 // 获取token和用户ID
 const getAuthInfo = () => {
@@ -356,14 +358,14 @@ const fetchUserInfo = async (userId) => {
       const userData = response.data.data
       userInfo.value = {
         username: userData.username || userData.name || '未知用户',
-        avatar: userData.avatar || 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG'
+        avatar: userData.avatar || defaultAvatar
       }
     }
   } catch (error) {
     console.error('获取用户信息失败:', error)
     userInfo.value = {
       username: '未知用户',
-      avatar: 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG'
+      avatar: defaultAvatar
     }
   }
 }

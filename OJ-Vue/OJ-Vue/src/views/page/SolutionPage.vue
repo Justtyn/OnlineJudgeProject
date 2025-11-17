@@ -4,6 +4,7 @@ import { ElMessage, ElLoading } from 'element-plus'
 import request from "@/utils/request.js";
 import { Plus, Star } from '@element-plus/icons-vue'
 import * as monaco from 'monaco-editor'
+import { getUploadUrl } from '@/utils/env.js'
 
 // 获取token和用户ID
 const getAuthInfo = () => {
@@ -20,6 +21,7 @@ const getAuthInfo = () => {
 }
 
 const { token, userId } = getAuthInfo();
+const defaultAvatar = getUploadUrl('1743236403200_IMG_0748.JPG')
 
 // 格式化日期时间
 const formatDateTime = (dateTimeStr) => {
@@ -233,20 +235,20 @@ const fetchUserInfo = async (userId) => {
       const userData = response.data.data;
       userCache[userId] = {
         username: userData.username || userData.name || '未知用户',
-        avatar: userData.avatar || 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG' // 默认头像
+        avatar: userData.avatar || defaultAvatar // 默认头像
       };
     } else {
       console.error('获取用户信息失败:', response.data.msg);
       userCache[userId] = {
         username: '未知用户',
-        avatar: 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG' // 默认头像
+        avatar: defaultAvatar // 默认头像
       };
     }
   } catch (error) {
     console.error('获取用户信息异常:', error);
     userCache[userId] = {
       username: '未知用户',
-      avatar: 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG' // 默认头像
+      avatar: defaultAvatar // 默认头像
     };
   }
 }

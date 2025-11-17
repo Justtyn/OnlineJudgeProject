@@ -1,13 +1,14 @@
 import axios from 'axios' // 导入axios HTTP请求库
 import { ElMessage, ElMessageBox } from 'element-plus' // 导入Element Plus的消息提示和消息框组件
 import router from '../router' // 导入Vue路由实例
+import { API_BASE_URL } from './env.js'
 
 /**
  * 创建axios实例
  * 配置基本请求参数，如基础URL、超时时间和请求头
  */
 const service = axios.create({
-    baseURL: 'http://localhost:9090', // 设置API的基础URL
+    baseURL: API_BASE_URL, // 设置API的基础URL
     timeout: 10000, // 设置请求超时时间为10秒
     headers: {
         'Content-Type': 'application/json' // 设置默认请求头为JSON格式

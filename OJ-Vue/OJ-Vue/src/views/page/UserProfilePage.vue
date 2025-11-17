@@ -91,6 +91,7 @@ import router from '@/router/index.js';
 import { useRoute } from 'vue-router';
 import 'animate.css';
 import particles from 'particles.js';
+import { getUploadUrl } from '@/utils/env.js';
 
 // 获取路由参数
 const route = useRoute();
@@ -111,8 +112,8 @@ if (!localUser) {
 }
 
 // 默认头像和背景图
-const defaultAvatar = 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG';
-const defaultBackground = 'http://localhost:9090/uploads/ocean-8032698_1920.jpg';
+const defaultAvatar = getUploadUrl('1743236403200_IMG_0748.JPG');
+const defaultBackground = getUploadUrl('ocean-8032698_1920.jpg');
 
 // 学生信息响应式对象
 const studentInfo = reactive({

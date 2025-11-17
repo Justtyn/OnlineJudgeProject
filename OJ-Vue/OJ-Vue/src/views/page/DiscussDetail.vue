@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import request from '@/utils/request.js'
 import CommentItem from '@/components/CommentItem.vue'
+import { getUploadUrl } from '@/utils/env.js'
 
 // 路由
 const route = useRoute()
@@ -33,6 +34,7 @@ const getAuthInfo = () => {
 }
 
 const { token, userId } = getAuthInfo();
+const defaultAvatar = getUploadUrl('1743236403200_IMG_0748.JPG')
 
 // 获取讨论详情
 const fetchDiscussDetail = async (id) => {
@@ -62,14 +64,14 @@ const fetchUserInfo = async (userId) => {
       const userData = response.data.data
       userInfo.value = {
         username: userData.name || userData.username || '未知用户',
-        avatar: userData.avatar || 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG'
+        avatar: userData.avatar || defaultAvatar
       }
     }
   } catch (error) {
     console.error('获取用户信息失败:', error)
     userInfo.value = {
       username: '未知用户',
-      avatar: 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG'
+      avatar: defaultAvatar
     }
   }
 }
@@ -116,12 +118,12 @@ const loadMoreComments = async () => {
           if (userResponse.data.code === '200') {
             const userData = userResponse.data.data
             comment.username = userData.name || userData.username || '未知用户'
-            comment.avatar = userData.avatar || 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG'
+            comment.avatar = userData.avatar || defaultAvatar
           }
         } catch (error) {
           console.error('获取评论用户信息失败:', error)
           comment.username = '未知用户'
-          comment.avatar = 'http://localhost:9090/uploads/1743236403200_IMG_0748.JPG'
+          comment.avatar = defaultAvatar
         }
       }
       discussData.value.comments = comments
