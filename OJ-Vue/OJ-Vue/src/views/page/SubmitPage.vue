@@ -212,7 +212,7 @@ const submitCodeWithBase64 = async () => {
       expected_output: toBase64(sampleOutput)
     }
 
-    const response = await request.post('http://localhost:2358/submissions?wait=true&base64_encoded=true', submitData)
+    const response = await request.post('http://139.59.227.54:2358/submissions?wait=true&base64_encoded=true', submitData)
     
     // 处理返回结果中的base64编码
     const result = {
@@ -272,8 +272,9 @@ const submitCode = async () => {
       expected_output: sampleOutput
     }
 
-    const response = await request.post('http://localhost:2358/submissions?wait=true', submitData)
+    const response = await request.post('http://139.59.227.54:2358/submissions?wait=true', submitData)
     submissionResult.value = response.data
+
 
     // 无论返回什么状态，都保存到状态中
     await submitStatus(response.data)
