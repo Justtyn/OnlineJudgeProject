@@ -142,6 +142,8 @@
             :data="{ id: studentInfo.id }"
             :headers="{ Authorization: 'Bearer ' + token }"
             :on-success="handleAvatarUploadSuccess"
+            :on-error="handleAvatarUploadError"
+            :before-upload="handleBeforeAvatarUpload"
             :show-file-list="false"
             accept="image/*"
         >
@@ -428,10 +430,66 @@ const selectBackground = async (img: string) => {
 // 头像预览弹窗
 const avatarPreviewVisible = ref(false);
 
+const MAX_AVATAR_SIZE = 1024 * 1024 // 1MB
+const normalizeUploadResponse = (response: any) => {
+  if (!response) {
+    return null
+  }
+
+  if (typeof response === 'string') {
+    try {
+      return JSON.parse(response)
+    } catch (error) {
+      console.warn('上传结果不是合法的 JSON，原始内容：', response)
+      return { code: '', msg: response }
+    }
+  }
+
+  if (typeof response === 'object') {
+    if ('code' in response) {
+      return response
+    }
+    if ('data' in response) {
+      const data = response.data
+      if (typeof data === 'string') {
+        try {
+          const parsed = JSON.parse(data)
+          if (parsed && typeof parsed === 'object') {
+            return parsed
+          }
+        } catch (error) {
+          console.warn('上传结果 data 字段不是合法 JSON，原始内容：', data)
+        }
+      } else if (data && typeof data === 'object') {
+        if ('code' in data) {
+          return data
+        }
+      }
+      return data
+    }
+  }
+
+  return { code: '', msg: response }
+}
+
+// 上传头像前校验
+const handleBeforeAvatarUpload = (file: File) => {
+  const isImage = file.type.startsWith('image/')
+  if (!isImage) {
+    ElMessage.error('只能上传图片文件')
+    return false
+  }
+  if (file.size > MAX_AVATAR_SIZE) {
+    ElMessage.error('头像大小不能超过 1MB')
+    return false
+  }
+  return true
+}
+
 // 上传头像成功回调
 const handleAvatarUploadSuccess = (response: any) => {
   console.log('上传头像响应:', response)
-  const payload = response?.data ?? response
+  const payload = normalizeUploadResponse(response)
   const isSuccess = String(payload?.code || '') === '200'
 
   if (isSuccess) {
@@ -445,6 +503,13 @@ const handleAvatarUploadSuccess = (response: any) => {
   }
 
   ElMessage.error(payload?.msg || '头像上传失败')
+}
+
+// 上传头像失败回调
+const handleAvatarUploadError = (error: any) => {
+  console.error('上传头像失败:', error)
+  const serverMsg = error?.response?.msg || error?.response?.message || error?.message
+  ElMessage.error(serverMsg || '头像上传失败，请稍后重试')
 }
 
 /**
