@@ -181,6 +181,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { Refresh, Loading, Lightning, InfoFilled, DocumentCopy } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import request from '@/utils/request.js'
+import { DEEPSEEK_CHAT_COMPLETIONS_URL, DEEPSEEK_API_KEY } from '@/utils/env.js'
 import { marked } from 'marked'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github.css'
@@ -208,6 +209,17 @@ marked.setOptions({
   // 状态详情
   const statusData = ref({ code: '' })
   const output = ref('')
+  const ensureDeepSeekConfigured = () => {
+    if (DEEPSEEK_API_KEY) {
+      return true
+    }
+    ElMessage.error('AI 服务未配置，请联系管理员')
+    return false
+  }
+  const buildDeepSeekHeaders = () => ({
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+  })
   
   // 行列表
   const linesList = computed(() => statusData.value.code.split('\n'))
@@ -384,6 +396,12 @@ const getRoleTooltip = (role) => {
     typewriterContent.value = ''
     responseStartTime.value = Date.now()
     
+    if (!ensureDeepSeekConfigured()) {
+      isThinking.value = false
+      isStreaming.value = false
+      return
+    }
+    
     try {
       // 获取题目信息
       const problemRes = await request.get(`/problem/${statusData.value.problemId}`)
@@ -418,12 +436,9 @@ const getRoleTooltip = (role) => {
       }
 
       // 使用fetch直接请求，避免被request拦截器处理
-      const response = await fetch('https://api.deepseek.com/chat/completions', {
+      const response = await fetch(DEEPSEEK_CHAT_COMPLETIONS_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer sk-ff342bebb7114fbbbf402971065c977e'
-        },
+        headers: buildDeepSeekHeaders(),
         body: JSON.stringify({
           model: 'deepseek-chat',
           messages: messages,

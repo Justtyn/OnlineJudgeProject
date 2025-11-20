@@ -178,7 +178,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { Document, Star, Loading, Lightning, InfoFilled, DocumentCopy, Refresh } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import request from '@/utils/request.js'
-import { getUploadUrl } from '@/utils/env.js'
+import { getUploadUrl, DEEPSEEK_CHAT_COMPLETIONS_URL, DEEPSEEK_API_KEY } from '@/utils/env.js'
 import { marked } from 'marked'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github.css'
@@ -207,6 +207,17 @@ const router = useRouter()
 const solutionData = ref({ content: '' })
 const userInfo = ref(null)
 const defaultAvatar = getUploadUrl('1743236403200_IMG_0748.JPG')
+const ensureDeepSeekConfigured = () => {
+  if (DEEPSEEK_API_KEY) {
+    return true
+  }
+  ElMessage.error('AI 服务未配置，请联系管理员')
+  return false
+}
+const buildDeepSeekHeaders = () => ({
+  'Content-Type': 'application/json',
+  'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+})
 
 // 获取token和用户ID
 const getAuthInfo = () => {
@@ -436,6 +447,12 @@ const askAI = async () => {
   typewriterContent.value = ''
   responseStartTime.value = Date.now()
   
+  if (!ensureDeepSeekConfigured()) {
+    isThinking.value = false
+    isStreaming.value = false
+    return
+  }
+  
   try {
     // 获取题目信息
     const problemRes = await request.get(`/problem/${solutionData.value.problemId}`)
@@ -457,12 +474,9 @@ const askAI = async () => {
     ]
     
     // 使用fetch直接请求，避免被request拦截器处理
-    const response = await fetch('https://api.deepseek.com/chat/completions', {
+    const response = await fetch(DEEPSEEK_CHAT_COMPLETIONS_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer sk-ff342bebb7114fbbbf402971065c977e'
-      },
+      headers: buildDeepSeekHeaders(),
       body: JSON.stringify({
         model: 'deepseek-chat',
         messages: messages,

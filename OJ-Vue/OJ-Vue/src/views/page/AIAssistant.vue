@@ -44,6 +44,16 @@
         </div>
       </div>
 
+      <div v-if="showAPIWarning" class="api-warning">
+        <el-alert
+          type="warning"
+          title="AI 接口未配置"
+          description="请联系管理员配置 DeepSeek API Key 后再试。"
+          show-icon
+          :closable="false"
+        />
+      </div>
+
       <!-- 主聊天区域 -->
       <div class="chat-main">
         <!-- 聊天消息区域 -->
@@ -322,7 +332,7 @@
   } from '@element-plus/icons-vue'
   import PageLayout from '@/components/layout/PageLayout.vue'
   import request from '@/utils/request.js'
-  import { getUploadUrl } from '@/utils/env.js'
+  import { getUploadUrl, DEEPSEEK_CHAT_COMPLETIONS_URL, DEEPSEEK_API_KEY } from '@/utils/env.js'
   import { marked } from 'marked'
   import hljs from 'highlight.js'
   import 'highlight.js/styles/github.css'
@@ -364,7 +374,20 @@
   const problemList = ref([])
   const problemLoading = ref(false)
   const chatMessagesRef = ref(null)
-  const showAPIWarning = ref(false)
+  const showAPIWarning = ref(!DEEPSEEK_API_KEY)
+  
+  const hasDeepSeekConfig = () => {
+    if (DEEPSEEK_API_KEY) {
+      return true
+    }
+    showAPIWarning.value = true
+    return false
+  }
+  
+  const buildDeepSeekHeaders = () => ({
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+  })
   
   // 详情弹窗相关
   const showDetailDialog = ref(false)
@@ -920,6 +943,13 @@
     isStreaming.value = true
     responseStartTime.value = Date.now()
     
+    if (!hasDeepSeekConfig()) {
+      ElMessage.error('AI 服务未配置，请联系管理员')
+      isStreaming.value = false
+      isThinking.value = false
+      return
+    }
+    
     try {
       const currentModeConfig = chatModes.value.find(m => m.id === currentMode.value)
       const systemPrompt = currentModeConfig?.systemPrompt || chatModes.value[0].systemPrompt
@@ -950,12 +980,9 @@
       scrollToBottom()
       
       // 使用fetch进行流式传输
-      const response = await fetch('https://api.deepseek.com/chat/completions', {
+      const response = await fetch(DEEPSEEK_CHAT_COMPLETIONS_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer sk-ff342bebb7114fbbbf402971065c977e'
-        },
+        headers: buildDeepSeekHeaders(),
         body: JSON.stringify({
           model: 'deepseek-chat',
           messages: aiMessages,
@@ -1025,6 +1052,7 @@
       
       if (error.message.includes('401')) {
         errorContent = 'API密钥验证失败，请联系管理员检查API配置。'
+        showAPIWarning.value = true
       } else if (error.message.includes('429')) {
         errorContent = '请求过于频繁，请稍后再试。'
       } else if (error.message) {
@@ -1075,11 +1103,15 @@
   
   // 测试API密钥
   const testAPIKey = async () => {
+    if (!hasDeepSeekConfig()) {
+      return false
+    }
+    
     try {
       // 直接使用axios，避免经过request拦截器
       const axios = (await import('axios')).default
       const response = await axios.post(
-        'https://api.deepseek.com/chat/completions',
+        DEEPSEEK_CHAT_COMPLETIONS_URL,
         {
           model: 'deepseek-chat',
           messages: [{ role: 'user', content: 'Hello' }],
@@ -1087,10 +1119,7 @@
           max_tokens: 10
         },
         {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer sk-ff342bebb7114fbbbf402971065c977e'
-          },
+          headers: buildDeepSeekHeaders(),
           timeout: 10000
         }
       )

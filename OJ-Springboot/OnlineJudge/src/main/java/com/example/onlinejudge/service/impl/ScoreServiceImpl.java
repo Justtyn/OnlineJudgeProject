@@ -28,9 +28,17 @@ public class ScoreServiceImpl extends ServiceImpl<ScoreMapper, Course> implement
         List<Map<String, Object>> rawData = scoreMapper.selectHomeworkCountDistribution();
         for (Map<String, Object> data : rawData) {
             String range = (String) data.get("range");
-            Long count = ((Number) data.get("count")).longValue();
-            distribution.put(range, count);
+            if (range == null) {
+                range = (String) data.get("homework_qty_range");
+            }
+            Number countValue = (Number) data.get("count");
+            if (countValue == null) {
+                countValue = (Number) data.get("cnt");
+            }
+            if (range != null && countValue != null) {
+                distribution.put(range, countValue.longValue());
+            }
         }
         return distribution;
     }
-} 
+}

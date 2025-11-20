@@ -32,6 +32,11 @@ const loadData = async () => {
       ElMessage.error('未获取到用户ID，请重新登录');
       return;
     }
+    if (!classId) {
+      ElMessage.info('您当前没有加入班级');
+      classList.value = [];
+      return;
+    }
 
     const response = await request.get(`/courses/${classId}`);
     if (response.data.success) {
@@ -76,12 +81,12 @@ const handleRefresh = () => {
 // 随机生成背景颜色
 const getRandomColor = (index) => {
   const colors = [
-    'var(--bg-color-soft)', // 浅蓝
-    'var(--bg-color-soft)', // 浅绿
-    'var(--color-background)7e6', // 浅橙
-    'var(--color-background)0f6', // 浅粉
-    'var(--bg-color-soft)', // 浅紫
-    'var(--bg-color-soft)', // 浅青
+    '#E6F4FF', // 浅蓝
+    '#E8FFFB', // 浅绿
+    '#FFF7E6', // 浅橙
+    '#FFF0F6', // 浅粉
+    '#F9F0FF', // 浅紫
+    '#F6FFED', // 浅青
   ]
   return colors[index % colors.length]
 }

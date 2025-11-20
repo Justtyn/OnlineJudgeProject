@@ -429,18 +429,23 @@ const selectBackground = async (img: string) => {
 const avatarPreviewVisible = ref(false);
 
 // 上传头像成功回调
-const handleAvatarUploadSuccess = (res: any) => {
-  console.log("上传头像响应:", res);
-  if (res.data || res.data.code === "200") {
-    // 根据返回数据，将 data 字段（URL 字符串）赋值给 studentInfo.avatar
-    studentInfo.avatar = res.data.data;
-    ElMessage.success("头像上传成功");
-    // 可选：重新调用 fetchStudentInfo() 以刷新所有信息
-    fetchStudentInfo();
-  } else {
-    ElMessage.error(res.data.msg || "头像上传失败");
+const handleAvatarUploadSuccess = (response: any) => {
+  console.log('上传头像响应:', response)
+  const payload = response?.data ?? response
+  const isSuccess = String(payload?.code || '') === '200'
+
+  if (isSuccess) {
+    const avatarUrl = payload?.data?.url || payload?.data || ''
+    if (avatarUrl) {
+      studentInfo.avatar = avatarUrl
+    }
+    ElMessage.success(payload?.msg || '头像上传成功')
+    fetchStudentInfo()
+    return
   }
-};
+
+  ElMessage.error(payload?.msg || '头像上传失败')
+}
 
 /**
  * 避免出现 [Vue warn]: Invalid prop: custom validator check failed for prop "size".
