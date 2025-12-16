@@ -1,4 +1,4 @@
-const DEFAULT_BASE_URL = 'http://localhost:9090'
+const DEFAULT_BASE_URL = 'https://tkkcoj.icu/api'
 const DEFAULT_DEEPSEEK_API_URL = 'https://api.deepseek.com'
 const env = import.meta.env || {}
 

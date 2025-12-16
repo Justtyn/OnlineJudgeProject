@@ -8,7 +8,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), '')
-    const baseApiUrl = (env.VITE_BASE_URL || 'http://localhost:9090').replace(/\/$/, '')
+    const baseApiUrl = (env.VITE_BASE_URL || 'https://tkkcoj.icu/api').replace(/\/$/, '')
 
     return {
         plugins: [
